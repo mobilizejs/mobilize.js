@@ -15,8 +15,15 @@ var jq = jQuery;
  * 
  * @constructor
  */
-function Mobilizer(options) {
-	
+function Mobilizer() {
+	this.init();
+}
+
+/**
+ * Instiate Mobilizer class in inheritance safe manner.
+ */
+Mobilizer.prototype.init = function(options) {
+
 	if(!jq) {
 		throw "jQuery needed in order to run mobilize.js";
 	}
@@ -33,13 +40,18 @@ function Mobilizer(options) {
 	};
 	
 	// Override default parameters with user supplied versions
+	
+	if(!options) {
+		options = {};
+	}
+	
 	jq.extend(this.options, options);
 
 	if(console.log) {
 		this.log = console.log();
 	} else {
 		this.log = function(x) {};
-	}
+	}	
 }
 
 /**
@@ -156,8 +168,11 @@ Mobilizer.prototype.transform = function() {
  * in #mobile-head from template to <head> of the page.
  */
 Mobilizer.prototype.constructHead = function() {	
-	jq("head").append("#mobile-head");
+	jq("head").append(jq("#mobile-head").children());
+
+	// Make events to be fired when each CSS/Javascript has been loadeds
 }
+
 
 /**
  * Create <body> section of a mobile rendered version.
@@ -169,10 +184,20 @@ Mobilizer.prototype.constructBody = function() {
 	
 }
 
+/**
+ * Make the transformed mobile template body visible and remove the other body data.
+ */
+Mobilizer.prototype.swapBody = function() {	
+	var mobileBody = jq("#mobile-body").detach();
+	jq("body").empty();
+	jq("body").append(mobileBody.children());
+}
+
 
 /**
  * Mobile transformation is done. Show mobile site to the user.
  */
 Mobilizer.prototype.finish = function() {
+	this.swapBody();
 	jq("body").show();
 }

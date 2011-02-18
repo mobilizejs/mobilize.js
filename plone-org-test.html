@@ -145,8 +145,12 @@ $('#banners').cycle({
     </style><link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/resourcetinymce.ksstinymce-cachekey7702.kss" /><link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/at-cachekey1542.kss" /></head><body class="template-frontpage portaltype-plone-site"><div id="outer-wrapper"><div id="inner-wrapper"><div id="nav"><form id="search" name="searchform" action="http://plone.org/search"><input id="search-site" name="SearchableText" type="text" title="Search this site…" accesskey="4" class="inputLabel" size="15" /></form><div id="user"><dl class="actionMenu deactivated" id="portal-personaltools"><dt id="anon-personalbar">
     
 	<script type="text/javascript" src="js/mobilize.js"></script>
+	<script type="text/javascript" src="js/mobilize.plone.js"></script>
+	<script type="text/javascript" src="js/mobilize.ploneorg.js"></script>
+
 	<script type="text/javascript">
-		var mobilizer = new Mobilizer();
+		var mobilizer = new PloneOrgMobilizer();
+		mobilizer.init({});
 		mobilizer.bootstrap();
 	</script>
 	
