@@ -3,13 +3,9 @@
  *
  */
 
-function PloneMobilizer() {
-}
 
-PloneMobilizer.prototype.constructBody = function() {
-	
-	// Move box on the left hand to body first
+mobilizePlone = {
 	
 }
 
-jq.extend(PloneMobilizer.prototype, Mobilizer.prototype);
+jq.extend(mobilize, mobilizePlone);

@@ -1443,11 +1443,11 @@ $.widget( "mobile.page", $.mobile.widget, {
 		}
 	});
 
+    
 
 	//trigger mobileinit event - useful hook for configuring $.mobile settings before they're used
 	$( window.document ).trigger( "mobileinit" );
-
-
+   
 	//support conditions
 	//if device support condition(s) aren't met, leave things as they are -> a basic, usable experience,
 	//otherwise, proceed with the enhancements
@@ -1523,7 +1523,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 		initializePage: function(){
 			//find present pages
 			var $pages = $( "[data-role='page']" );
-
+            
 			//add dialogs, set data-url attrs
 			$pages.add( "[data-role='dialog']" ).each(function(){
 				$(this).attr( "data-url", $(this).attr( "id" ));

@@ -3,26 +3,36 @@
  *
  */
 
-function PloneOrgMobilizer() {
-}
-
-PloneOrgMobilizer.prototype.constructBody = function() {
+mobilizePloneOrg = {
 	
-	// Move body to jQuery template
-	if(window.location.pathname == "/") {
+	constructBody : function() {
+		
+		// Move body to jQuery template
+		//if(window.location.pathname == "/") {
+		//}
+		
 		this.constructFrontPage();
+	},
+	
+	/**
+	 * This is a nasty one
+	 */
+	constructFrontPage : function() {
+	
+	    // Set page heading from <title> tag
+		var title = jq("head title").text();
+	    jq("#mobile-body div[data-role=header]").append("<h1>" + title + "</h1>");
+		
+		// Move box on the left hand to body first
+		var content = jq("#mobile-body div[data-role=content]");
+		if(content.size() == 0) {
+			throw "No template content section to fill in";
+		}
+		
+		content.append(jq("#current"));
 	}
+
 }
 
-/**
- * This is a nasty one
- */
-PloneOrgMobilizer.prototype.constructFrontPage = function() {
-	
-	// Move box on the left hand to body first
-	jq("#mobile-body").append(jq("div[data-role=content]"));
-	
-}
-
-jq.extend(PloneOrgMobilizer.prototype, PloneMobilizer.prototype);
+jq.extend(mobilize, mobilizePloneOrg);
 
