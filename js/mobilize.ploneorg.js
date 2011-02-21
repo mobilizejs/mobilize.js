@@ -12,8 +12,20 @@ mobilizePloneOrg = {
 		//}
 		
 		this.constructFrontPage();
+		
+		this.constructHeader();
+		this.constructFooter();
 	},
 	
+	constructHeader : function() {
+        // Set page heading from <title> tag
+        var title = jq("head title").text();
+        jq("#mobile-body div[data-role=header]").append("<h1>" + title + "</h1>");		
+	},
+	
+	constructFooter : function() {
+	    jq("#mobile-body div[data-role=footer]").append(jq("#footer p"));     	
+	},
 	
 	
 	/**
@@ -21,9 +33,6 @@ mobilizePloneOrg = {
 	 */
 	constructFrontPage : function() {
 	
-	    // Set page heading from <title> tag
-		var title = jq("head title").text();
-	    jq("#mobile-body div[data-role=header]").append("<h1>" + title + "</h1>");
 		
 		// Move box on the left hand to body first
 		var content = jq("#mobile-body div[data-role=content]");
@@ -41,7 +50,7 @@ mobilizePloneOrg = {
 		
 		var events = mobilize.createNavigationBox(jq("#events li").not(":contains('Add event')"), "Events", mobilize.outputCollectionLink);
         content.append(events);
-       	
+		       	
 	}
 
 }
