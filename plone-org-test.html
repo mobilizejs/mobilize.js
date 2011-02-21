@@ -1,42 +1,74 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-type" content="text/html; charset=utf-8" /><title>Plone CMS: Open Source Content Management</title><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonenews" title="Plone News" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonereleases" title="Plone Releases" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneevents" title="Upcoming Plone Events" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneaddons" title="Latest Plone &amp; Add-on Releases" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonetraining" title="Upcoming Plone Training" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneblogs" title="Plone Blogs" /><!--[if IE]><style type="text/css" media="all">@import url(/ie.css);</style><![endif]--><!--[if lte IE 6]><script src="/ie6warn.js" type="text/javascript"></script><![endif]--><script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/jquery-cachekey5356.js"></script><script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/popupforms-cachekey6577.js"></script><script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/resourcecioppino.twothumbs.javascriptstwothumbs-cachekey9078.js"></script><script type="text/javascript" src="http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js"></script><script type="text/javascript">
-$(document).ready(function() {
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-type" content="text/html; charset=utf-8" /><title>Plone CMS: Open Source Content Management</title><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonenews" title="Plone News" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonereleases" title="Plone Releases" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneevents" title="Upcoming Plone Events" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneaddons" title="Latest Plone &amp; Add-on Releases" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonetraining" title="Upcoming Plone Training" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneblogs" title="Plone Blogs" /><!--[if IE]><style type="text/css" media="all">@import url(/ie.css);</style><![endif]--><!--[if lte IE 6]><script src="/ie6warn.js" type="text/javascript"></script><![endif]--><script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/jquery-cachekey5356.js"></script><script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/popupforms-cachekey6577.js"></script><script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/resourcecioppino.twothumbs.javascriptstwothumbs-cachekey9078.js"></script><script type="text/javascript" src="http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js"></script>
 
+<script type="text/javascript" src="js/mobilize.js"></script>
+<script type="text/javascript" src="js/mobilize.plone.js"></script>
+<script type="text/javascript" src="js/mobilize.ploneorg.js"></script>
 
-// main vertical scroll
-$("#splash-frontpage").scrollable({
+<script type="text/javascript">
 
-    // basic settings
-    vertical: true,
-    keyboard: false,
+/*
+var console = {
+    log : function(msg){
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "/log?msg=" + msg+"/", true);
+        xmlhttp.send(null)
+    }
+};
+*/
 
-// main navigator (thumbnail images)
-}).navigator("#main_navi");
+//$(document).ready(function() {
+function onloaded()
+{
+    try {
+        mobilize.init();
+        mobilize.bootstrap();
 
-// Accordion
-$("#accordion").tabs("#accordion div.pane", {tabs: 'h2', effect: 'slide', initialIndex: null});
+        // main vertical scroll
+        
+        $("#splash-frontpage").scrollable({
 
-// add new effect to the tabs
-$.tools.tabs.addEffect("slide", function(i, done) {
+            // basic settings
+            vertical: true,
+            keyboard: false,
 
-    // 1. upon hiding, the active pane has a ruby background color
-    this.getPanes().slideUp().css({backgroundColor: "#eee"});
+        // main navigator (thumbnail images)
+        }).navigator("#main_navi");
+        
+        // Accordion
+        $("#accordion").tabs("#accordion div.pane", {tabs: 'h2', effect: 'slide', initialIndex: null});
 
-    // 2. after a pane is revealed, its background is set to its original color (transparent)
-    this.getPanes().eq(i).slideDown(function()  {
-        $(this).css({backgroundColor: '#eee'});
+        // add new effect to the tabs
+        $.tools.tabs.addEffect("slide", function(i, done) {
 
-        // the supplied callback must be called after the effect has finished its job
-        done.call();
-    });
-});
+            try {
+                // 1. upon hiding, the active pane has a ruby background color
+                this.getPanes().slideUp().css({backgroundColor: "#eee"});
 
-// rotate event banners
-$('#banners').cycle({
-		fx: 'fade', pause: 1, timeout: 6000, startingSlide: Math.floor(Math.random()*2)
-});
+                // 2. after a pane is revealed, its background is set to its original color (transparent)
+                this.getPanes().eq(i).slideDown(function()  {
+                    $(this).css({backgroundColor: '#eee'});
 
-});
+                    // the supplied callback must be called after the effect has finished its job
+                    done.call();
+                });
+
+            } catch(e){
+                console.log("" + e);
+            }
+
+        });
+
+        // rotate event banners
+        $('#banners').cycle({
+        		fx: 'fade', pause: 1, timeout: 6000, startingSlide: Math.floor(Math.random()*2)
+        });
+
+    } catch(e){
+        console.log("" + e);
+    }
+
+}
 </script><style type="text/css">@import url(http://plone.org/portal_css/Sunburst%20Theme/print-cachekey8961.css);</style><style type="text/css">@import url(http://plone.org/portal_css/Sunburst%20Theme/newplone-cachekey7531.css);</style><style type="text/css" media="screen">@import url(http://plone.org/portal_css/Sunburst%20Theme/resourceplone.app.jquerytools.overlays-cachekey8040.css);</style><style type="text/css" media="screen">@import url(http://plone.org/portal_css/Sunburst%20Theme/resourceplone.contentratings.stylesheetsmain-cachekey3818.css);</style><style type="text/css" media="all">@import url(http://plone.org/portal_css/Sunburst%20Theme/psc-cachekey1586.css);</style><style type="text/css">@import url(http://plone.org/portal_css/Sunburst%20Theme/ploneCustom-cachekey4092.css);</style><style type="text/css">
     div.splash h1 {
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
@@ -141,18 +173,13 @@ $('#banners').cycle({
     height: 32em;
 }
 
+/** TODO: Own style file. Display enabled with body.show() after loading the mobilize template */
+body {
+    display : none;
+}
 
-    </style><link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/resourcetinymce.ksstinymce-cachekey7702.kss" /><link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/at-cachekey1542.kss" /></head><body class="template-frontpage portaltype-plone-site"><div id="outer-wrapper"><div id="inner-wrapper"><div id="nav"><form id="search" name="searchform" action="http://plone.org/search"><input id="search-site" name="SearchableText" type="text" title="Search this site…" accesskey="4" class="inputLabel" size="15" /></form><div id="user"><dl class="actionMenu deactivated" id="portal-personaltools"><dt id="anon-personalbar">
+    </style><link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/resourcetinymce.ksstinymce-cachekey7702.kss" /><link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/at-cachekey1542.kss" /></head><body class="template-frontpage portaltype-plone-site" onload="onloaded()"><div id="outer-wrapper"><div id="inner-wrapper"><div id="nav"><form id="search" name="searchform" action="http://plone.org/search"><input id="search-site" name="SearchableText" type="text" title="Search this site…" accesskey="4" class="inputLabel" size="15" /></form><div id="user"><dl class="actionMenu deactivated" id="portal-personaltools"><dt id="anon-personalbar">
     
-	<script type="text/javascript" src="js/mobilize.js"></script>
-	<script type="text/javascript" src="js/mobilize.plone.js"></script>
-	<script type="text/javascript" src="js/mobilize.ploneorg.js"></script>
-
-	<script type="text/javascript">
-		mobilize.init();
-		mobilize.bootstrap();
-	</script>
-	
         <a href="http://plone.org/login_form" id="personaltools-login">Log in</a>
     
     

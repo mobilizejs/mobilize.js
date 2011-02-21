@@ -45,7 +45,7 @@ mobilize = {
 	},
 	
 	log : function(msg) {
-		if(console) {
+		if(window.console) {
 			if(console.log) {
 				console.log(msg);
 			}
@@ -399,12 +399,15 @@ mobilize = {
 	finish : function() {
 	   
 	    this.swapBody();
-
+	   
         // Enable jQuery Mobile effects
-		jq.mobile.initializePage();
+		try{
+			jq.mobile.initializePage();
+		}catch(e){
+			mobilize.log("mobilize::finish initializePage failed>" + e);
+		}
 
 	    jq("body").show();
-	
 	},
 	
 	/**
