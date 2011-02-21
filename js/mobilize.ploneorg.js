@@ -14,6 +14,8 @@ mobilizePloneOrg = {
 		this.constructFrontPage();
 	},
 	
+	
+	
 	/**
 	 * This is a nasty one
 	 */
@@ -30,6 +32,16 @@ mobilizePloneOrg = {
 		}
 		
 		content.append(jq("#current"));
+		
+		var mainNavigation = mobilize.createNavigationBox(jq("#main-nav a"), "Site sections");
+		content.append(mainNavigation);
+		
+		var news = mobilize.createNavigationBox(jq("#news li").not(":contains('Add news')"), "News", mobilize.outputCollectionLink);
+		content.append(news);
+		
+		var events = mobilize.createNavigationBox(jq("#events li").not(":contains('Add event')"), "Events", mobilize.outputCollectionLink);
+        content.append(events);
+       	
 	}
 
 }
