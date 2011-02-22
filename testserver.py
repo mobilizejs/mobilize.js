@@ -1,6 +1,7 @@
 import SimpleHTTPServer
 import SocketServer
 import urllib
+import Cookie
 
 PORT = 8081
 
@@ -8,6 +9,12 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	base = SimpleHTTPServer.SimpleHTTPRequestHandler
 	def do_GET(self):
 		#print "doGET", self.path
+		
+		cookies = Cookie.SimpleCookie()
+		cookies.load(self.headers.dict["cookie"])		
+		if cookies["mobilize-mobile"].value == "1":
+			print "Cookie says client is mobile"											
+								
 		if "/log" in self.path:
 			msg = urllib.unquote(self.path.split("msg=")[-1])
 			while msg.endswith("/"):

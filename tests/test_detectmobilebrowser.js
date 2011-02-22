@@ -21,7 +21,7 @@ testDetect(false, browserAgent);
 testDetect(true, "symbian");
 testDetect(true, "android");
 
-
+// Test forcing
 detected = mobilize.isMobileBrowser({name : "symbian", force : false});
 assert.equal(false, detected);
 
