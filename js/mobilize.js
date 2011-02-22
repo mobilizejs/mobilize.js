@@ -161,8 +161,14 @@ var mobilize = {
 		forced = mobilize.readCookie("mobilize-mobile");
 		name = opts.name;
 		
-		// Note: URL parameter and option overrides cookie
-		forced = mobilize.getUrlVars()["mobile"] || opts.force || forced;
+		// Note: URL parameter and option overrides cookie		
+		if(opts.force === undefined) {
+			opts.force = mobilize.getUrlVars()["mobile"];
+		}
+		
+		if(opts.force !== undefined) {
+			forced = opts.force;
+		}
 		
 		if(forced !== undefined && forced !== null ) {
 			result = (forced == "true" || forced == "1" || forced === true || forced === 1);

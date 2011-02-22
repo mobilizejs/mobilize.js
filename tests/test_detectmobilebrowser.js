@@ -5,12 +5,15 @@ var jsdom  = require('jsdom').jsdom
 
 global.window = jsdom().createWindow();
 global.jQuery = require("jquery");
-
+global.document = {
+		cookie : ""
+};
 
 var mobilize = require("../js/mobilize.js").mobilize;
 
 function testDetect(expect, name) {
 	var detected;
+	global.document.cookie = "";
 	detected = mobilize.isMobileBrowser({name : name});
 	assert.equal(expect, detected, name);
 }
