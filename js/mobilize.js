@@ -9,7 +9,7 @@
 var jq = jQuery;
 
 
-mobilize = {
+var mobilize = {
 	
 	/**
 	 * Instiate Mobilizer class in inheritance safe manner.
@@ -31,7 +31,7 @@ mobilize = {
 	            template : "template.html",
 				
 				// How many characters <style> inner text may contain it to be run through inline CSS importer check
-				inlineStyleMaxCheckLength : 256,
+				inlineStyleMaxCheckLength : 256
 	    };
 	    
 	    // Override default parameters with user supplied versions
@@ -81,7 +81,8 @@ mobilize = {
 	 * @returns True if the page should be rendered in mobile mode
 	 */
 	isMobile : function() {
-	    return true;
+	    // From detectmobilebrowser.js
+		var mobile = isMobileBrowser();
 	},
 	
 	/**
@@ -98,7 +99,7 @@ mobilize = {
 	    
 	    // We cannot directly load template, since <body> has not been constructed
 	    var self = this;
-	    jq(document).ready(function() { self.loadMobileTemplate() } );
+	    jq(document).ready(function() { self.loadMobileTemplate(); } );
 	},
 		
 	/**
@@ -350,7 +351,7 @@ mobilize = {
 			 }
 			 
 			 if (outputter) {
-			     outputter(list, input, a)			 
+			     outputter(list, input, a);	 
 			 } else {
 			 	
 				// Create normal bulleted lists
@@ -422,4 +423,4 @@ mobilize = {
 		mobilize.log("Setting autoinitalize:" + jq.mobile.autoInitialize);
 		jq.mobile.autoInitialize = false;
 	}
-}
+};

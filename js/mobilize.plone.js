@@ -2,9 +2,7 @@
  * Generic Plone CMS mobilization.
  *
  */
-
-
-mobilizePlone = {
+var mobilizePlone = {
 
 	/**
 	 * createNavigationBox() helper function to turn Plone news / event content 
@@ -19,14 +17,11 @@ mobilizePlone = {
 	    heading.appendTo(output);
 	    
 	    var info = jq('<p class="ui-li-aside">');
-	    jq(input).find(".info").appendTo(info)
+	    jq(input).find(".info").appendTo(info);
 	    info.appendTo(output);
 		
 		list.append(output);
-	}
-
-	
-}
-
+	}	
+};
 
 jq.extend(mobilize, mobilizePlone);

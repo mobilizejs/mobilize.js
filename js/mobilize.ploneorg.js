@@ -3,7 +3,7 @@
  *
  */
 
-mobilizePloneOrg = {
+var mobilizePloneOrg = {
 	
 	constructBody : function() {
 		
@@ -52,8 +52,7 @@ mobilizePloneOrg = {
         content.append(events);
 		       	
 	}
-
-}
+};
 
 jq.extend(mobilize, mobilizePloneOrg);
 
