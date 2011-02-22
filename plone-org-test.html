@@ -1,13 +1,48 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-type" content="text/html; charset=utf-8" /><title>Plone CMS: Open Source Content Management</title><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonenews" title="Plone News" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonereleases" title="Plone Releases" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneevents" title="Upcoming Plone Events" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneaddons" title="Latest Plone &amp; Add-on Releases" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonetraining" title="Upcoming Plone Training" /><link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneblogs" title="Plone Blogs" /><!--[if IE]><style type="text/css" media="all">@import url(/ie.css);</style><![endif]--><!--[if lte IE 6]><script src="/ie6warn.js" type="text/javascript"></script><![endif]--><script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/jquery-cachekey5356.js"></script><script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/popupforms-cachekey6577.js"></script><script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/resourcecioppino.twothumbs.javascriptstwothumbs-cachekey9078.js"></script><script type="text/javascript" src="http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js"></script>
-
-<script type="text/javascript" src="js/mobilize.js"></script>
-<script type="text/javascript" src="js/mobilize.plone.js"></script>
-<script type="text/javascript" src="js/mobilize.ploneorg.js"></script>
-
-<script type="text/javascript">
-
-/*
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <title>
+            Plone CMS: Open Source Content Management
+        </title>
+        <link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonenews"
+        title="Plone News" />
+        <link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonereleases"
+        title="Plone Releases" />
+        <link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneevents"
+        title="Upcoming Plone Events" />
+        <link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneaddons"
+        title="Latest Plone &amp; Add-on Releases" />
+        <link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/plonetraining"
+        title="Upcoming Plone Training" />
+        <link rel="alternate" type="application/rss+xml" href="http://feeds.plone.org/ploneblogs"
+        title="Plone Blogs" />
+        <!--[if IE]>
+            <style type="text/css" media="all">
+                @import url(/ie.css);
+            </style>
+        <![endif]-->
+        <!--[if lte IE 6]>
+            <script src="/ie6warn.js" type="text/javascript">
+            </script>
+        <![endif]-->
+        <script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/jquery-cachekey5356.js">
+        </script>
+        <script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/popupforms-cachekey6577.js">
+        </script>
+        <script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/resourcecioppino.twothumbs.javascriptstwothumbs-cachekey9078.js">
+        </script>
+        <script type="text/javascript" src="http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js">
+        </script>
+        <script type="text/javascript" src="js/mobilize.js">
+        </script>
+        <script type="text/javascript" src="js/mobilize.plone.js">
+        </script>
+        <script type="text/javascript" src="js/mobilize.ploneorg.js">
+        </script>
+        <script type="text/javascript">
+            /*
 var console = {
     log : function(msg){
         var xmlhttp = new XMLHttpRequest();
@@ -17,475 +52,713 @@ var console = {
 };
 */
 
-//$(document).ready(function() {
-function onloaded()
-{
-    try {
-        mobilize.init();
-        mobilize.bootstrap();
+            //$(document).ready(function() {
 
-        // main vertical scroll
-        
-        $("#splash-frontpage").scrollable({
 
-            // basic settings
-            vertical: true,
-            keyboard: false,
+            function onloaded() {
+                try {
+                    mobilize.init();
+                    mobilize.bootstrap();
 
-        // main navigator (thumbnail images)
-        }).navigator("#main_navi");
-        
-        // Accordion
-        $("#accordion").tabs("#accordion div.pane", {tabs: 'h2', effect: 'slide', initialIndex: null});
+                    // main vertical scroll
+                    $("#splash-frontpage").scrollable({
 
-        // add new effect to the tabs
-        $.tools.tabs.addEffect("slide", function(i, done) {
+                        // basic settings
+                        vertical: true,
+                        keyboard: false,
 
-            try {
-                // 1. upon hiding, the active pane has a ruby background color
-                this.getPanes().slideUp().css({backgroundColor: "#eee"});
+                        // main navigator (thumbnail images)
+                    }).navigator("#main_navi");
 
-                // 2. after a pane is revealed, its background is set to its original color (transparent)
-                this.getPanes().eq(i).slideDown(function()  {
-                    $(this).css({backgroundColor: '#eee'});
+                    // Accordion
+                    $("#accordion").tabs("#accordion div.pane", {
+                        tabs: 'h2',
+                        effect: 'slide',
+                        initialIndex: null
+                    });
 
-                    // the supplied callback must be called after the effect has finished its job
-                    done.call();
-                });
+                    // add new effect to the tabs
+                    $.tools.tabs.addEffect("slide", function(i, done) {
 
-            } catch(e){
-                console.log("" + e);
+                        try {
+                            // 1. upon hiding, the active pane has a ruby background color
+                            this.getPanes().slideUp().css({
+                                backgroundColor: "#eee"
+                            });
+
+                            // 2. after a pane is revealed, its background is set to its original color (transparent)
+                            this.getPanes().eq(i).slideDown(function() {
+                                $(this).css({
+                                    backgroundColor: '#eee'
+                                });
+
+                                // the supplied callback must be called after the effect has finished its job
+                                done.call();
+                            });
+
+                        } catch (e) {
+                            console.log("" + e);
+                        }
+
+                    });
+
+                    // rotate event banners
+                    $('#banners').cycle({
+                        fx: 'fade',
+                        pause: 1,
+                        timeout: 6000,
+                        startingSlide: Math.floor(Math.random() * 2)
+                    });
+
+                } catch (e) {
+                    console.log("" + e);
+                }
+
             }
-
-        });
-
-        // rotate event banners
-        $('#banners').cycle({
-        		fx: 'fade', pause: 1, timeout: 6000, startingSlide: Math.floor(Math.random()*2)
-        });
-
-    } catch(e){
-        console.log("" + e);
-    }
-
-}
-</script><style type="text/css">@import url(http://plone.org/portal_css/Sunburst%20Theme/print-cachekey8961.css);</style><style type="text/css">@import url(http://plone.org/portal_css/Sunburst%20Theme/newplone-cachekey7531.css);</style><style type="text/css" media="screen">@import url(http://plone.org/portal_css/Sunburst%20Theme/resourceplone.app.jquerytools.overlays-cachekey8040.css);</style><style type="text/css" media="screen">@import url(http://plone.org/portal_css/Sunburst%20Theme/resourceplone.contentratings.stylesheetsmain-cachekey3818.css);</style><style type="text/css" media="all">@import url(http://plone.org/portal_css/Sunburst%20Theme/psc-cachekey1586.css);</style><style type="text/css">@import url(http://plone.org/portal_css/Sunburst%20Theme/ploneCustom-cachekey4092.css);</style><style type="text/css">
-    div.splash h1 {
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
-    font-weight: 300;
-    font-size: 1.75em
-    }
-
-    /* Local overrides */
-    #splash-frontpage {
-        background-image: none;
-        margin-bottom: 0;
-        border-radius: 0;
-        -moz-border-radius: 0;
-        -webkit-border-radius: 0;
-        padding: 0;
-    }
-    #splash-frontpage a {
-        float: none;
-        margin-top: 0;
-        font-size: inherit !important;
-        background: none !important;
-        padding-left: 0 !important;
-    }
-    #splash-frontpage a.arrow {
-        background: url("/images/sprite-ploneorg.png") no-repeat scroll 0 -114px !important;
-        font-size: 1.375em !important; 
-        padding-left: 16px !important;
-    }
-
-    /* main vertical scroll */
-    #splash-frontpage {
-        position:relative;
-        overflow:hidden;
-        height: 225px;
-    }
+        </script>
+        <style type="text/css">
+            @import url(http://plone.org/portal_css/Sunburst%20Theme/print-cachekey8961.css);
+        </style>
+        <style type="text/css">
+            @import url(http://plone.org/portal_css/Sunburst%20Theme/newplone-cachekey7531.css);
+        </style>
+        <style type="text/css" media="screen">
+            @import url(http://plone.org/portal_css/Sunburst%20Theme/resourceplone.app.jquerytools.overlays-cachekey8040.css);
+        </style>
+        <style type="text/css" media="screen">
+            @import url(http://plone.org/portal_css/Sunburst%20Theme/resourceplone.contentratings.stylesheetsmain-cachekey3818.css);
+        </style>
+        <style type="text/css" media="all">
+            @import url(http://plone.org/portal_css/Sunburst%20Theme/psc-cachekey1586.css);
+        </style>
+        <style type="text/css">
+            @import url(http://plone.org/portal_css/Sunburst%20Theme/ploneCustom-cachekey4092.css);
+        </style>
+        <style type="text/css">
+            div.splash h1 { font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+            "Helvetica Neue", sans-serif; font-weight: 300; font-size: 1.75em } /*
+            Local overrides */ #splash-frontpage { background-image: none; margin-bottom:
+            0; border-radius: 0; -moz-border-radius: 0; -webkit-border-radius: 0; padding:
+            0; } #splash-frontpage a { float: none; margin-top: 0; font-size: inherit
+            !important; background: none !important; padding-left: 0 !important; }
+            #splash-frontpage a.arrow { background: url("/images/sprite-ploneorg.png")
+            no-repeat scroll 0 -114px !important; font-size: 1.375em !important; padding-left:
+            16px !important; } /* main vertical scroll */ #splash-frontpage { position:relative;
+            overflow:hidden; height: 225px; } /* root element for pages */ #pages {
+            position:absolute; height:2000em; background-color: #0C3264; background-image:
+            url(panel-bg2.png); background-repeat: no-repeat; } /* single page */ .page
+            { padding: 10px 20px; height: 225px; color:White; width:667px; } /* main
+            navigator */ #main_navi { padding:0px !important; margin: 0 1em 1em 0 !important;
+            } #main_navi li { background-color: #eee; color: black; font-size: 12px;
+            height: 50px; list-style-type: none; padding: 10px; cursor: pointer; display:
+            inline-block; } #main_navi li:hover { color: #75AD0A; } #main_navi li.active:hover
+            { color: White; } #navi-1.active { background-color: #0C3264; color: White;
+            } #navi-2.active { background-color: #184A7D; color: White; } #navi-3.active
+            { background-color: #205C90; color: White; } #main_navi img { float:left;
+            margin-right:10px; } #main_navi strong { display:block; } #accordion .pane
+            { display: none; height: 32em; } /** TODO: Own style file. Display enabled
+            with body.show() after loading the mobilize template */ body { display
+            : none; }
+        </style>
+        <link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/resourcetinymce.ksstinymce-cachekey7702.kss"
+        />
+        <link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/at-cachekey1542.kss"
+        />
+    </head>
     
-    /* root element for pages */
-    #pages {
-        position:absolute;
-        height:2000em;
-        background-color: #0C3264;
-        background-image: url(panel-bg2.png);
-        background-repeat: no-repeat;
-    }
-    
-    /* single page */
-    .page {
-        padding: 10px 20px;
-        height: 225px;
-        color:White;
-        width:667px;
-    }
-    
-    /* main navigator */
-    #main_navi {
-        padding:0px !important;
-        margin: 0 1em 1em 0 !important;
-    }
-    
-    #main_navi li {
-        background-color: #eee;
-        color: black;
-        font-size: 12px;
-        height: 50px;
-        list-style-type: none;
-        padding: 10px;
-        cursor: pointer;
-        display: inline-block;
-    }
-    
-    #main_navi li:hover {
-        color: #75AD0A;
-    }
-    #main_navi li.active:hover {
-        color: White;
-    }
-
-    #navi-1.active {
-        background-color: #0C3264;
-        color: White;
-    }
-    #navi-2.active {
-        background-color: #184A7D;
-        color: White;
-    }
-    #navi-3.active {
-        background-color: #205C90;
-        color: White;
-    }
-
-    #main_navi img {
-        float:left;
-        margin-right:10px;
-    }
-    
-    #main_navi strong {
-        display:block;
-    }
-    
-#accordion .pane {
-    display: none;
-    height: 32em;
-}
-
-/** TODO: Own style file. Display enabled with body.show() after loading the mobilize template */
-body {
-    display : none;
-}
-
-    </style><link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/resourcetinymce.ksstinymce-cachekey7702.kss" /><link rel="kinetic-stylesheet" type="text/css" href="http://plone.org/portal_kss/Sunburst%20Theme/at-cachekey1542.kss" /></head><body class="template-frontpage portaltype-plone-site" onload="onloaded()"><div id="outer-wrapper"><div id="inner-wrapper"><div id="nav"><form id="search" name="searchform" action="http://plone.org/search"><input id="search-site" name="SearchableText" type="text" title="Search this site…" accesskey="4" class="inputLabel" size="15" /></form><div id="user"><dl class="actionMenu deactivated" id="portal-personaltools"><dt id="anon-personalbar">
-    
-        <a href="http://plone.org/login_form" id="personaltools-login">Log in</a>
-    
-    
-        
-    
-  </dt>
-</dl></div><ul id="main-nav" class="navigation"><li id="portaltab-index_html" class="selected"><a href="http://plone.org" title="">Home</a></li><li id="portaltab-products" class="plain"><a href="http://plone.org/products" title="Plone releases and available add-on products for Plone. Make sure you have Plone installed before downloading the add-ons — and make sure you are using add-ons that have been certified for use with your particular version.">Downloads</a></li><li id="portaltab-documentation" class="plain"><a href="http://plone.org/documentation" title="The primary source for Plone documentation.">Documentation</a></li><li id="portaltab-contribute" class="plain"><a href="http://plone.org/contribute" title="Contains all developer-related material.">Get Involved</a></li><li id="portaltab-foundation" class="plain"><a href="http://plone.org/foundation" title="The Plone Foundation exists to further the development, marketing, and legal affairs of Plone and the Plone community.">Plone Foundation</a></li><li id="portaltab-support" class="plain"><a href="http://plone.org/support" title="Support and contact details for the Plone project.">Support</a></li></ul></div><div id="edit-bar"><div id="action-menu"></div><div id="edit-menu"></div></div><div id="content-wrapper"><div id="viewlet-above-content"></div><div id="content">
-
-                            
-
-                            
-
-
-
-    <div id="logo-wrapper">
-        <a href="/" id="logo"></a>
-    </div>
-
-    <div class="grid-row">
-        <div class="grid-cell width-three-quarters position-leftmost">
-
-<!-- root element for the main scrollable -->
-<div class="splash" id="splash-frontpage">
-
-    <!-- root element for pages -->
-
-    <div id="pages">
-
-        <!-- page #1 -->
-        <div class="page">
-
-            <h1>Plone 4: Speed, Power &amp; Beauty</h1>
-            <p style="padding-right: 23em">We're proud to announce Plone 4, the latest version of our 
-            state-of-the-art open source <abbr title="Content Management System">CMS</abbr>.  
-            It's faster, more powerful 
-            and more beautiful than ever before.</p>
-            <p><a href="/products/plone/features/" class="arrow">Take a tour of the new 
-                features in Plone 4</a></p>
-
-        </div>
-
-        <!-- page #2 -->
-        <div class="page" style="margin-left: 15em">
-
-            <h1>Under the hood</h1>
-            <p style="width: 25em">Plone 4 brings significant performance improvements — it's 50% 
-               faster than Plone 3. It's more memory efficient, and 
-               serves massive files and video without breaking a sweat.</p>
-               <p style="width: 25em">
-               Plus, all of this Python &amp; NoSQL goodness is wrapped in a sparkling new  
-               theme that is beautiful, accessible and easy to customize.</p>
-
-        </div>
-
-        <!-- page #3 -->
-        <div class="page" style="margin-left: 10em">
-
-            <h1>Plone Powered</h1>
-            <p style="width: 36em">Large enterprises, small businesses, non-profits, universities 
-                and governments around the world have chosen Plone for their 
-                websites, intranets and extranets.  When security, scalability,
-                accessibility and approachability count — <br />Plone delivers.</p>
-            <p style="width: 32em">We're proud to power websites for 
-               <a href="http://qt.nokia.com/">Nokia</a>,
-               <a href="http://www.amnesty.ch">Amnesty International</a>, 
-               <a href="http://discovermagazine.com">Discover Magazine</a>, 
-               the <a href="http://www.brazil.gov.br">Government of Brazil</a>,
-               the <a href="http://norden.org">Nordic Council</a>, the universities of
-               <a href="http://ocw.mit.edu">MIT</a>, 
-               <a href="http://seas.harvard.edu">Harvard</a> &amp; 
-               <a href="http://www.smeal.psu.edu/">Penn State</a>,
-               the <a href="http://www.fsf.org/">Free Software Foundation</a>
-               and thousands of others.</p>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- main navigator -->
-<ul id="main_navi"><li id="navi-1" style="width: 198px;" class="active">
-        <strong>The New Plone 4</strong>
-        Speed, Power and Beauty
-    </li>
-    <li id="navi-2" style="width: 208px;">
-        <strong>Under the Hood</strong>
-        Faster, new theme &amp; more
-    </li>
-    <li id="navi-3" style="width: 193px;">
-        <strong>Plone Powered</strong>
-        Known by the company we keep
-    </li>
-</ul></div>
-
-        <div class="grid-cell width-quarter position-three-quarters">
-
-            <div id="banners" style="height: 318px; background-color: #f7f7f7">
-            <a href="http://weblion.psu.edu/symposium/"><img src="/pse2011banner.jpg" alt="Plone Symposium East 2011" title="Plone Symposium East 2011" style="border: none" /></a>
-            <a href="http://plone.org/events/regional/plone-open-garden-2011"><img src="/plog2011banner.jpg" alt="Plone Open Garden 2011" title="Plone Open Garden 2011" style="border: none" /></a>
-
-            </div>
-
-            
-        </div>
-
-    </div> <!-- End row -->
-
-    <div class="grid-row">
-        <div class="grid-cell width-quarter position-leftmost">
-            <div id="current" class="box">
-                <h1>Plone in Numbers</h1>
-                <ul><li class="spotlight">
-                        Plone is among the <a href="http://www.ohloh.net">top 2%</a> 
-                        of all open source projects worldwide,
-                        with <a href="/team">340 core developers</a> and more than
-                        <a href="http://plone.net/providers">300 solution providers</a> 
-                        in <a href="http://plone.net/providers">57 countries</a>.
-                        The project has been actively developed 
-                        <a href="/documentation/faq/plone-history">since 2001</a>,
-                        is available in more than 
-                        <a href="/documentation/faq/translations">40 languages</a>,
-                        and has the <a href="http://cve.mitre.org">best security</a>
-                        track record of any major CMS. <br />
-                        It is owned by the <a href="/foundation">Plone Foundation</a>,
-                        a 501(c)(3) not-for-profit organization,
-                        and is available for 
-                        <a href="/download">all major operating systems</a>.
-                        <div class="sources">
-                        Sources: 
-                        <a title="Common Vulnerabilities and Exposures (CVE)" style="display: inline;" href="http://cve.mitre.org/">CVE</a> and
-                            <a title="Ohloh, the open source network" style="display: inline;" href="http://www.ohloh.net/p/plone">Ohloh</a>.
+    <body class="template-frontpage portaltype-plone-site" onload="onloaded()">
+        <div id="outer-wrapper">
+            <div id="inner-wrapper">
+                <div id="nav">
+                    <form id="search" name="searchform" action="http://plone.org/search">
+                        <input id="search-site" name="SearchableText" type="text" title="Search this site…"
+                        accesskey="4" class="inputLabel" size="15" />
+                    </form>
+                    <div id="user">
+                        <dl class="actionMenu deactivated" id="portal-personaltools">
+                            <dt id="anon-personalbar">
+                                <a href="http://plone.org/login_form" id="personaltools-login">Log in</a>
+                            </dt>
+                        </dl>
+                    </div>
+                    <ul id="main-nav" class="navigation">
+                        <li id="portaltab-index_html" class="selected">
+                            <a href="http://plone.org" title="">Home</a>
+                        </li>
+                        <li id="portaltab-products" class="plain">
+                            <a href="http://plone.org/products" title="Plone releases and available add-on products for Plone. Make sure you have Plone installed before downloading the add-ons — and make sure you are using add-ons that have been certified for use with your particular version.">Downloads</a>
+                        </li>
+                        <li id="portaltab-documentation" class="plain">
+                            <a href="http://plone.org/documentation" title="The primary source for Plone documentation.">Documentation</a>
+                        </li>
+                        <li id="portaltab-contribute" class="plain">
+                            <a href="http://plone.org/contribute" title="Contains all developer-related material.">Get Involved</a>
+                        </li>
+                        <li id="portaltab-foundation" class="plain">
+                            <a href="http://plone.org/foundation" title="The Plone Foundation exists to further the development, marketing, and legal affairs of Plone and the Plone community.">Plone Foundation</a>
+                        </li>
+                        <li id="portaltab-support" class="plain">
+                            <a href="http://plone.org/support" title="Support and contact details for the Plone project.">Support</a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="edit-bar">
+                    <div id="action-menu">
+                    </div>
+                    <div id="edit-menu">
+                    </div>
+                </div>
+                <div id="content-wrapper">
+                    <div id="viewlet-above-content">
+                    </div>
+                    <div id="content">
+                        <div id="logo-wrapper">
+                            <a href="/" id="logo"></a>
                         </div>
-                    </li>
-                </ul></div>
+                        <div class="grid-row">
+                            <div class="grid-cell width-three-quarters position-leftmost">
+                                <!-- root element for the main scrollable -->
+                                <div class="splash" id="splash-frontpage">
+                                    <!-- root element for pages -->
+                                    <div id="pages">
+                                        <!-- page #1 -->
+                                        <div class="page">
+                                            <h1>
+                                                Plone 4: Speed, Power &amp; Beauty
+                                            </h1>
+                                            <p style="padding-right: 23em">
+                                                We're proud to announce Plone 4, the latest version of our state-of-the-art
+                                                open source
+                                                <abbr title="Content Management System">
+                                                    CMS
+                                                </abbr>
+                                                . It's faster, more powerful and more beautiful than ever before.
+                                            </p>
+                                            <p>
+                                                <a href="/products/plone/features/" class="arrow">Take a tour of the new 
+                                                features in Plone 4</a>
+                                            </p>
+                                        </div>
+                                        <!-- page #2 -->
+                                        <div class="page" style="margin-left: 15em">
+                                            <h1>
+                                                Under the hood
+                                            </h1>
+                                            <p style="width: 25em">
+                                                Plone 4 brings significant performance improvements — it's 50% faster
+                                                than Plone 3. It's more memory efficient, and serves massive files and
+                                                video without breaking a sweat.
+                                            </p>
+                                            <p style="width: 25em">
+                                                Plus, all of this Python &amp; NoSQL goodness is wrapped in a sparkling
+                                                new theme that is beautiful, accessible and easy to customize.
+                                            </p>
+                                        </div>
+                                        <!-- page #3 -->
+                                        <div class="page" style="margin-left: 10em">
+                                            <h1>
+                                                Plone Powered
+                                            </h1>
+                                            <p style="width: 36em">
+                                                Large enterprises, small businesses, non-profits, universities and governments
+                                                around the world have chosen Plone for their websites, intranets and extranets.
+                                                When security, scalability, accessibility and approachability count —
+                                                <br />
+                                                Plone delivers.
+                                            </p>
+                                            <p style="width: 32em">
+                                                We're proud to power websites for
+                                                <a href="http://qt.nokia.com/">Nokia</a>
+                                                ,
+                                                <a href="http://www.amnesty.ch">Amnesty International</a>
+                                                ,
+                                                <a href="http://discovermagazine.com">Discover Magazine</a>
+                                                , the
+                                                <a href="http://www.brazil.gov.br">Government of Brazil</a>
+                                                , the
+                                                <a href="http://norden.org">Nordic Council</a>
+                                                , the universities of
+                                                <a href="http://ocw.mit.edu">MIT</a>
+                                                ,
+                                                <a href="http://seas.harvard.edu">Harvard</a>
+                                                &amp;
+                                                <a href="http://www.smeal.psu.edu/">Penn State</a>
+                                                , the
+                                                <a href="http://www.fsf.org/">Free Software Foundation</a>
+                                                and thousands of others.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- main navigator -->
+                                <ul id="main_navi">
+                                    <li id="navi-1" style="width: 198px;" class="active">
+                                        <strong>
+                                            The New Plone 4
+                                        </strong>
+                                        Speed, Power and Beauty
+                                    </li>
+                                    <li id="navi-2" style="width: 208px;">
+                                        <strong>
+                                            Under the Hood
+                                        </strong>
+                                        Faster, new theme &amp; more
+                                    </li>
+                                    <li id="navi-3" style="width: 193px;">
+                                        <strong>
+                                            Plone Powered
+                                        </strong>
+                                        Known by the company we keep
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="grid-cell width-quarter position-three-quarters">
+                                <div id="banners" style="height: 318px; background-color: #f7f7f7">
+                                    <a href="http://weblion.psu.edu/symposium/"><img src="/pse2011banner.jpg" alt="Plone Symposium East 2011" title="Plone Symposium East 2011" style="border: none" /></a>
+                                    <a href="http://plone.org/events/regional/plone-open-garden-2011"><img src="/plog2011banner.jpg" alt="Plone Open Garden 2011" title="Plone Open Garden 2011" style="border: none" /></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End row -->
+                        <div class="grid-row">
+                            <div class="grid-cell width-quarter position-leftmost">
+                                <div id="current" class="box">
+                                    <h1>
+                                        Plone in Numbers
+                                    </h1>
+                                    <ul>
+                                        <li class="spotlight">
+                                            Plone is among the
+                                            <a href="http://www.ohloh.net">top 2%</a>
+                                            of all open source projects worldwide, with
+                                            <a href="/team">340 core developers</a>
+                                            and more than
+                                            <a href="http://plone.net/providers">300 solution providers</a>
+                                            in
+                                            <a href="http://plone.net/providers">57 countries</a>
+                                            . The project has been actively developed
+                                            <a href="/documentation/faq/plone-history">since 2001</a>
+                                            , is available in more than
+                                            <a href="/documentation/faq/translations">40 languages</a>
+                                            , and has the
+                                            <a href="http://cve.mitre.org">best security</a>
+                                            track record of any major CMS.
+                                            <br />
+                                            It is owned by the
+                                            <a href="/foundation">Plone Foundation</a>
+                                            , a 501(c)(3) not-for-profit organization, and is available for
+                                            <a href="/download">all major operating systems</a>
+                                            .
+                                            <div class="sources">
+                                                Sources:
+                                                <a title="Common Vulnerabilities and Exposures (CVE)" style="display: inline;"
+                                                href="http://cve.mitre.org/">CVE</a>
+                                                and
+                                                <a title="Ohloh, the open source network" style="display: inline;" href="http://www.ohloh.net/p/plone">Ohloh</a>
+                                                .
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="grid-cell width-quarter position-quarter">
+                                <div id="news" class="box">
+                                    <h1>
+                                        News
+                                    </h1>
+                                    <ul>
+                                        <li class="link-tile">
+                                            <a href="http://plone.org/news/donations-for-dorneles" title="PythonBrasil has set up a web page where friends, colleagues and fellow community members can securely provide monetary support to the family of Dorneles Treméa.  Dorneles' untimely loss hit the community hard last week, and we hope that the outpouring of sympathy we heard then can help out his wife, Flaviani, and daughters, Helen and Ingrid.">Helping the family of someone who helped so many - Dorneles Treméa </a>
+                                            <span class="info">
+                                                Feb 15, 2011
+                                            </span>
+                                        </li>
+                                        <li class="link-tile">
+                                            <a href="http://plone.org/news/cioppino-sprint-2011-report" title="Ten Plone community members held a focused, highly productive sprint aimed at improving Plone.org and other core community resources.  Here's what they got done.">Cioppino Sprint 2011 Report</a>
+                                            <span class="info">
+                                                Feb 15, 2011
+                                            </span>
+                                        </li>
+                                        <li class="link-tile">
+                                            <a href="http://plone.org/news/announcing-plone-open-garden-2011" title="Abstract will host the Plone Open Garden in Sorrento, Italy.&#13;&#10;">Announcing Plone Open Garden 2011 </a>
+                                            <span class="info">
+                                                Feb 14, 2011
+                                            </span>
+                                        </li>
+                                        <li class="link-tile">
+                                            <a href="http://plone.org/news/community-mourns-dorneles-tremea" title="The Plone community today mourns the loss of one of our best and brightest, Dorneles Treméa, in a car accident near his home in Garibaldi, Brazil. He was 31 years old. Dorneles was a key Plone developer, a pillar of the Brazilian Plone community, as well as president of the Brazilian Python foundation. He is survived by his wife, Flaviane Machado, and his two daughters — Helen and Ingrid.">Plone community mourns the loss of Dorneles Treméa</a>
+                                            <span class="info">
+                                                Feb 10, 2011
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <a class="add" href="/news/createObject?type_name=News%20Item">Add news…</a>
+                                            <a href="/news/">More news…</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="grid-cell width-quarter position-half">
+                                <div id="events" class="box">
+                                    <h1>
+                                        Upcoming Events
+                                    </h1>
+                                    <ul>
+                                        <li class="link-tile">
+                                            <a href="http://plone.org/events/plone-tuneups/plone-tune-up" title="Help us advance Plone one ticket at a time by testing and fixing bugs in the Core.">42nd Plone Tune-Up Day</a>
+                                            <span class="info">
+                                                Worldwide
+                                                <br />
+                                                Feb 18, 2011
+                                            </span>
+                                        </li>
+                                        <li class="link-tile">
+                                            <a href="http://plone.org/events/community/webinar-connecting-plone-cms-and-salesforce-crm"
+                                            title="The open source Plone Content Management System offers the most advanced integration with the Salesforce.com CRM. Anything that happens on your website can be mapped into your database of contacts, and content can even be taken from salesforce into Plone! In this webinar, we'll explore how to take advantage of this integration to save time and energy of your staff while improving data quality.">Webinar: Connecting Plone CMS and Salesforce CRM </a>
+                                            <span class="info">
+                                                Web + Phone
+                                                <br />
+                                                Feb 22, 2011
+                                            </span>
+                                        </li>
+                                        <li class="link-tile">
+                                            <a href="http://plone.org/events/plone-tuneups/43rd-annual-plone-tune-up-day"
+                                            title="Help us advance Plone one ticket at a time by testing and fixing bugs in the Core.">43rd Annual Plone Tune-Up Day</a>
+                                            <span class="info">
+                                                Worldwide
+                                                <br />
+                                                Mar 11, 2011
+                                            </span>
+                                        </li>
+                                        <li class="link-tile">
+                                            <a href="http://plone.org/events/community/tagung-der-dzug-hochschulgruppe-2011-in-bonn"
+                                            title="Der Workshop der Zope &amp; Plone einsetzenden Hochschulen und Bildungs- (Forschungs)einrichtungen findet am 22. und 23. März 2011 an der Universität Bonn statt.">Tagung der DZUG Hochschulgruppe 2011 in Bonn</a>
+                                            <span class="info">
+                                                Bonn
+                                                <br />
+                                                Mar 22, 2011
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <a class="add" href="/events/community/createObject?type_name=Event">Add event…</a>
+                                            <a href="/events/community/">Upcoming…</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- End cell -->
+                            <div class="grid-cell width-quarter position-three-quarters">
+                                <div id="accordion">
+                                    <h2 class="current">
+                                        Get Plone
+                                    </h2>
+                                    <div class="pane" style="display:block">
+                                        <a id="download-link" href="/download">DOWNLOAD NOW<br />
+                                        Plone 
+                                        <span>4.0.3</span>
+                                        · 
+                                        <span>Jan ’11</span></a>
+                                        <dl>
+                                            <dt>
+                                                <a href="/products/plone/features/">What’s new in Plone 4</a>
+                                            </dt>
+                                            <dd>
+                                                An overview of the new features.
+                                            </dd>
+                                            <dt>
+                                                <a href="http://dev.plone.org/plone/roadmap">Roadmap</a>
+                                            </dt>
+                                            <dd>
+                                                Our plans for the future.
+                                            </dd>
+                                            <dt>
+                                                <a href="/products/plone/releases">Older releases</a>
+                                            </dt>
+                                            <dd>
+                                                Looking for a previous version?
+                                            </dd>
+                                            <dt>
+                                                <a href="/products">Add-on Products</a>
+                                            </dt>
+                                            <dd>
+                                                Adapt Plone to your needs.
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <h2>
+                                        Learn Plone
+                                    </h2>
+                                    <div class="pane">
+                                        <dl>
+                                            <dt>
+                                                <a href="/documentation">Documentation</a>
+                                            </dt>
+                                            <dd>
+                                                Plone has a great collection of online documentation.
+                                            </dd>
+                                            <dt>
+                                                <a href="/documentation/books">Buy Books</a>
+                                            </dt>
+                                            <dd>
+                                                For those of you who think better in bed with a book.
+                                            </dd>
+                                            <dt>
+                                                <a href="/support">Forums &amp; Chat Rooms</a>
+                                            </dt>
+                                            <dd>
+                                                People are always ready to help you with your Plone questions.
+                                            </dd>
+                                            <dt>
+                                                <a href="/events/training">Find Plone Training</a>
+                                            </dt>
+                                            <dd>
+                                                Let one of the Plone experts guide you through getting productive.
+                                            </dd>
+                                            <dt>
+                                                <a href="http://plone.net">Commercial Support</a>
+                                            </dt>
+                                            <dd>
+                                                Over 300 companies around the world offer Plone services.
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <h2>
+                                        Get Involved
+                                    </h2>
+                                    <div class="pane">
+                                        <dl>
+                                            <dt>
+                                                <a href="http://plone.org/documentation/faq/suggest-a-feature-for-plone">Suggest New Features</a>
+                                            </dt>
+                                            <dd>
+                                                Have an awesome idea about a new feature for Plone?
+                                            </dd>
+                                            <dt>
+                                                <a href="http://dev.plone.org/plone">Report Bugs</a>
+                                            </dt>
+                                            <dd>
+                                                Plone has no bugs. If you found one anyway, report it here.
+                                            </dd>
+                                            <dt>
+                                                <a href="http://dev.plone.org/plone">Write Code</a>
+                                            </dt>
+                                            <dd>
+                                                If you’re proficient in Python, HTML, CSS or JS, join us!
+                                            </dd>
+                                            <dt>
+                                                <a href="http://dev.plone.org/plone">Translate, Write Docs, Help Test</a>
+                                            </dt>
+                                            <dd>
+                                                There are lots of things you can do to make Plone better.
+                                            </dd>
+                                            <dt>
+                                                <a href="http://planet.plone.org">Read Blogs, Publish Yours</a>
+                                            </dt>
+                                            <dd>
+                                                Stay up to date on Plone
+                                            </dd>
+                                            <dt>
+                                                <a href="/foundation">Support the Plone Foundation</a>
+                                            </dt>
+                                            <dd>
+                                                If all else fails, give cold, hard cash.
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <!-- End accordion -->
+                            </div>
+                            <!-- End cell -->
+                        </div>
+                        <!-- End row -->
+                        <div style="clear:both">
+                        </div>
+                    </div>
+                    <div id="viewlet-below-content">
+                    </div>
+                </div>
+                <div style="clear:both">
+                     
+                </div>
+            </div>
+            <!-- end inner-wrapper -->
+            <div id="push">
+            </div>
         </div>
-        
-
-        <div class="grid-cell width-quarter position-quarter">
-            <div id="news" class="box">
-                <h1>News</h1>
-                <ul><li class="link-tile">
-                        <a href="http://plone.org/news/donations-for-dorneles" title="PythonBrasil has set up a web page where friends, colleagues and fellow community members can securely provide monetary support to the family of Dorneles Treméa.  Dorneles' untimely loss hit the community hard last week, and we hope that the outpouring of sympathy we heard then can help out his wife, Flaviani, and daughters, Helen and Ingrid.">Helping the family of someone who helped so many - Dorneles Treméa </a>
-                            <span class="info">Feb 15, 2011</span>
-                    </li>
-                    
-                    
-                    <li class="link-tile">
-                        <a href="http://plone.org/news/cioppino-sprint-2011-report" title="Ten Plone community members held a focused, highly productive sprint aimed at improving Plone.org and other core community resources.  Here's what they got done.">Cioppino Sprint 2011 Report</a>
-                            <span class="info">Feb 15, 2011</span>
-                    </li>
-                    
-                    
-                    <li class="link-tile">
-                        <a href="http://plone.org/news/announcing-plone-open-garden-2011" title="Abstract will host the Plone Open Garden in Sorrento, Italy.&#13;&#10;">Announcing Plone Open Garden 2011 </a>
-                            <span class="info">Feb 14, 2011</span>
-                    </li>
-                    
-                    
-                    <li class="link-tile">
-                        <a href="http://plone.org/news/community-mourns-dorneles-tremea" title="The Plone community today mourns the loss of one of our best and brightest, Dorneles Treméa, in a car accident near his home in Garibaldi, Brazil. He was 31 years old. Dorneles was a key Plone developer, a pillar of the Brazilian Plone community, as well as president of the Brazilian Python foundation. He is survived by his wife, Flaviane Machado, and his two daughters — Helen and Ingrid.">Plone community mourns the loss of Dorneles Treméa</a>
-                            <span class="info">Feb 10, 2011</span>
-                    </li>
-                    
-                    
-                    <li>
-                        <a class="add" href="/news/createObject?type_name=News%20Item">Add news…</a>
-                        <a href="/news/">More news…</a>
-                    </li>
-                </ul></div>
+        <!-- end outer-wrapper -->
+        <div id="footer-wrapper">
+            <div id="footer-gradient">
+            </div>
+            <div id="footer">
+                <a id="footer-logo" href="http://plone.org" title="Plone CMS, the open source content management system"></a>
+                <p>
+                    The Plone
+                    <sup>
+                        ®
+                    </sup>
+                    CMS/WCM is © 2000–2010 the Plone Foundation and friends. Site hosted by
+                    <a href="http://www.sixfeetup.com" style="color: white">Six Feet Up</a>
+                    .
+                </p>
+                <p>
+                    Plone
+                    <sup>
+                        ®
+                    </sup>
+                    and the Plone logo are registered trademarks of the Plone Foundation.
+                    You’re looking good today.
+                </p>
+                <div id="sitemap">
+                    <!-- <dl>
+                    <dt><a href="">Plone for…</a></dt>
+                    <dd><a href="">Small/Medium Business </a></dd>
+                    <dd><a href="">Enterprise            </a></dd>
+                    <dd><a href="">Non-profits           </a></dd>
+                    <dd><a href="">Government            </a></dd>
+                    <dd><a href="">Education             </a></dd>
+                    <dd><a href="">Science               </a></dd>
+                    <dd><a href="">Media &amp; Publishing</a></dd>
+                    </dl> -->
+                    <dl>
+                        <dt>
+                            <a href="/products">Downloads</a>
+                        </dt>
+                        <dd>
+                            <a href="/download">Get Plone</a>
+                        </dd>
+                        <dd>
+                            <a href="/products?getCategories=themes">Themes</a>
+                        </dd>
+                        <dd>
+                            <a href="/products?getCategories=dev">Development tools</a>
+                        </dd>
+                        <dd>
+                            <a href="/products?getCategories=auth">Authentication</a>
+                        </dd>
+                        <dd>
+                            <a href="/products">…and more.</a>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <a href="/documentation">Documentation</a>
+                        </dt>
+                        <dd>
+                            <a href="/documentation/faq/">FAQs</a>
+                        </dd>
+                        <dd>
+                            <a href="/documentation/movies/">Tutorial videos</a>
+                        </dd>
+                        <dd>
+                            <a href="/documentation/manual">Manuals</a>
+                        </dd>
+                        <dd>
+                            <a href="/documentation/books">Books</a>
+                        </dd>
+                        <!-- <dd><a href="">Knowledge Base</a></dd> -->
+                        <dd>
+                            <a href="/documentation/error">Error Reference</a>
+                        </dd>
+                        <!-- <dd><a href="">Module documentation</a></dd> -->
+                        <dd>
+                            <a href="http://plone.net/sites">Sites using Plone</a>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <a href="http://dev.plone.org/plone">Developers</a>
+                        </dt>
+                        <dd>
+                            <a href="http://dev.plone.org/plone/roadmap">Roadmap</a>
+                        </dd>
+                        <dd>
+                            <a href="http://dev.plone.org/plone">Report bugs in Plone</a>
+                        </dd>
+                        <dd>
+                            <a href="http://dev.plone.org/plone.org">Report website issues</a>
+                        </dd>
+                        <dd>
+                            <a href="http://dev.plone.org/plone/timeline">Latest changes</a>
+                        </dd>
+                        <dd>
+                            <a href="http://dev.plone.org/plone/browser">Browse source</a>
+                        </dd>
+                        <dd>
+                            <a href="http://dev.plone.org/plone">Contribute to Plone</a>
+                        </dd>
+                        <dd>
+                            <a href="http://planet.plone.org">Community blogs</a>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <a href="/foundation">Plone Foundation</a>
+                        </dt>
+                        <dd>
+                            <a href="/foundation/foundation-donations">Donate</a>
+                        </dd>
+                        <dd>
+                            <a href="/foundation/donors">Sponsors</a>
+                        </dd>
+                        <dd>
+                            <a href="/foundation/meetings/minutes">Meeting minutes</a>
+                        </dd>
+                        <dd>
+                            <a href="/team/FoundationBoard">Current board</a>
+                        </dd>
+                        <dd>
+                            <a href="/foundation/members">Foundation members</a>
+                        </dd>
+                        <dd>
+                            <a href="/foundation/membership">Apply for membership</a>
+                        </dd>
+                        <dd>
+                            <a href="/foundation#contact">Contact</a>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <a href="/support">Support</a>
+                        </dt>
+                        <dd>
+                            <a href="http://plone.net/providers">Commercial services</a>
+                        </dd>
+                        <dd>
+                            <a href="/support/chat">Chat room</a>
+                        </dd>
+                        <dd>
+                            <a href="/support/forums">Forums</a>
+                        </dd>
+                        <dd>
+                            <a href="/support/for">Sector-specific forums</a>
+                        </dd>
+                        <dd>
+                            <a href="/support/region">Region-specific forums</a>
+                        </dd>
+                        <dd>
+                            <a href="/support/local-user-groups">Local user groups</a>
+                        </dd>
+                        <dd>
+                            <a href="/events/training">Training</a>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
         </div>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-1907133-2']);
+            _gaq.push(['_trackPageview']);
 
-        <div class="grid-cell width-quarter position-half">
-            <div id="events" class="box">
-                <h1>Upcoming Events</h1>
-                <ul><li class="link-tile">
-                        <a href="http://plone.org/events/plone-tuneups/plone-tune-up" title="Help us advance Plone one ticket at a time by testing and fixing bugs in the Core.">42nd Plone Tune-Up Day</a>
-                            <span class="info">
-                                Worldwide<br />
-                                Feb 18, 2011
-                            </span>
-                    </li>
-                    
-                    
-                    <li class="link-tile">
-                        <a href="http://plone.org/events/community/webinar-connecting-plone-cms-and-salesforce-crm" title="The open source Plone Content Management System offers the most advanced integration with the Salesforce.com CRM. Anything that happens on your website can be mapped into your database of contacts, and content can even be taken from salesforce into Plone! In this webinar, we'll explore how to take advantage of this integration to save time and energy of your staff while improving data quality.">Webinar: Connecting Plone CMS and Salesforce CRM </a>
-                            <span class="info">
-                                Web + Phone<br />
-                                Feb 22, 2011
-                            </span>
-                    </li>
-                    
-                    
-                    <li class="link-tile">
-                        <a href="http://plone.org/events/plone-tuneups/43rd-annual-plone-tune-up-day" title="Help us advance Plone one ticket at a time by testing and fixing bugs in the Core.">43rd Annual Plone Tune-Up Day</a>
-                            <span class="info">
-                                Worldwide<br />
-                                Mar 11, 2011
-                            </span>
-                    </li>
-                    
-                    
-                    <li class="link-tile">
-                        <a href="http://plone.org/events/community/tagung-der-dzug-hochschulgruppe-2011-in-bonn" title="Der Workshop der Zope &amp; Plone einsetzenden Hochschulen und Bildungs- (Forschungs)einrichtungen findet am 22. und 23. März 2011 an der Universität Bonn statt.">Tagung der DZUG Hochschulgruppe 2011 in Bonn</a>
-                            <span class="info">
-                                Bonn<br />
-                                Mar 22, 2011
-                            </span>
-                    </li>
-                    
-                    <li>
-                        <a class="add" href="/events/community/createObject?type_name=Event">Add event…</a>
-                        <a href="/events/community/">Upcoming…</a>
-                    </li>
-                </ul></div>
-        </div> <!-- End cell -->
+            (function() {
+                var ga = document.createElement('script');
+                ga.type = 'text/javascript';
+                ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+    </body>
 
-        <div class="grid-cell width-quarter position-three-quarters">
-            <div id="accordion">
-                <h2 class="current">Get Plone</h2>
-                <div class="pane" style="display:block">
-                    <a id="download-link" href="/download">DOWNLOAD NOW<br />
-                        Plone 
-                        <span>4.0.3</span>
-                        · 
-                        <span>Jan ’11</span></a>
-                    <dl><dt><a href="/products/plone/features/">What’s new in Plone 4</a></dt>
-                        <dd>An overview of the new features.</dd>
-
-                        <dt><a href="http://dev.plone.org/plone/roadmap">Roadmap</a></dt>
-                        <dd>Our plans for the future.</dd>
-
-                        <dt><a href="/products/plone/releases">Older releases</a></dt>
-                        <dd>Looking for a previous version?</dd>
-
-                        <dt><a href="/products">Add-on Products</a></dt>
-                        <dd>Adapt Plone to your needs.</dd>
-                    </dl></div>  
-
-                <h2>Learn Plone</h2>
-                <div class="pane">
-                    <dl><dt><a href="/documentation">Documentation</a></dt>
-                        <dd>Plone has a great collection of online documentation.</dd>
-
-                        <dt><a href="/documentation/books">Buy Books</a></dt>
-                        <dd>For those of you who think better in bed with a book.</dd>
-
-                        <dt><a href="/support">Forums &amp; Chat Rooms</a></dt>
-                        <dd>People are always ready to help you with your Plone questions.</dd>
-
-                        <dt><a href="/events/training">Find Plone Training</a></dt>
-                        <dd>Let one of the Plone experts guide you through getting productive.</dd>
-
-                        <dt><a href="http://plone.net">Commercial Support</a></dt>
-                        <dd>Over 300 companies around the world offer Plone services.</dd>
-                    </dl></div>
-
-                <h2>Get Involved</h2>
-                <div class="pane">
-                    <dl><dt><a href="http://plone.org/documentation/faq/suggest-a-feature-for-plone">Suggest New Features</a></dt>
-                        <dd>Have an awesome idea about a new feature for Plone?</dd>
-
-                        <dt><a href="http://dev.plone.org/plone">Report Bugs</a></dt>
-                        <dd>Plone has no bugs. If you found one anyway, report it here.</dd>
-
-                        <dt><a href="http://dev.plone.org/plone">Write Code</a></dt>
-                        <dd>If you’re proficient in Python, HTML, CSS or JS, join us!</dd>
-
-                        <dt><a href="http://dev.plone.org/plone">Translate, Write Docs, Help Test</a></dt>
-                        <dd>There are lots of things you can do to make Plone better.</dd>
-
-                        <dt><a href="http://planet.plone.org">Read Blogs, Publish Yours</a></dt>
-                        <dd>Stay up to date on Plone</dd>
-
-                        <dt><a href="/foundation">Support the Plone Foundation</a></dt>
-                        <dd>If all else fails, give cold, hard cash.</dd>
-                    </dl></div>
-
-            </div> <!-- End accordion -->
-        </div> <!-- End cell -->
-    </div> <!-- End row -->
-
-  <div style="clear:both"></div>
-
-
-                        </div><div id="viewlet-below-content">
-
-
-
-</div></div><div style="clear:both"> </div></div><!-- end inner-wrapper --><div id="push"></div></div><!-- end outer-wrapper --><div id="footer-wrapper"><div id="footer-gradient"></div><div id="footer"><a id="footer-logo" href="http://plone.org" title="Plone CMS, the open source content management system"></a><p>The Plone<sup>®</sup> CMS/WCM is © 2000–2010 the Plone Foundation and friends. Site hosted by <a href="http://www.sixfeetup.com" style="color: white">Six Feet Up</a>.</p><p>Plone<sup>®</sup> and the Plone logo are registered trademarks of the Plone Foundation. You’re looking good today.</p><div id="sitemap"><!-- <dl>
-				<dt><a href="">Plone for…</a></dt>
-				<dd><a href="">Small/Medium Business </a></dd>
-				<dd><a href="">Enterprise            </a></dd>
-				<dd><a href="">Non-profits           </a></dd>
-				<dd><a href="">Government            </a></dd>
-				<dd><a href="">Education             </a></dd>
-				<dd><a href="">Science               </a></dd>
-				<dd><a href="">Media &amp; Publishing</a></dd>
-			</dl> --><dl><dt><a href="/products">Downloads</a></dt><dd><a href="/download">Get Plone</a></dd><dd><a href="/products?getCategories=themes">Themes</a></dd><dd><a href="/products?getCategories=dev">Development tools</a></dd><dd><a href="/products?getCategories=auth">Authentication</a></dd><dd><a href="/products">…and more.</a></dd></dl><dl><dt><a href="/documentation">Documentation</a></dt><dd><a href="/documentation/faq/">FAQs</a></dd><dd><a href="/documentation/movies/">Tutorial videos</a></dd><dd><a href="/documentation/manual">Manuals</a></dd><dd><a href="/documentation/books">Books</a></dd><!-- <dd><a href="">Knowledge Base</a></dd> --><dd><a href="/documentation/error">Error Reference</a></dd><!-- <dd><a href="">Module documentation</a></dd> --><dd><a href="http://plone.net/sites">Sites using Plone</a></dd></dl><dl><dt><a href="http://dev.plone.org/plone">Developers</a></dt><dd><a href="http://dev.plone.org/plone/roadmap">Roadmap</a></dd><dd><a href="http://dev.plone.org/plone">Report bugs in Plone</a></dd><dd><a href="http://dev.plone.org/plone.org">Report website issues</a></dd><dd><a href="http://dev.plone.org/plone/timeline">Latest changes</a></dd><dd><a href="http://dev.plone.org/plone/browser">Browse source</a></dd><dd><a href="http://dev.plone.org/plone">Contribute to Plone</a></dd><dd><a href="http://planet.plone.org">Community blogs</a></dd></dl><dl><dt><a href="/foundation">Plone Foundation</a></dt><dd><a href="/foundation/foundation-donations">Donate</a></dd><dd><a href="/foundation/donors">Sponsors</a></dd><dd><a href="/foundation/meetings/minutes">Meeting minutes</a></dd><dd><a href="/team/FoundationBoard">Current board</a></dd><dd><a href="/foundation/members">Foundation members</a></dd><dd><a href="/foundation/membership">Apply for membership</a></dd><dd><a href="/foundation#contact">Contact</a></dd></dl><dl><dt><a href="/support">Support</a></dt><dd><a href="http://plone.net/providers">Commercial services</a></dd><dd><a href="/support/chat">Chat room</a></dd><dd><a href="/support/forums">Forums</a></dd><dd><a href="/support/for">Sector-specific forums</a></dd><dd><a href="/support/region">Region-specific forums</a></dd><dd><a href="/support/local-user-groups">Local user groups</a></dd><dd><a href="/events/training">Training</a></dd></dl></div></div></div><script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-1907133-2']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script></body></html>
+</html>
