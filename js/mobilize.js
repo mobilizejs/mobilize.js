@@ -5,15 +5,16 @@
  * 
  */
 
-var jq = jQuery;
-var mobilize = {
+(function( $, undefined ) {
+
+window.mobilize = {
 	
 	/**
 	 * Instiate Mobilizer class in inheritance safe manner.
 	 */
 	init : function(options) {
 	
-	    if(!jq) {
+	    if(!$) {
 	        throw "jQuery needed in order to run mobilize.js";
 	    }
 	    
@@ -37,7 +38,7 @@ var mobilize = {
 	        options = {};
 	    }
 	    
-	    jq.extend(mobilize.options, options);
+	    $.extend(mobilize.options, options);
 	
 	},
 	
@@ -221,7 +222,7 @@ var mobilize = {
 	    
 	    // We cannot directly load template, since <body> has not been constructed
 	    var self = this;
-	    jq(document).ready(function() { self.loadMobileTemplate(); } );
+	    $(document).ready(function() { self.loadMobileTemplate(); } );
 	},
 		
 	/**
@@ -245,8 +246,8 @@ var mobilize = {
 	 * Use options.resourceWhitelist matching.
 	 */
 	cleanJavascript : function() {
-		jq("head script").each(function() {
-		    var script = jq(this);
+		$("head script").each(function() {
+		    var script = $(this);
 			var src = script.attr("src");
 		    if(!mobilize.checkResourceWhistlist(src)) {
 				script.remove();
@@ -267,8 +268,8 @@ var mobilize = {
      */	
 	cleanStyle : function() {
 	
-		jq("head style").each(function(){
-          var style = jq(this);
+		$("head style").each(function(){
+          var style = $(this);
 		  // http://bytes.com/topic/javascript/answers/600139-get-file-name-style-tag
 
           var text = style.text(); // TODO: optimize?
@@ -303,7 +304,7 @@ var mobilize = {
      * Make sure the browser does not load anything extra before mobile transform has taken place
      */
 	suspendLoading : function() {
-	    var body = jq("body");
+	    var body = $("body");
 	    if(body.size() == 0) {
 	        // DOM tree loading, couldn't get hang off it
 	        throw "Could not find body while loading?";
@@ -318,8 +319,8 @@ var mobilize = {
 	 * some of its event handlers are run.
 	 */
 	bindTemplateEventHandlers : function() {
-		 // Assign jQuery Mobile event handlers
-        jq(window.document).bind("mobileinit", mobilize.onMobileInit);
+		 // Assign jQuery Mobile event handlers 
+        $(window.document).bind("mobileinit", mobilize.onMobileInit);
 	},
 	
 	/**
@@ -331,11 +332,11 @@ var mobilize = {
 	    
 	    var self = this;
 	    
-	    jq("body").append("<div id='mobile-template-holder'></div>");
+	    $("body").append("<div id='mobile-template-holder'></div>");
 	    
 		mobilize.bindTemplateEventHandlers();
 		
-	    jq("#mobile-template-holder").load(mobilize.options.template, function() {
+	    $("#mobile-template-holder").load(mobilize.options.template, function() {
 	        self.transform();
 	    });
 	},
@@ -352,18 +353,34 @@ var mobilize = {
 	 */
 	closeMobileTemplate : function() {
 	},
-	
+	 
 	/**
 	 * Move content from the orignal web page to mobile template by the user rules.
 	 */
 	transform : function() {
 		
+		function doTransform(){
+			mobilize.constructBody();
+	        mobilize.constructHead();
+		    
+		    mobilize.finish();
+		}
+
+		// TODO: How to add onload event handler for jquery.mobile. Possible?
+		// TODO: Is this needed now that we have onload stuff in loadMobileTemplate
 		// Assign jQuery Mobile event handlers
-		
-	    mobilize.constructBody();
-        mobilize.constructHead();
+		function checkLoaded(){
+			// Wait for all dependencies to load
+			console.log("jQuery.mobile", window.jQuery.mobile)
+			if(window.jQuery.mobile){
+				doTransform();
+				return;
+			}
+
+			setTimeout(checkLoaded, 100);
+		}
 	    
-	    mobilize.finish();
+		setTimeout(checkLoaded, 0);
 	},
 	
 	/**
@@ -383,7 +400,7 @@ var mobilize = {
      */
     remapLinks : function(selection, removeCallback) {
 		selection.each(function() {
-			 var input = jq(this);
+			 var input = $(this);
 			 output = mobilize.rewriteLink(input);
 			 if(!output) {
 			 	if(removeCallback) {
@@ -400,7 +417,7 @@ var mobilize = {
 	 * @returns null if the link is to be discarded
 	 */
 	rewriteLink : function(a) {
-		var a = jq(a);
+		var a = $(a);
 		
 		var href = a.attr("href");
 	
@@ -423,7 +440,7 @@ var mobilize = {
 	 */
 	constructHead : function() {    
 	    mobilize.log("constructHead");
-	    jq("head").append(jq("#mobile-head").children());
+	    $("head").append($("#mobile-head").children());
 	    // Make events to be fired when each CSS/Javascript has been loadeds
 	},
 	
@@ -444,10 +461,10 @@ var mobilize = {
 		
 		var list;
 		
-		list = jq("<ul data-inset='true' data-role='listview'>");
+		list = $("<ul data-inset='true' data-role='listview'>");
 		selection.each(function() {
 			 
-			 var input = jq(this);
+			 var input = $(this);
 			 var a;
 			 var contentish;
 			 
@@ -477,7 +494,7 @@ var mobilize = {
 			 } else {
 			 	
 				// Create normal bulleted lists
-				var output = jq("<li role='option'>");
+				var output = $("<li role='option'>");
 				
 			 	if (a) {
 			 		output.append(a).appendTo(list);
@@ -485,7 +502,7 @@ var mobilize = {
 			 	
 			 	if (contentish) {
 			 		// Format link content
-					output.append(content.children());
+					output.appendTo(content.children());
 				}
 			}
 		});
@@ -510,9 +527,9 @@ var mobilize = {
 	 * Make the transformed mobile template body visible and remove the other body data.
 	 */
 	swapBody : function() { 
-	    var mobileBody = jq("#mobile-body").detach();
-	    jq("body").empty();
-	    jq("body").append(mobileBody.children());
+	    var mobileBody = $("#mobile-body").detach();
+	    $("body").empty();
+	    $("body").append(mobileBody.children());
 	},
 	
 
@@ -525,12 +542,12 @@ var mobilize = {
 	   
         // Enable jQuery Mobile effects
 		try{
-			jq.mobile.initializePage();
+			$.mobile.initializePage();
 		}catch(e){
 			mobilize.log("mobilize::finish initializePage failed>" + e);
 		}
 
-	    jq("body").show();
+	    $("body").show();
 	},
 	
 	/**
@@ -542,14 +559,12 @@ var mobilize = {
 		
 		// We'll manage our own workflow and don't want to jQuery Mobile
 		// start doing things instantly when the script is loaded
-		mobilize.log("Setting autoinitalize:" + jq.mobile.autoInitialize);
-		jq.mobile.autoInitialize = false;
+		mobilize.log("Disabling autoInitialize, was:" + $.mobile.autoInitialize);
+		$.mobile.autoInitialize = false;
 	}
 };
 
-try {
-	// CommonJS
+if(typeof(exports) !== "undefined")
 	exports.mobilize = mobilize;
-} catch(e) {}
 
-
+})(jQuery);

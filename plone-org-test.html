@@ -52,14 +52,8 @@ var console = {
 };
 */
 
-            //$(document).ready(function() {
-
-
-            function onloaded() {
-                try {
-                    mobilize.init();
-                    mobilize.bootstrap();
-
+            $(document).ready(function() {
+                try { 
                     // main vertical scroll
                     $("#splash-frontpage").scrollable({
 
@@ -114,7 +108,7 @@ var console = {
                     console.log("" + e);
                 }
 
-            }
+            });
         </script>
         <style type="text/css">
             @import url(http://plone.org/portal_css/Sunburst%20Theme/print-cachekey8961.css);
@@ -229,7 +223,14 @@ var console = {
         />
     </head>
     
-    <body class="template-frontpage portaltype-plone-site" onload="onloaded()">
+    <body class="template-frontpage portaltype-plone-site">
+    	<script type="text/javascript">
+    	
+            mobilize.init();
+            mobilize.bootstrap();
+            
+    	</script>
+    	
         <div id="outer-wrapper">
             <div id="inner-wrapper">
                 <div id="nav">
