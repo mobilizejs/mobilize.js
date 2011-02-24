@@ -7,7 +7,7 @@
 
 (function( $, undefined ) {
 
-window.mobilize = {
+window.mobilize = mobilize = {
 	
 	/**
 	 * Instiate Mobilizer class in inheritance safe manner.
@@ -32,7 +32,10 @@ window.mobilize = {
 				inlineStyleMaxCheckLength : 256,
 				
 				// Go always with mobile rendering path (useful for testing)
-				forceMobile : false
+				forceMobile : false,
+				
+				// Force user agent
+				userAgent : null
 	    };
 	    
 	    // Override default parameters with user supplied versions
@@ -71,7 +74,7 @@ window.mobilize = {
 	 */
 	bootstrap : function() {
 	    
-	    if(mobilize.isMobile() || mobilize.options.forceMobile) {
+	    if(mobilize.isMobile(mobilize.options)) {
 	    	mobilize.enableMobileRendering();
 	    }
 	},
@@ -141,10 +144,10 @@ window.mobilize = {
 	 * 
 	 * options
 	 * -------
-	 * 	name  = userAgent name. Uses browser's userAgent by default
-	 *  force = Force detection to mobile to true or false regardless of real type
+	 * 	userAgent   = userAgent name. Uses browser's userAgent by default
+	 *  forceMobile = Force detection to mobile to true or false regardless of real type
 	 * 
-	 * URL parameter mobile=<true,1> can also be used to force mobile.
+	 * URL parameter mobilize=<true,1> can also be used to force mobile.
 	 * 
 	 * The state is also stored to 'mobilize-mobile' cookie and is used 
 	 * to skip detection if set to '1'. URL and options.force paremeters 
@@ -163,15 +166,15 @@ window.mobilize = {
 		
 		// Using cookie by default
 		forced = mobilize.readCookie("mobilize-mobile");
-		name = opts.name;
+		name = opts.userAgent;
 		
 		// Note: URL parameter and option overrides cookie		
-		if(opts.force === undefined) {
-			opts.force = mobilize.getUrlVars()["mobile"];
+		if(opts.forceMobile === undefined) {
+			opts.forceMobile = mobilize.getUrlVars()["mobilize"];
 		}
 		
-		if(opts.force !== undefined) {
-			forced = opts.force;
+		if(opts.forceMobile !== undefined) {
+			forced = opts.forceMobile;
 		}
 		
 		if(forced !== undefined && forced !== null ) {

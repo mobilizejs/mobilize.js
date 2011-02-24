@@ -14,7 +14,7 @@ var mobilize = require("../js/mobilize.js").mobilize;
 function testDetect(expect, name) {
 	var detected;
 	global.document.cookie = "";
-	detected = mobilize.isMobileBrowser({name : name});
+	detected = mobilize.isMobileBrowser({userAgent : name});
 	assert.equal(expect, detected, name);
 }
 
@@ -25,10 +25,10 @@ testDetect(true, "symbian");
 testDetect(true, "android");
 
 // Test forcing
-detected = mobilize.isMobileBrowser({name : "symbian", force : false});
+detected = mobilize.isMobileBrowser({userAgent : "symbian", forceMobile : false});
 assert.equal(false, detected);
 
-detected = mobilize.isMobileBrowser({name : browserAgent, force : true});
+detected = mobilize.isMobileBrowser({userAgent : browserAgent, forceMobile : true});
 assert.equal(true, detected);
 
 console.log("test_detectmobilebrowser.js passed");
