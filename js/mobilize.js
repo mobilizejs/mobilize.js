@@ -1,13 +1,15 @@
 /**
  * Pure Javascript mobilization solution
  * 
+ * @module mobilize.core
  * @copyright 2011 Mikko Ohtamaa, Jussi Toivola
  * 
  */
 
-(function( $, undefined ) {
-
-window.mobilize = mobilize = {
+/**
+ * @class mobilize
+ */
+var mobilize = {
 	
 	/**
 	 * Instiate Mobilizer class in inheritance safe manner.
@@ -48,6 +50,9 @@ window.mobilize = mobilize = {
 	
 	},
 	
+	/** Utility for internal debug logging 
+	 * @param msg: message to log
+	 * */
 	log : function(msg) {
 		if(window.console) {
 			if(console.log) {
@@ -56,15 +61,15 @@ window.mobilize = mobilize = {
 		}
 	},
 	
-	/** Get baseurl from url by ignoring file and url parameters 
+	/** 
+	 * <p>Get baseurl from url by ignoring file and url parameters</p> 
 	 * 
-	 * Usage
-	 * -----
-	 * baseurl(url);
-	 * 
-	 * Example
-	 * -------
+	 * <b>Example</b>
+	 * <pre>
 	 * mobilize.baseurl(window.location.href)
+	 * </pre>
+	 * @param url : Url to parse
+	 * 
 	 * */
 	baseurl : function (aUrl) {
 		
@@ -89,8 +94,8 @@ window.mobilize = mobilize = {
 		
 		return url;
 	},
-	/**
-	 * Make a function call and report possible exceptions back to a centralized server.
+	
+	/** Make a function call and report possible exceptions back to a centralized server.
 	 * 
 	 * We use this to track problems with possible not-so-well-implemented mobile browsers.
 	 */
@@ -280,7 +285,7 @@ window.mobilize = mobilize = {
 	},
 	
 	/**
-	 * Remove unnecessary <script> tags from <head> if not needed for mobile.
+	 * Remove unnecessary script tags from head if not needed for mobile.
 	 * 
 	 * Use options.resourceWhitelist matching.
 	 */
@@ -357,7 +362,7 @@ window.mobilize = mobilize = {
 	
 	/**
 	 * Must be called before template loading,
-	 * as immediately when jQuery Mobile <script> is inserted to DOM,
+	 * as immediately when jQuery Mobile script tag is inserted to DOM,
 	 * some of its event handlers are run.
 	 */
 	bindTemplateEventHandlers : function() {
@@ -370,7 +375,7 @@ window.mobilize = mobilize = {
 	 * 
 	 * Check possible mobile template cache places.
 	 */
-	loadMobileTemplate : function () {
+	loadMobileTemplate : function() {
 	    
 	    var self = this;
 	    
@@ -608,5 +613,3 @@ window.mobilize = mobilize = {
 
 if(typeof(exports) !== "undefined")
 	exports.mobilize = mobilize;
-
-})(jQuery);

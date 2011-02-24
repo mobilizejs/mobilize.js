@@ -13,8 +13,10 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		if "cookie" in self.headers.dict:
 			cookies = Cookie.SimpleCookie()
 			cookies.load(self.headers.dict["cookie"])		
-			if cookies["mobilize-mobile"].value == "1":
-				print "Cookie says client is mobile"											
+			mobilize = cookies.get("mobilize-mobile",None)
+			if mobilize:
+				if mobilize.value == "1":
+					print "Cookie says client is mobile"											
 								
 		if "/log" in self.path:
 			msg = urllib.unquote(self.path.split("msg=")[-1])
