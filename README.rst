@@ -42,11 +42,13 @@ If mobile is not detected or forced nothing happens.
 
 If mobile is detected the following happens
 
-        * Async loading of mobile template
+        * Use internal async loader (rip one from jQuery)
         
-        * Async loading os jQuery.js, using AJAX GET
+        * Async loading os jQuery.js, using internal AJAX GET handler
         
-        * Async loading of jQueryMobile.js, using AJAX GET
+        * Async loading of mobile template using jQuery
+        
+        * Async loading of jQueryMobile.js, using jQuery
 
 * prepareTransform() waits
         
