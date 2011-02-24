@@ -2,6 +2,7 @@ This is an experimental framework to do website mobilization on the client side.
 
 
 User experience
+================
 
 * Touch optimized user interface
 
@@ -18,6 +19,13 @@ Optimizations
 * Cruft CSS and Javascript is removed from HTML document before these are being loaded
 
 * Images which are needed on mobile layout are loaded
+
+Installation
+============
+
+Add the following snippet to your HTML code::
+
+
 
 
 Unit testing

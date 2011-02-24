@@ -1,7 +1,7 @@
 /**
  * Pure Javascript mobilization solution
  * 
- * @copyright 2011 Mikko Ohtamaa
+ * @copyright 2011 Mikko Ohtamaa, Jussi Toivola
  * 
  */
 
@@ -29,7 +29,10 @@ window.mobilize = {
 	            template : "template.html",
 				
 				// How many characters <style> inner text may contain it to be run through inline CSS importer check
-				inlineStyleMaxCheckLength : 256
+				inlineStyleMaxCheckLength : 256,
+				
+				// Go always with mobile rendering path (useful for testing)
+				forceMobile : false
 	    };
 	    
 	    // Override default parameters with user supplied versions
@@ -68,8 +71,8 @@ window.mobilize = {
 	 */
 	bootstrap : function() {
 	    
-	    if(this.isMobile()) {
-	        this.enableMobileRendering();
+	    if(mobilize.isMobile() || mobilize.options.forceMobile) {
+	    	mobilize.enableMobileRendering();
 	    }
 	},
 	/** 
@@ -278,12 +281,15 @@ window.mobilize = {
 		  // inline CSS
 		  if(text.length < mobilize.options.inlineStyleMaxCheckLength) {
 		  	var matches = text.match(/@import url\(.*\);?/mg);
-			for(var i=0; i<matches.length; i++) {
-				if(!mobilize.checkResourceWhistlist(matches[i])) {
-					style.remove();
-					break;
-				}
-			} 
+			
+		  	if(matches != null) {
+			  	for(var i=0; i<matches.length; i++) {
+					if(!mobilize.checkResourceWhistlist(matches[i])) {
+						style.remove();
+						break;
+					}
+				} 
+		  	}
 		  } else {
 			// too long CSS snippet, drop unconditionally
 			style.remove();
@@ -332,6 +338,8 @@ window.mobilize = {
 	    
 	    var self = this;
 	    
+	    // Create the element which will hold the mobile template
+	    // + transformation result
 	    $("body").append("<div id='mobile-template-holder'></div>");
 	    
 		mobilize.bindTemplateEventHandlers();
