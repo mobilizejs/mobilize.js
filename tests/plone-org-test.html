@@ -35,12 +35,6 @@
         </script>
         <script type="text/javascript" src="http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js">
         </script>
-        <script type="text/javascript" src="js/mobilize.js">
-        </script>
-        <script type="text/javascript" src="js/mobilize.plone.js">
-        </script>
-        <script type="text/javascript" src="js/mobilize.ploneorg.js">
-        </script>
         <script type="text/javascript">
             /*
 var console = {
@@ -224,10 +218,19 @@ var console = {
     </head>
     
     <body class="template-frontpage portaltype-plone-site">
+
+        <script type="text/javascript" src="../js/jquery.js"></script>
+        <script type="text/javascript" src="../js/jquery.mobilize.js"></script>
+        <script type="text/javascript" src="../js/mobilize.js"></script>
+        <script type="text/javascript" src="../js/mobilize.ploneorg.js"></script>      
+
     	<script type="text/javascript">
-    	
-            mobilize.init();
-            mobilize.bootstrap();
+        
+	    mobilize.init({
+	        template : "../templates/core.html",
+	        forceMobile : true
+	    });
+	    mobilize.bootstrap();
             
     	</script>
     	

@@ -23,10 +23,26 @@ Optimizations
 Installation
 ============
 
-Add the following snippet to your HTML code::
+Add the following snippet to your HTML code
+
+::
 
 
+Walkthrough
+===========
 
+mobilize.js uses jQuery, nothing else. Assume mobilize.js bootstrap()
+needs jQuery ready for running.
+
+jquery.mobile.js should not be referred until mobile template has been loaded,
+page has been transformed and everything is in-place HTML wise.
+
+jquery.mobile.js must loaded with event handler to suppress automatic initialization
+(mobileinit). It is on by default.
+
+call $.mobile.initializePage()
+
+enjoy.
 
 Unit testing
 ============

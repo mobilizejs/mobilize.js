@@ -340,7 +340,7 @@ window.mobilize = {
 	    
 	    // Create the element which will hold the mobile template
 	    // + transformation result
-	    $("body").append("<div id='mobile-template-holder'></div>");
+	    $("body").append("<div id='mobile-template-holder'>");
 	    
 		mobilize.bindTemplateEventHandlers();
 		
@@ -366,20 +366,17 @@ window.mobilize = {
 	 * Move content from the orignal web page to mobile template by the user rules.
 	 */
 	transform : function() {
-		
-		function doTransform(){
-			mobilize.constructBody();
-	        mobilize.constructHead();
-		    
-		    mobilize.finish();
-		}
 
+        mobilize.constructHead();		    
+		mobilize.constructBody();
+	    mobilize.finish();
+		
 		// TODO: How to add onload event handler for jquery.mobile. Possible?
 		// TODO: Is this needed now that we have onload stuff in loadMobileTemplate
 		// Assign jQuery Mobile event handlers
-		function checkLoaded(){
+		/*function checkLoaded(){
 			// Wait for all dependencies to load
-			console.log("jQuery.mobile", window.jQuery.mobile)
+			mobilize.log("jQuery.mobile", window.jQuery.mobile)
 			if(window.jQuery.mobile){
 				doTransform();
 				return;
@@ -388,7 +385,7 @@ window.mobilize = {
 			setTimeout(checkLoaded, 100);
 		}
 	    
-		setTimeout(checkLoaded, 0);
+		setTimeout(checkLoaded, 0);*/
 	},
 	
 	/**
