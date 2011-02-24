@@ -44,6 +44,16 @@ call $.mobile.initializePage()
 
 enjoy.
 
+URL paramters
+=============
+By default mobilize.js uses following URL parameters for configuration.
+
+mobilize:
+
+	If true or 1, forces mobilization of the page.
+	If false or 0, forces normal page even if mobile browser.
+
+
 Unit testing
 ============
 For running tests from command line we'll use NodeJS.
@@ -71,7 +81,8 @@ Run:
 
 Running tests
 -------------
-Go to tests folder and execute node <testname>.js
+Go to tests folder and execute:
+	node <testname>.js
 TODO: Script for running all tests.
 
 Testing Nokia devices:

@@ -31,4 +31,8 @@ assert.equal(false, detected);
 detected = mobilize.isMobileBrowser({userAgent : browserAgent, forceMobile : true});
 assert.equal(true, detected);
 
+
+browserAgent = "Mozilla/5.0 (X11; Linux i686 on x86_64; rv:2.0b11) Gecko/20100101 Firefox/4.0b11"
+testDetect(false, browserAgent);
+
 console.log("test_detectmobilebrowser.js passed");

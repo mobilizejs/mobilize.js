@@ -27,6 +27,8 @@
             <script src="/ie6warn.js" type="text/javascript">
             </script>
         <![endif]-->
+        <script type="text/javascript" src="../js/jquery.js"></script>
+        
         <script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/jquery-cachekey5356.js">
         </script>
         <script type="text/javascript" src="http://plone.org/portal_javascripts/Sunburst%20Theme/popupforms-cachekey6577.js">
@@ -48,6 +50,7 @@ var console = {
 
             $(document).ready(function() {
                 try { 
+                /*
                     // main vertical scroll
                     $("#splash-frontpage").scrollable({
 
@@ -57,7 +60,7 @@ var console = {
 
                         // main navigator (thumbnail images)
                     }).navigator("#main_navi");
-
+				*/
                     // Accordion
                     $("#accordion").tabs("#accordion div.pane", {
                         tabs: 'h2',
@@ -219,7 +222,7 @@ var console = {
     
     <body class="template-frontpage portaltype-plone-site">
 
-        <script type="text/javascript" src="../js/jquery.js"></script>
+        
         <script type="text/javascript" src="../js/jquery.mobilize.js"></script>
         <script type="text/javascript" src="../js/mobilize.js"></script>
         <script type="text/javascript" src="../js/mobilize.ploneorg.js"></script>      
@@ -227,8 +230,7 @@ var console = {
     	<script type="text/javascript">
         
 	    mobilize.init({
-	        template : "../templates/core.html",
-	        forceMobile : true
+	        template : "../templates/core.html"
 	    });
 	    mobilize.bootstrap();
             

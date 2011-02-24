@@ -3,6 +3,9 @@
  *
  */
 
+
+(function( jq, undefined ) {
+
 var mobilizePloneOrg = {
 	
 	constructBody : function() {
@@ -55,4 +58,6 @@ var mobilizePloneOrg = {
 };
 
 jq.extend(mobilize, mobilizePloneOrg);
+
+})(jQuery);
 

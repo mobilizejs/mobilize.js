@@ -56,6 +56,39 @@ window.mobilize = mobilize = {
 		}
 	},
 	
+	/** Get baseurl from url by ignoring file and url parameters 
+	 * 
+	 * Usage
+	 * -----
+	 * baseurl(url);
+	 * 
+	 * Example
+	 * -------
+	 * mobilize.baseurl(window.location.href)
+	 * */
+	baseurl : function (aUrl) {
+		
+		var end;
+		var url;
+		
+		end = aUrl.indexOf('?');
+		
+		if(end <= 0) {
+			end = aUrl.length-1;
+		}
+		
+		url = aUrl.slice(0, end);
+		// Ignore slash at the end of url
+		if(url[url.length-1] == "/" ) {
+			url = url.slice(0,url.length-2);
+		}
+		
+		// But add the slash to result for convenient concat
+		end = url.lastIndexOf("/") + 1;
+		url = url.slice(0,end);
+		
+		return url;
+	},
 	/**
 	 * Make a function call and report possible exceptions back to a centralized server.
 	 * 
@@ -468,7 +501,7 @@ window.mobilize = mobilize = {
 	createNavigationBox : function(selection, title, outputter) {
 		
 		var list;
-		
+
 		list = $("<ul data-inset='true' data-role='listview'>");
 		selection.each(function() {
 			 
@@ -569,6 +602,7 @@ window.mobilize = mobilize = {
 		// start doing things instantly when the script is loaded
 		mobilize.log("Disabling autoInitialize, was:" + $.mobile.autoInitialize);
 		$.mobile.autoInitialize = false;
+		$.mobile.ajaxEnabled = false;
 	}
 };
 
