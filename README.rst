@@ -31,18 +31,39 @@ Add the following snippet to your HTML code
 Walkthrough
 ===========
 
-mobilize.js uses jQuery, nothing else. Assume mobilize.js bootstrap()
-needs jQuery ready for running.
+mobilize.js must not have any hard dependencies.
+It leaves its standalone mobilize = {} namespace.
 
-jquery.mobile.js should not be referred until mobile template has been loaded,
-page has been transformed and everything is in-place HTML wise.
+mobilize.js init() and bootstrap() must complete without 
+any JS libraries loaded. <head> is cleaned with pure DOM 
+manipulation, as <body> is hidden.
 
-jquery.mobile.js must loaded with event handler to suppress automatic initialization
-(mobileinit). It is on by default.
+If mobile is not detected or forced nothing happens.
 
-call $.mobile.initializePage()
+If mobile is detected the following happens
 
-enjoy.
+        * Async loading of mobile template
+        
+        * Async loading os jQuery.js, using AJAX GET
+        
+        * Async loading of jQueryMobile.js, using AJAX GET
+
+* prepareTransform() waits
+        
+* When mobile tempalte, is loaded it is injected to DOM tree
+
+* When jquery.js is loaded, it is eval()'ed
+
+* When both jquery.js and mobile template is loading,
+  prepareTransform() calls transform()
+  
+* transform() calls prepareFinish()
+
+* prepareFinish() waits until jquery.mobile.js is loaded and eval()'ed
+
+* finish() is called, which calls $.mobile.initalizePage()
+
+* Fun ensures
 
 Unit testing
 ============
