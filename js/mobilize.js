@@ -69,6 +69,10 @@ var mobilize = {
 		if(!mobilize.options.jQueryURL) {
 			throw "options.jQueryURL must be given to init()";
 		}
+		
+		// Some async condition variables
+		mobilize.jQueryMobileLoaded = false;
+		mobilize.transformComplete = false;
 	},
 	
     /**
@@ -329,7 +333,11 @@ var mobilize = {
 	},
 	
 	/**
-	 * Magical script loader
+	 * Magical script loader.
+	 * 
+	 * Use AJAX to load Javascript code, then eval() it.
+	 * This ensures that code is executed (not just loaded)
+	 * when triggering the callback.
 	 * 
 	 * http://blog.client9.com/2008/11/javascript-eval-in-global-scope.html
 	 * 
@@ -353,7 +361,7 @@ var mobilize = {
 	 * 
 	 * 
 	 */
-	checkResourceWhistlist : function(src) {
+	checkResourceWhitelist : function(src) {
         for(i=0; i<mobilize.options.resourceWhitelist.length; i++) {
             var matcher = mobilize.options.resourceWhitelist[i];
 			if(src.indexOf(matcher) >= 0) {
@@ -377,7 +385,7 @@ var mobilize = {
 		for(var i=0; i<tags.length; i++) {
 		    script = tags[i];
 			var src = script.getAttribute("src");
-		    if(!mobilize.checkResourceWhistlist(src)) {
+		    if(!mobilize.checkResourceWhitelist(src)) {
 				var parent = script.parentNode;
 				parent.removeChild(script);
 			}
@@ -428,7 +436,7 @@ var mobilize = {
 			
 		  	if(matches != null) {
 			  	for(var i=0; i<matches.length; i++) {
-					if(!mobilize.checkResourceWhistlist(matches[i])) {
+					if(!mobilize.checkResourceWhitelist(matches[i])) {
 						remove();
 						break;
 					}
@@ -516,29 +524,25 @@ var mobilize = {
 	},
 	
 	/**
-	 * Move content from the orignal web page to mobile template by the user rules.
+	 * Transform the web page content to mobile frame.
+	 * 
+	 * Subclasses must override this.
+	 * 
+	 * After the function has been finished mobilize.completeTransform() must
+	 * be called to allow async handlers to proceed. 
 	 */
 	transform : function() {
-
         mobilize.constructHead();		    
 		mobilize.constructBody();
-	    mobilize.finish();
-		
-		// TODO: How to add onload event handler for jquery.mobile. Possible?
-		// TODO: Is this needed now that we have onload stuff in loadMobileTemplate
-		// Assign jQuery Mobile event handlers
-		/*function checkLoaded(){
-			// Wait for all dependencies to load
-			mobilize.log("jQuery.mobile", window.jQuery.mobile)
-			if(window.jQuery.mobile){
-				doTransform();
-				return;
-			}
-
-			setTimeout(checkLoaded, 100);
-		}
-	    
-		setTimeout(checkLoaded, 0);*/
+	    mobilize.completeTransform();
+	},
+	
+	/**
+	 * We can proceed with the page visual enhancements
+	 */
+	completeTransform : function() {
+		mobilize.transformComplete = true;
+		mobilize.prepareFinish();
 	},
 	
 	/**
@@ -690,6 +694,24 @@ var mobilize = {
 	    $("body").append(mobileBody.children());
 	},
 	
+	/**
+	 * Check that all async conditions have been completed allowing us to finish the page.
+	 */
+	prepareFinish : function() {
+		
+		mobilize.log("prepareFinish()");
+		if(!mobilize.jQueryMobileLoaded) {
+			mobilize.log("Waiting for jQuery Mobile to load");			
+		}
+		
+		if(!mobilize.transformComplete) {
+			mobilize.log("Waiting transform() to complete");
+		}
+		
+		if(mobilize.jQueryMobileLoaded && mobilize.transformComplete) {
+			mobilize.finish();
+		}
+	},
 
 	/**
 	 * Mobile transformation is done. Show mobile site to the user.
@@ -720,6 +742,9 @@ var mobilize = {
 		mobilize.log("Disabling autoInitialize, was:" + $.mobile.autoInitialize);
 		$.mobile.autoInitialize = false;
 		$.mobile.ajaxEnabled = false;
+		
+		mobilize.jQueryMobileLoaded = true;
+		mobilize.prepareFinish();
 	}
 };
 
