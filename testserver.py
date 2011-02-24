@@ -37,5 +37,7 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 httpd = SocketServer.TCPServer(("", PORT), Handler)
 
 print "serving at port", PORT
+print "Go to http://localhost:%d/tests/plone-org-test.html" % PORT
+print "Go to http://localhost:%d/tests/wordpress-front-page.html" % PORT
 httpd.serve_forever()
 

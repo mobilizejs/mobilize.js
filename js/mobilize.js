@@ -12,19 +12,27 @@
 var mobilize = {
 	
 	/**
-	 * Instiate Mobilizer class in inheritance safe manner.
+	 * Initialize mobilize class.
+	 * 
+	 * <h2>Options<h2>
+	 * 
+	 * <table><tbody>
+	 * 
+	 * <tr><th>resourceWhitelist</th>
+	 * <td>String tags which mark head tag JS and CSS resources not to be purged</td></tr>
+	 * 
+	 * 
+	 * 
+	 * 
+	 * @param options 
 	 */
 	init : function(options) {
-	
-	    if(!$) {
-	        throw "jQuery needed in order to run mobilize.js";
-	    }
 	    
 	    // Default options
 	    mobilize.options = {
-	            cacheTemplate : false,
 	            
-	            // String tags which mark <head> JS and CSS resources not to be purged
+				cacheTemplate : false,
+	            
 	            resourceWhitelist : [],
 	            
 	            // Which template file to use - relative file or URL
@@ -34,10 +42,16 @@ var mobilize = {
 				inlineStyleMaxCheckLength : 256,
 				
 				// Go always with mobile rendering path (useful for testing)
-				forceMobile : false,
+				forceMobilize : false,
 				
 				// Force user agent
-				userAgent : null
+				forceUserAgent : null,
+				
+				// Which URL load jQuery from
+				jQueryURL : null,
+				
+				// 
+				mobilizeQueryParameter : "mobilize"
 	    };
 	    
 	    // Override default parameters with user supplied versions
@@ -45,12 +59,38 @@ var mobilize = {
 	    if(!options) {
 	        options = {};
 	    }
-	    
-	    $.extend(mobilize.options, options);
-	
+		
+		// Extend global options with user supplied ones
+		for(name in options) {
+			var val = options[name];
+			mobilize.options[name] = val;
+		}	
+		
+		if(!mobilize.options.jQueryURL) {
+			throw "options.jQueryURL must be given to init()";
+		}
 	},
 	
-	/** Utility for internal debug logging 
+    /**
+     * Process the page for mobile if neede
+     * 
+     * Stop loading current HTML resources, start async processes
+     * to get the page mobilized.
+     */
+    bootstrap : function() {
+        
+		mobilize.log("Bootstrap");
+        if(mobilize.checkMobileBrowser(mobilize.options)) {
+            mobilize.enableMobileRendering();
+        } else {
+			mobilize.log("Web mode wanted");
+		}
+    },
+
+	
+	/** 
+	 * Utility for internal debug logging 
+	 * 
 	 * @param msg: message to log
 	 * */
 	log : function(msg) {
@@ -107,15 +147,6 @@ var mobilize = {
 	    }
 	},
 	    
-	/**
-	 * Enable mobile mode if mobile browser is detectd.
-	 */
-	bootstrap : function() {
-	    
-	    if(mobilize.isMobile(mobilize.options)) {
-	    	mobilize.enableMobileRendering();
-	    }
-	},
 	/** 
 	 * Read URL parameters to dict.
 	 * 
@@ -123,6 +154,7 @@ var mobilize = {
 	 */
 	getUrlVars : function ()
 	{
+		// Cache this call results
 		if(this._urlvars) {
 			return this._urlvars;
 		}
@@ -178,23 +210,24 @@ var mobilize = {
 	 * Usage
 	 * -----
 	 * 
-	 * isMobileBrowser([options])
+	 * checkMobileBrowser([options])
 	 * 
 	 * options
 	 * -------
 	 * 	userAgent   = userAgent name. Uses browser's userAgent by default
-	 *  forceMobile = Force detection to mobile to true or false regardless of real type
+	 *  forceMobilize = Force detection to mobile to true or false regardless of real type
 	 * 
 	 * URL parameter mobilize=<true,1> can also be used to force mobile.
 	 * 
-	 * The state is also stored to 'mobilize-mobile' cookie and is used 
-	 * to skip detection if set to '1'. URL and options.force paremeters 
+	 * The state is also stored to 'mobilize-mobile' cookie this
+	 * information is passed to server for the following requests. 
+	 * URL and options.force paremeters 
 	 * override cookie and detection.
 	 * 
 	 * @return: true if browser is considered as mobile browser.
 	 * @see: http://detectmobilebrowser.com/ for the detection code.
 	 */ 
-	isMobileBrowser : function (opts)
+	checkMobileBrowser : function (opts)
 	{
 		var forced;
 		var name;
@@ -203,16 +236,18 @@ var mobilize = {
 		}
 		
 		// Using cookie by default
-		forced = mobilize.readCookie("mobilize-mobile");
-		name = opts.userAgent;
+		// forced = mobilize.readCookie("mobilize-mobile");
+
+        // For user agent testing
+		name = opts.forceUserAgent;
 		
 		// Note: URL parameter and option overrides cookie		
-		if(opts.forceMobile === undefined) {
-			opts.forceMobile = mobilize.getUrlVars()["mobilize"];
-		}
+		// Get URL var to mobilize page
+		forced = mobilize.getUrlVars()[mobilize.options.mobilizeQueryParameter];
 		
-		if(opts.forceMobile !== undefined) {
-			forced = opts.forceMobile;
+		// Javascript option to always render in mobile mode
+		if(opts.forceMobilize) {
+			forced = true;
 		}
 		
 		if(forced !== undefined && forced !== null ) {
@@ -240,18 +275,7 @@ var mobilize = {
 		
 		return result;
 	},
-	    
-	/**
-	 * Detect a mobile browser.
-	 * 
-	 * @returns True if the page should be rendered in mobile mode
-	 */
-	isMobile : function() {
-		var mobile = mobilize.isMobileBrowser();
-		
-		return mobile;
-	},
-	
+	    	
 	/**
 	 * 
 	 * Stop loading all web page resources until mobile template is properly placed
@@ -260,13 +284,68 @@ var mobilize = {
 	 */
 	enableMobileRendering : function() {
 	    
-	    this.suspendLoading();
+		mobilize.log("Enabling mobile rendering");
+		
+	    this.suspendRendering();
 	    
 	    this.cleanHead();
 	    
-	    // We cannot directly load template, since <body> has not been constructed
+		mobilize.log("Syncronous boostrap done");
+	    
+		// We cannot directly load template, since <body> has not been constructed
 	    var self = this;
-	    $(document).ready(function() { self.loadMobileTemplate(); } );
+		
+		function onJQueryLoad() {
+			mobilize.log("jQuery load success");
+			jQuery(document).ready(function() { self.loadMobileTemplate(); } );
+			
+			// TODO: Handle case when document is already ready in this point
+		}
+		
+		mobilize.loadScript(mobilize.options.jQueryURL, onJQueryLoad);
+	    //
+	},
+
+    /**
+     * Helper function to do AJAXy requests before jQuery has been loaded.
+     * 
+     * @param {String} url
+     * 
+     * @param callback(payload)
+     */
+    getAJAX : function(url, callback) {
+		var req = new XMLHttpRequest();
+        req.open('GET', url, true);
+        req.onreadystatechange = function (aEvt) {
+           if(req.readyState == 4) {
+		       if (req.status == 200) {
+			   	callback(req.responseText);
+			   }  else {
+			   	mobilize.log("Could not AJAX url:" + url + " got status:" + req.status);
+			   }
+		   }
+	    };
+        req.send(null);
+	},
+	
+	/**
+	 * Magical script loader
+	 * 
+	 * http://blog.client9.com/2008/11/javascript-eval-in-global-scope.html
+	 * 
+	 * @param {String} url
+	 * 
+	 * @param {Object} callbacl
+	 */
+	loadScript : function(url, callback) {
+        
+		function loaded(javascript) {
+			mobilize.log("Loaded payload for " + url + ", now evaling() it ");
+			eval.call(null, javascript);
+			callback();
+		}
+		
+		mobilize.getAJAX(url, loaded);
 	},
 		
 	/**
@@ -285,18 +364,24 @@ var mobilize = {
 	},
 	
 	/**
-	 * Remove unnecessary script tags from head if not needed for mobile.
+	 * Remove unnecessary script tags if not needed for mobile.
 	 * 
 	 * Use options.resourceWhitelist matching.
 	 */
 	cleanJavascript : function() {
-		$("head script").each(function() {
-		    var script = $(this);
-			var src = script.attr("src");
+		
+		mobilize.log("Cleaning <script>s");
+		
+		var tags = document.getElementsByTagName("script");
+
+		for(var i=0; i<tags.length; i++) {
+		    script = tags[i];
+			var src = script.getAttribute("src");
 		    if(!mobilize.checkResourceWhistlist(src)) {
-				script.remove();
+				var parent = script.parentNode;
+				parent.removeChild(script);
 			}
-		});
+		}
 	},
 
     /**
@@ -311,31 +396,49 @@ var mobilize = {
      * Use options.resourceWhitelist matching.
      */	
 	cleanStyle : function() {
-	
-		$("head style").each(function(){
-          var style = $(this);
+		
+		mobilize.log("Cleaning <style>s");
+		
+		var tags = document.getElementsByTagName("style");
+		
+		for(var i=0; i<tags.length; i++) {
+		  var style = tags[i];
+		  
 		  // http://bytes.com/topic/javascript/answers/600139-get-file-name-style-tag
 
-          var text = style.text(); // TODO: optimize?
+          function remove() {
+		      var parent = style.parentNode;
+			  parent.removeChild(style);	
+		  }
+		  
+          var text = style.textContent;
+		  
+		  if(!text) {
+		  	mobilize.log("Interesting style node:");
+		  	mobilize.log(style);
+		  	continue;
+		  }
           
           // Make sure we don't start searching through very long
 		  // inline CSS
 		  if(text.length < mobilize.options.inlineStyleMaxCheckLength) {
-		  	var matches = text.match(/@import url\(.*\);?/mg);
+		  	
+			// This is inline CSS import
+			var matches = text.match(/@import url\(.*\);?/mg);
 			
 		  	if(matches != null) {
 			  	for(var i=0; i<matches.length; i++) {
 					if(!mobilize.checkResourceWhistlist(matches[i])) {
-						style.remove();
+						remove();
 						break;
 					}
 				} 
 		  	}
 		  } else {
 			// too long CSS snippet, drop unconditionally
-			style.remove();
+			remove();
 		  }
-		});
+		}
 	},
 
     /**
@@ -350,14 +453,14 @@ var mobilize = {
     /**
      * Make sure the browser does not load anything extra before mobile transform has taken place
      */
-	suspendLoading : function() {
-	    var body = $("body");
-	    if(body.size() == 0) {
+	suspendRendering : function() {
+    	
+	    if(!document.body) {
 	        // DOM tree loading, couldn't get hang off it
 	        throw "Could not find body while loading?";
 	    }
 	    
-	    body.hide();
+	    document.body.style.display = "none";
 	},
 	
 	/**
@@ -402,7 +505,16 @@ var mobilize = {
 	 */
 	closeMobileTemplate : function() {
 	},
-	 
+	
+	
+	prepareTransform : function() {
+
+	    if(!jQuery) {
+            throw "jQuery needed in order to run content transform";
+        }
+    	
+	},
+	
 	/**
 	 * Move content from the orignal web page to mobile template by the user rules.
 	 */
