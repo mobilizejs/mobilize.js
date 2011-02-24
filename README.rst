@@ -67,6 +67,25 @@ If mobile is detected the following happens
 
 * Fun ensures
 
+Hosting
+=========
+
+If you indent to host mobilize.js yourself
+
+* You must host jquery.js on your own domain
+
+* You must set mobilize.init() jQueryURL option 
+
+or
+
+* You must set allow origin HTTP header on your server
+
+This is due to browser security limitations.
+
+More info
+
+* https://developer.mozilla.org/En/HTTP_access_control
+
 URL paramters
 =============
 By default mobilize.js uses following URL parameters for configuration.

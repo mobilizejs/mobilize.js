@@ -69,18 +69,16 @@ function addLoadEvent(func){var oldonload=window.onload;if(typeof window.onload!
 
 <body class="single single-post postid-1 single-format-standard">
 
-<script type="text/javascript" src="../js/jquery.js"></script>
-<script type="text/javascript" src="../js/jquery.mobilize.js"></script>
 <script type="text/javascript" src="../js/mobilize.js"></script>
-<script type="text/javascript" src="../js/mobilize.wordpress.js"></script>	
+<script type="text/javascript" src="../js/mobilize.wordpress.js"></script>  
 <script type="text/javascript">
-
     mobilize.init({
-    	template : "../templates/core.html"
+        template : "../templates/core.html",
+	    jQueryURL : "../js/jquery.js"
     });
     mobilize.bootstrap();
-    
 </script>
+
 </head>
 
 <div id="wrapper" class="hfeed">

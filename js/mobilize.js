@@ -47,10 +47,14 @@ var mobilize = {
 				// Force user agent
 				forceUserAgent : null,
 				
-				// Which URL load jQuery from
-				jQueryURL : null,
+				// Which URL load jQuery from.
+				// Default to Google CDN version.
+				//jQueryURL : "http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js",
+				//jQueryURL : "http://code.jquery.com/jquery-1.5.1.min.js",
 				
-				// 
+				// TODO: Add cdn.mobilizejs.com URL
+				jQueryURL : null,
+				 
 				mobilizeQueryParameter : "mobilize"
 	    };
 	    
