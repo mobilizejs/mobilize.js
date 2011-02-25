@@ -17,3 +17,10 @@
 #commentform .required {
 	color: red;
 }
+
+/* Make footer to look little bit more sane */
+.ui-footer {
+	padding: 10px 0;
+	text-align: center;
+	font-weight: lighter;
+}

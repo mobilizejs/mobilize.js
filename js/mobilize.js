@@ -63,6 +63,7 @@ var mobilize = {
 				// TODO: Add cdn.mobilizejs.com URL
 				jQueryURL : null,
 				 
+				 // Which HTTP GET parameter we can use to forc mobilization
 				mobilizeQueryParameter : "mobilize"
 	    };
 	    
@@ -330,9 +331,26 @@ var mobilize = {
 		
 		function onJQueryLoad() {
 			mobilize.log("jQuery load success");
+			
+			if(!jQuery) {
+				throw "jQuery object construction failed";
+			}
+			
 			jQuery(document).ready(function() { self.loadMobileTemplate(); } );
 			
 			// TODO: Handle case when document is already ready in this point
+		}
+		
+		// Clear conflicting jQuery objects
+		// - if two jQuery instances are loaded then event handlers do not function 
+		// properly
+		
+		if(window.jQuery !== undefined) {
+			delete window.jQuery;			
+		}
+		
+		if(window.$ !== undefined) {
+			delete window.$;		
 		}
 		
 		mobilize.loadScript(mobilize.options.jQueryURL, onJQueryLoad);
@@ -791,14 +809,22 @@ var mobilize = {
 	   
 	    this.swapBody();
 	   
-        // Enable jQuery Mobile effects
+        // Draw jQuery Mobile chrome
 		try{
 			$.mobile.initializePage();
 		}catch(e){
 			mobilize.log("mobilize::finish initializePage failed>" + e);
 		}
 
+        // Show constructed page to the user
 	    $("body").show();
+		
+		// Execute handlers which can be run
+		// after jQuery Mobile has completed its internal transforms
+		mobilize.log("Triggering mobilizefinish");
+		//$(document).trigger("mobilizefinish");
+
+        mobilize.bindEventHandlers();
 	},
 	
 	/**
@@ -816,6 +842,18 @@ var mobilize = {
 		
 		mobilize.jQueryMobileLoaded = true;
 		mobilize.prepareFinish();
+		
+	},
+	
+	/**
+	 * Subclass may override.
+	 * 
+	 * This is called after jQuery Mobile has been set up.
+	 * You can now attach event handlers to jQuery UI elements.
+	 * 
+	 */
+	bindEventHandlers : function() {
+		
 	}
 };
 

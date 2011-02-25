@@ -13,19 +13,8 @@ var mobilizeWordpress = {
 	
 	constructBody : function() {
 		
-		// Need to hack this to not show the link as blue.
-		// Set by wordpress style
-		var str= "a.ui-btn-left:link{color : white;}";
-		var head= $('head');
-		var style= $('<style>');
-		
-		style.attr("type", "text/css");
-		style.text(str);
-		head.append(style);
-		
-		// Move body to jQuery template
-		//if(window.location.pathname == "/") {
-		//}
+		mobilize.log("Wordpress constructBody()");
+				
 		if($("body").hasClass("single-post")) {
 			this.constructPostPage();
 		}
@@ -34,48 +23,57 @@ var mobilizeWordpress = {
 		}
 		this.constructHeader();
 		this.constructFooter();
+		
 	},
 	
 	constructHeader : function() {
         // Set page heading from <title> tag
+		
+		var header;
+        header = $("#mobile-body div[data-role=header]");
+		
         var title = $("head title").text();
-        $("#mobile-body div[data-role=header]").append("<h1>" + title + "</h1>");		
+        header.append("<h1>" + title + "</h1>");	
+		
+		mobilize.constructBackButton(header);
 	},
 	
 	constructFooter : function() {
-	    $("#mobile-body div[data-role=footer]").append($("#footer p"));     	
+	    //$("#mobile-body div[data-role=footer]").append($("#site-info"));     	
+		
+		// Put site slogan to footer 
+		$("#mobile-body div[data-role=footer]").append($("#site-description"));         
+	},
+
+    /**
+     * Create back button
+     * 
+     * Point to Home if not already there
+     */	
+	constructBackButton : function(header) {
+		
+		if (!$("body").hasClass("home")) {
+			header.prepend("<a data-icon=home href='/'>Home</a>");
+		}
 	},
 	
 	constructPostPage : function(){
 		
 		// Add back button to header
 		// The header is defined in to template.html(core.html)
-		var backbtn;
 		var header;
 		header = $("#mobile-body div[data-role=header]");
-		
-		backbtn = $('<a class="ui-btn-left ui-btn ui-btn-icon-left ui-btn-corner-all ui-shadow ui-btn-up-a" data-icon="arrow-l" data-rel="back" href="#">');
-		backbtn.appendTo(header);
-		
-		var backbtn_content = $('<span class="ui-btn-inner ui-btn-corner-all">');
-		backbtn_content.appendTo(backbtn);
-		
-		var label = $('<span class="ui-btn-text">');
-		label.text("Back")
-		label.appendTo(backbtn_content);
-		var icon  = $('<span class="ui-icon ui-icon-arrow-l ui-icon-shadow">');
-		icon.appendTo(backbtn_content);
-		
-		
+								
 		var content = $("#mobile-body div[data-role=content]");
 		var entry_content = $(".entry-content");
 		content.append(entry_content);
 		
 		// Add comment area which can be hidden.
 		
-		var collapsible = $('<div data-role="collapsible" data-collapsed="true">');
+		// jQuery element which controls the collapsiple section
+		var collapsible = $('<div id="comment-collapsible" data-role="collapsible" data-collapsed="true">');
 		collapsible.appendTo(content);
-		
+				
 		var header = $('<h3>');
 		// TODO: Get from page for localization
 		header.text("Comments");
@@ -136,27 +134,40 @@ var mobilizeWordpress = {
 			output.appendTo(list);
 		}
 		
-		var mainNavigation = mobilize.createNavigationBox(entries, "Posts", outputter);
+		var mainNavigation = mobilize.createNavigationBox(entries, "Recent headlines", outputter);
 		content.append(mainNavigation);		
 	},
-
+	
 	/**
-	 * createNavigationBox() helper function to turn Plone news / event content 
-	 * to sane jQuery Mobile mark up
+	 * This is called when jQuery Mobile internal transform is done.
+	 * 
+	 * We can start binding jQuery Mobile UI elements
+	 * @param {Object} event
+	 * @param {Object} data
 	 */
-	outputCollectionLink : function(list, input, a) {
-	    
-	    var output = $("<li>"); 
-	    
-	    var heading = $("<h3>");
-	    a.appendTo(heading);
-	    heading.appendTo(output);
-	    
-	    var info = $('<p class="ui-li-aside">');
-	    $(input).find(".info").appendTo(info);
-	    info.appendTo(output);
+	 bindEventHandlers : function(event, data) {
+	 	
+		// XXX: Something is wrong with $ shortcut in this point
+		// jQuery() event bindings work, but not when using $
 		
-		list.append(output);
+		mobilize.log("Installing Wordpress event handlers");
+	    var collapsible = jQuery("#comment-collapsible");
+
+		mobilize.log("Found collapsible:" + collapsible.size());
+		collapsible.bind("expand", mobilize.onCommentsOpen);	    
+     },
+	
+	/**
+	 * Special handler which will move focus to comments when comment button is pressed
+	 */
+	onCommentsOpen : function(event, data) {
+
+	   	mobilize.log("comments open");
+        
+		var x = 0;
+		var y = event.target.offsetTop;
+		window.scrollTo(x, y);
+        console.log(event);
 	}
 };
 

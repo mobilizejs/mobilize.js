@@ -4490,3 +4490,4 @@ $.fn.grid = function(options){
 };
 })(jQuery);
 
+console.log("jQuery len:" + jQuery.toString().length);

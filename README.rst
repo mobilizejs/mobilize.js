@@ -146,3 +146,19 @@ TODO: Script for running all tests.
 Testing Nokia devices:
 ======================
 * http://www.forum.nokia.com/Devices/Remote_device_access/
+
+Issues
+======
+
+mobilize.wordpress.js has problems with $ jQuery shortcut and event bindings.
+jquery.mobile.js triggered event handlers are not called if you use $ notation
+to bind handlers. 
+
+Tried to make sure that previous jQuery is deleted: both $ and jQuery.
+Did not help.
+
+The proper workaround for now is to use jQuery() name to bind events. 
+
+        // XXX: Something is wrong with $ shortcut in this point
+        // jQuery() event bindings work, but not when using $
+
