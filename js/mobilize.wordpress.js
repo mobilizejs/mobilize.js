@@ -7,6 +7,10 @@
 
 var mobilizeWordpress = {
 	
+	getExtendedOptions : function() {			   
+	   return {};
+	},
+	
 	constructBody : function() {
 		
 		// Need to hack this to not show the link as blue.

@@ -33,7 +33,15 @@ var mobilize = {
 	            
 				cacheTemplate : false,
 	            
-	            resourceWhitelist : [],
+				// <script src=""> whitelist
+				// By default, don't be suicidal
+	            whitelistScriptSrc : ["mobilize"],
+				
+				// <style type="text/css> @import whitelist 
+				whitelistStyleImport : [],
+				
+				// <link rel="stylesheet"> href whitelist 
+				whitelistCSSLinks : [],
 	            
 	            // Which template file to use - relative file or URL
 	            template : "template.html",
@@ -64,6 +72,14 @@ var mobilize = {
 	        options = {};
 	    }
 		
+
+        // Extend global options with subclass supplied ones
+        var extendedOptions = mobilize.getExtendedOptions();
+		for(name in extendedOptions) {
+            var val = extendedOptions[name];
+            mobilize.options[name] = val;
+        }   
+		
 		// Extend global options with user supplied ones
 		for(name in options) {
 			var val = options[name];
@@ -77,6 +93,15 @@ var mobilize = {
 		// Some async condition variables
 		mobilize.jQueryMobileLoaded = false;
 		mobilize.transformComplete = false;
+	},
+	
+	/**
+	 * Return plug-in specific options overrides
+	 * 
+	 * @returns Object containing mobilize options to override
+	 */
+	getExtendedOptions : function() {
+		return {}
 	},
 	
     /**
@@ -363,11 +388,15 @@ var mobilize = {
 	/**
 	 * Check if a given link is on resource whitelist.
 	 * 
+	 * @param src URL
 	 * 
+	 * @param list List of substring matches. If matches do not remove the element.
+	 * 
+	 * @returns true if the src string has substring match of any list element
 	 */
-	checkResourceWhitelist : function(src) {
-        for(i=0; i<mobilize.options.resourceWhitelist.length; i++) {
-            var matcher = mobilize.options.resourceWhitelist[i];
+	checkResourceWhitelist : function(src, list) {
+        for(var i=0; i<list.length; i++) {
+            var matcher = list[i];
 			if(src.indexOf(matcher) >= 0) {
 				return true;
 			}
@@ -387,14 +416,48 @@ var mobilize = {
 		var tags = document.getElementsByTagName("script");
 
 		for(var i=0; i<tags.length; i++) {
-		    script = tags[i];
+		    var script = tags[i];
 			var src = script.getAttribute("src");
-		    if(!mobilize.checkResourceWhitelist(src)) {
+			
+			if(!src) {
+				// TODO: Inline script
+				continue;
+			}
+			
+		    if(!mobilize.checkResourceWhitelist(src, mobilize.options.whitelistScriptSrc)) {
+				mobilize.log("Cleaning script tag");
+				mobilize.log(script);
 				var parent = script.parentNode;
 				parent.removeChild(script);
 			}
 		}
 	},
+
+    /**
+     * Remove web only <link rel="stylesheet"> tags
+     * 
+     */
+    cleanCSSLink : function() {
+        
+        mobilize.log("Cleaning <link rel='stylesheet'>s");
+        
+        var tags = document.getElementsByTagName("link");
+
+        for(var i=0; i<tags.length; i++) {
+            script = tags[i];
+			
+			var rel = script.getAttribute("rel");
+			if(rel != "stylesheet") {
+				continue;
+			}          
+			
+            var src = script.getAttribute("href");
+            if(!mobilize.checkResourceWhitelist(src, mobilize.options.whitelistCSSLinks)) {
+                var parent = script.parentNode;
+                parent.removeChild(script);
+            }
+        }
+    },
 
     /**
      * Remove unnecessary CSS links from <head> if not needed for mobile.
@@ -407,7 +470,7 @@ var mobilize = {
      * 
      * Use options.resourceWhitelist matching.
      */	
-	cleanStyle : function() {
+	cleanCSSStyle : function() {
 		
 		mobilize.log("Cleaning <style>s");
 		
@@ -440,7 +503,7 @@ var mobilize = {
 			
 		  	if(matches != null) {
 			  	for(var i=0; i<matches.length; i++) {
-					if(!mobilize.checkResourceWhitelist(matches[i])) {
+					if(!mobilize.checkResourceWhitelist(matches[i], mobilize.options.whitelistStyleImport)) {
 						remove();
 						break;
 					}
@@ -458,7 +521,9 @@ var mobilize = {
      */
     cleanHead : function() {
         mobilize.cleanJavascript();    
-		mobilize.cleanStyle();    
+		mobilize.cleanCSSLink();    
+        mobilize.cleanCSSStyle();    
+
     },
 
 
@@ -467,6 +532,8 @@ var mobilize = {
      */
 	suspendRendering : function() {
     	
+		mobilize.log("Suspending page rendering");
+		
 	    if(!document.body) {
 	        // DOM tree loading, couldn't get hang off it
 	        throw "Could not find body while loading?";
