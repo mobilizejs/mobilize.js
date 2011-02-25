@@ -1,5 +1,5 @@
 /**
- * Pure Javascript mobilization solution
+ * @fileoverview Pure Javascript mobilization solution
  * 
  * @module mobilize.core
  *   
@@ -15,12 +15,104 @@
  * mobilize.js. 
  * <p>
  * mobilize does not need to be instiated and it's a static singleton. Instead,
- * the functionality is extended by directly overriding mobilize member functions.
+ * the functionality is extended by an <i>extender</i>. 
+ * Extender is a Javascript which directly overrides mobilize member functions
+ * in mobilize namespace.
  * <p> 
  * @author Mikko Ohtamaa, Jussi Toivola
  *
  */
 var mobilize = {
+	
+	/**
+	 * @class 
+	 * 
+	 * <p>
+	 * Options and their default values.
+	 * <p>
+	 * These default values can be overriden by extender getExtendedOptions()
+	 * or user supplied parameters to init().
+	 * <p>
+	 * 
+	 * 
+	 * @see mobilize.init
+	 * 
+	 * @see mobilize.getExtendedOptions
+	 */
+	options : {
+                
+		/**
+		 * You need to set this value in order to 
+		 * cache mobile page template in localStorage.
+		 * <p>
+		 * Every time template is upgraded this values must
+		 * be changed within your construction script tag.	
+		 * <p>
+		 * If value is null caching is not used.
+		 * <p>
+		 * @default null		 
+		 */
+	    templateCacheVersion : null,
+	    
+	    /**
+	     * 
+	     * &lt;script src=""&gt; whitelist for filtering web specific 
+         * elements from &lt;head&gt;
+         * <p>
+	     * If src attribute has substring match of any list element,
+	     * the tag is left to mobile version also. 
+	     * <p>
+	     * @default allow scripts which have mobilize in their name.
+	     */
+	    whitelistScriptSrc : ["mobilize"],
+	    
+	    /** 
+	     * &lt;style type="text/css&gt; @import whitelist for filtering web specific 
+         * elements from &lt;head&gt;
+         * <p>
+         * If CSS @import content has substring match of any list element,
+         * the tag is left to mobile version also. 
+         * <p>	     
+         * 
+         * @see mobilize.options.inlineStyleMaxCheckLength
+         * 
+         * @default empty list
+	     */
+	    whitelistStyleImport : [],
+	    
+	    // <link rel="stylesheet"> href whitelist 
+	    whitelistCSSLinks : [],
+	    
+	    // Which template file to use - relative file or URL
+	    template : "template.html",
+	    
+	    /** How many characters &lt;style&gt; inner text may contain it to be run through inline CSS importer check */
+	    inlineStyleMaxCheckLength : 256,
+	    
+	    // Go always with mobile rendering path (useful for testing)
+	    forceMobilize : false,
+	    
+	    // Force user agent
+	    forceUserAgent : null,
+	    
+	    // Which URL load jQuery from.
+	    // Default to Google CDN version.
+	    //jQueryURL : "http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js",
+	    //jQueryURL : "http://code.jquery.com/jquery-1.5.1.min.js",
+	    
+	    // TODO: Add cdn.mobilizejs.com URL
+	    jQueryURL : null,
+	     
+	     // Which HTTP GET parameter we can use to forc mobilization
+	    mobilizeQueryParameter : "mobilize"
+    },
+
+    /** Async flag indicating that jQuery Mobile has been loaded */
+    jQueryMobileLoaded : false,
+
+    /** Async flag indicating that mobile page transform is complete */
+    transformComplete : false,
+
 	
 	/**
 	 * Initialize mobilize class.
@@ -38,46 +130,7 @@ var mobilize = {
 	 * @param options 
 	 */
 	init : function(options) {
-	    
-	    // Default options
-	    mobilize.options = {
-	            
-				cacheTemplate : false,
-	            
-				// <script src=""> whitelist
-				// By default, don't be suicidal
-	            whitelistScriptSrc : ["mobilize"],
-				
-				// <style type="text/css> @import whitelist 
-				whitelistStyleImport : [],
-				
-				// <link rel="stylesheet"> href whitelist 
-				whitelistCSSLinks : [],
-	            
-	            // Which template file to use - relative file or URL
-	            template : "template.html",
-				
-				// How many characters <style> inner text may contain it to be run through inline CSS importer check
-				inlineStyleMaxCheckLength : 256,
-				
-				// Go always with mobile rendering path (useful for testing)
-				forceMobilize : false,
-				
-				// Force user agent
-				forceUserAgent : null,
-				
-				// Which URL load jQuery from.
-				// Default to Google CDN version.
-				//jQueryURL : "http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js",
-				//jQueryURL : "http://code.jquery.com/jquery-1.5.1.min.js",
-				
-				// TODO: Add cdn.mobilizejs.com URL
-				jQueryURL : null,
-				 
-				 // Which HTTP GET parameter we can use to forc mobilization
-				mobilizeQueryParameter : "mobilize"
-	    };
-	    
+	    	    
 	    // Override default parameters with user supplied versions
 	    
 	    if(!options) {
@@ -87,24 +140,31 @@ var mobilize = {
 
         // Extend global options with subclass supplied ones
         var extendedOptions = mobilize.getExtendedOptions();
-		for(name in extendedOptions) {
-            var val = extendedOptions[name];
-            mobilize.options[name] = val;
-        }   
+		mobilize.extend(mobilize.options, extendedOptions);
 		
 		// Extend global options with user supplied ones
-		for(name in options) {
-			var val = options[name];
-			mobilize.options[name] = val;
-		}	
+		mobilize.extend(mobilize.options, options);
 		
 		if(!mobilize.options.jQueryURL) {
 			throw "options.jQueryURL must be given to init()";
 		}
 		
-		// Some async condition variables
-		mobilize.jQueryMobileLoaded = false;
-		mobilize.transformComplete = false;
+	},
+	
+	/**
+	 * Simple shallow copy from an object to another.
+	 * <p>
+	 * 
+	 * @tag utility
+	 * 
+	 * @param {Object} target Javascript object to receive new members
+	 * @param {Object} source Javascript object to source new members
+	 */
+	extend : function(target, source) {
+        for(name in source) {
+            var val = source[name];
+            target[name] = val;
+        }   		
 	},
 	
 	/**

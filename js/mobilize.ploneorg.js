@@ -1,7 +1,7 @@
 /**
  * @namespace plone.org site  mobilization
  *
- * @extends mobilizePlone
+ * @requires mobilizePlone
  */
 var mobilizePloneOrg = {
 	

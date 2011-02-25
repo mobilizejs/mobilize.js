@@ -174,5 +174,5 @@ var mobilizeWordpress = {
 	}
 };
 
-$.extend(mobilize, mobilizeWordpress);
+mobilize.extend(mobilize, mobilizeWordpress);
 

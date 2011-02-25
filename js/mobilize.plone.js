@@ -1,5 +1,5 @@
 /**
- * @namespace Plone CMS mobilization
+ * @namespace Plone CMS extender for mobilize.js
  *
  * @extends mobilize
  */
