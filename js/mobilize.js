@@ -2,12 +2,23 @@
  * Pure Javascript mobilization solution
  * 
  * @module mobilize.core
- * @copyright 2011 Mikko Ohtamaa, Jussi Toivola
- * 
+ *   
  */
 
 /**
- * @class mobilize
+ * @namespace Mobilization core
+ * <p>
+ * <i>mobilize</i> is a core class of mobilize.js. 
+ * <p>
+ * You only want to use this class directly if you are developing mobilization
+ * for your own framework. Otherwise use one of the stock CMS classes supplied with
+ * mobilize.js. 
+ * <p>
+ * mobilize does not need to be instiated and it's a static singleton. Instead,
+ * the functionality is extended by directly overriding mobilize member functions.
+ * <p> 
+ * @author Mikko Ohtamaa, Jussi Toivola
+ *
  */
 var mobilize = {
 	
@@ -22,7 +33,7 @@ var mobilize = {
 	 * <td>String tags which mark head tag JS and CSS resources not to be purged</td></tr>
 	 * 
 	 * 
-	 * 
+	 * @static
 	 * 
 	 * @param options 
 	 */
@@ -99,6 +110,8 @@ var mobilize = {
 	/**
 	 * Return plug-in specific options overrides
 	 * 
+	 * @static
+	 * 
 	 * @returns Object containing mobilize options to override
 	 */
 	getExtendedOptions : function() {
@@ -106,10 +119,12 @@ var mobilize = {
 	},
 	
     /**
-     * Process the page for mobile if neede
-     * 
+     * Entry point to mobilize.js machinery.
+     * <p>
      * Stop loading current HTML resources, start async processes
      * to get the page mobilized.
+     * 
+     * @static
      */
     bootstrap : function() {
         
@@ -241,15 +256,9 @@ var mobilize = {
 	
 	/** Check if browser is running on mobile platform
 	 * 
-	 * Usage
-	 * -----
-	 * 
-	 * checkMobileBrowser([options])
-	 * 
-	 * options
-	 * -------
-	 * 	userAgent   = userAgent name. Uses browser's userAgent by default
-	 *  forceMobilize = Force detection to mobile to true or false regardless of real type
+	 * @param userAgent   = userAgent name. Uses browser's userAgent by default
+	 *  
+	 * @param forceMobilize = Force detection to mobile to true or false regardless of real type
 	 * 
 	 * URL parameter mobilize=<true,1> can also be used to force mobile.
 	 * 
@@ -259,6 +268,7 @@ var mobilize = {
 	 * override cookie and detection.
 	 * 
 	 * @return: true if browser is considered as mobile browser.
+	 * 
 	 * @see: http://detectmobilebrowser.com/ for the detection code.
 	 */ 
 	checkMobileBrowser : function (opts)

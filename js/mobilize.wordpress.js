@@ -1,10 +1,13 @@
 /**
- * plone.org site specific mobilization.
+ * Wordpress CMS mobilization using mobilization.js.
  *
+ * This functionality is retrofitted to core <i>mobilize</i> class.
+ * 
+ *
+ * @namespace Wordpress mobilization
+ * 
+ * @extends mobilize
  */
-
-(function( $, undefined ) {
-
 var mobilizeWordpress = {
 	
 	getExtendedOptions : function() {			   
@@ -173,4 +176,3 @@ var mobilizeWordpress = {
 
 $.extend(mobilize, mobilizeWordpress);
 
-})(jQuery);

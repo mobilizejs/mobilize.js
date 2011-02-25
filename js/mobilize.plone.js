@@ -1,6 +1,7 @@
 /**
- * Generic Plone CMS mobilization.
+ * @namespace Plone CMS mobilization
  *
+ * @extends mobilize
  */
 var mobilizePlone = {
 

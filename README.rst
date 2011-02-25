@@ -100,17 +100,17 @@ Generating documentation
 
 Using jsdoc to generate API documentation.
 
-Get jsdoc:
-    wget http://jsdoc-toolkit.googlecode.com/files/jsdoc_toolkit-2.4.0.zip
-    unzip jsdoc_toolkit-2.4.0.zip
-    mv jsdoc_toolkit-2.4.0/jsdoc-toolkit
-    rm jsdoc_toolkit-2.4.0
+Run::
 
-Run:
     sh getdocs.sh
 
+It will download jsdoc for you and compile documentation to ``docs/`` folder.
+
 TODO: jsdoc looks lame. Use Sphinx. https://github.com/stdbrouw/jsdoc-for-sphinx
-TODO: create regexp to avoid jquery
+
+More info
+
+* http://www.seangw.com/examples/test.js
 
 Unit testing
 ============

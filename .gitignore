@@ -38,14 +38,7 @@ __minitage__*
 .pydevproject
 flattened-eggs
 
-src/Django/
-src/collective.eclipsescripts/
-src/django-dbindexer/
-src/django-testapp/
-src/djangoappengine/
-src/djangotoolbox/
-src/djc.recipe/
-src/my.sampleproject/
-src/petbook/
-src/pyfacebook/
+jsdoc*
+docs
+
 

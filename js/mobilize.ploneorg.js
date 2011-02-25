@@ -1,11 +1,8 @@
 /**
- * plone.org site specific mobilization.
+ * @namespace plone.org site  mobilization
  *
+ * @extends mobilizePlone
  */
-
-
-(function( jq, undefined ) {
-
 var mobilizePloneOrg = {
 	
 	constructBody : function() {
@@ -20,19 +17,26 @@ var mobilizePloneOrg = {
 		this.constructFooter();
 	},
 	
+	/**
+	 * Use h1 class="documentFirstHeading" as mobile page title if available,
+	 * otherwise use head title.
+	 */
 	constructHeader : function() {
         // Set page heading from <title> tag
         var title = jq("head title").text();
         jq("#mobile-body div[data-role=header]").append("<h1>" + title + "</h1>");		
 	},
 	
+	/**
+	 * Use plone.org footer as is in mobile site footer
+	 */
 	constructFooter : function() {
 	    jq("#mobile-body div[data-role=footer]").append(jq("#footer p"));     	
 	},
 	
 	
 	/**
-	 * This is a nasty one
+	 * Construct mobile front page based on plone.org front page web input
 	 */
 	constructFrontPage : function() {
 	
@@ -56,8 +60,4 @@ var mobilizePloneOrg = {
 		       	
 	}
 };
-
-jq.extend(mobilize, mobilizePloneOrg);
-
-})(jQuery);
 
