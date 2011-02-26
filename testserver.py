@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """
 	
 	Test web server for mobilize.js
@@ -10,7 +11,7 @@ import SocketServer
 import urllib
 import Cookie
 
-PORT = 8082
+PORT = 8080
 
 class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	base = SimpleHTTPServer.SimpleHTTPRequestHandler
@@ -48,6 +49,7 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			return None
 		self.send_response(200)
 		self.send_header("Content-type", ctype)
+		# Allow AJAXy from directly opened test files
 		self.send_header("Access-Control-Allow-Origin", "*")
 		self.end_headers()
 		return f
@@ -82,7 +84,11 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 httpd = SocketServer.TCPServer(("", PORT), Handler)
 
 print "serving at port", PORT
-print "Go to http://localhost:%d/tests/plone-org-test.html" % PORT
-print "Go to http://localhost:%d/tests/wordpress-front-page.html" % PORT
+
+# This is handy if your terminal supports double clicking of the linkss
+for file in os.listdir(os.path.join(os.getcwd(), "tests")):
+	if file.endswith(".html"):
+		print "Open test page http://localhost:%d/tests/%s" % (PORT, file)
+
 httpd.serve_forever()
 

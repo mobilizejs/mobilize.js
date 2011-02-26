@@ -1,10 +1,19 @@
-This is an experimental framework to do website mobilization on the client side.
+.. contents ::
 
+Introduction
+============
 
-User experience
+mobilize.js is an experimental HTML5 framework to do website mobilization on the client side.
+It detects mobile browser and formats the web page for touch optimized displays
+using jQuery Mobile UI framework.
+
+Features
 ================
 
-* Touch optimized user interface
+User experience
+----------------
+
+* Touch optimized user interface based on jQuery Mobile
 
 * Portrait and landscape viewport detection 
 
@@ -12,14 +21,21 @@ User experience
 
 * Back navigation
 
-* Quick menu
-
 Optimizations
+--------------
 
 * Cruft CSS and Javascript is removed from HTML document before these are being loaded
 
 * Images which are needed on mobile layout are loaded
 
+Easy deployment
+-----------------
+
+* One <script> tag integration
+
+* mobilize.js cloud hosts optimized JS and CSS file versions, no need to put these
+  on your sever
+  
 Installation
 ============
 
@@ -114,6 +130,7 @@ More info
 
 Unit testing
 ============
+
 For running tests from command line we'll use NodeJS.
 
 Installing NodeJS
@@ -139,14 +156,109 @@ Run:
 
 Running tests
 -------------
+
 Go to tests folder and execute:
+
 	node <testname>.js
+
 TODO: Script for running all tests.
 
-Testing Nokia devices:
-======================
+CDN testing
+===============
+
+* Run ``release.py trunk``
+
+* Start testserver.py, make sure it runs port 8080
+
+* Open ``cloud-wordpress-front-page.html``
+
+Device testing
+=================
+
+Apple
+-----------
+
+Use iOS simulator.
+
+Android
+------------
+
+Use Android emulator.
+
+Nokia devices:
+-----------------
+
+Use Nokia remote device acces 
+
 * http://www.forum.nokia.com/Devices/Remote_device_access/
 
+Delivery strategy
+==========================
+
+The following URI layout is used to host mobilize.js files
+
+The default base is:
+
+        http://cdn.mobilizejs.com/releases
+
+mobilize.wordpress for mobilize.js 0.1 would be::
+
+        http://cdn.mobilizejs.com/releases/0.1/js/mobilize.wordpress.bundle.debug.js
+        
+This would load files::
+
+        http://cdn.mobilizejs.com/releases/0.1/js/jquery+jquerymobile.bundle.debug.js
+        http://cdn.mobilizejs.com/releases/0.1/css/jquerymobile+wordpress.debug.css
+        http://cdn.mobilizejs.com/releases/0.1/templates/wordpress.min.html
+        
+Alternatively::
+
+        http://cdn.mobilizejs.com/releases/0.1/js/mobilize.wordpress.bundle.min.js
+
+Would load files::        
+
+        http://cdn.mobilizejs.com/releases/0.1/js/jquery+jquerymobile.bundle.min.js
+        http://cdn.mobilizejs.com/releases/0.1/css/jquerymobile+wordpress.min.css
+        http://cdn.mobilizejs.com/releases/0.1/templates/wordpress.min.html
+
+Manual loading (for development)
+----------------------------------
+
+You can also access the raw files by setting ``mobilize.cdnOptions.bundle = false``.
+In this you need to load scripts and CSS separately::
+
+        <script class="mobilize-js-source" type="text/javascript" src="http://localhost:8080/js/mobilize.js"></script>
+        <script type="text/javascript" src="http://localhost:8080/js/mobilize.wordpress.js"></script>  
+        <script type="text/javascript">
+            mobilize.init({});
+            mobilize.bootstrap();
+        </script>
+
+Hosting mobilize.js
+--------------------
+
+It is easiest if you follow the following directory layout::
+
+        js/mobilize.js
+        js/...
+        css/jquery.mobile.css
+        css/..
+        images/
+        templates/    
+
+mobilize.js should be able to load itself arbitary directory.
+It is not recommended tomix mobilize.js files with other JS or static media files in
+the same folder.
+
+Locally cached files
+------------------------
+
+If mobilize.cdnOptions.cacheVersion is set to true, the loader tries to load cached versions
+from local storage. If local storage is empty or the cache version mismatchs, the loader
+proceed as decribed above.
+
+
+        
 Issues
 ======
 

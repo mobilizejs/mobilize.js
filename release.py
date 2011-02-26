@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """
 
     Ad hoc Python script for making a mobilize.js release.

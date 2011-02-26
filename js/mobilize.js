@@ -40,20 +40,7 @@ var mobilize = {
 	 * @see mobilize.getExtendedOptions
 	 */
 	options : {
-                
-		/**
-		 * You need to set this value in order to 
-		 * cache mobile page template in localStorage.
-		 * <p>
-		 * Every time template is upgraded this values must
-		 * be changed within your construction script tag.	
-		 * <p>
-		 * If value is null caching is not used.
-		 * <p>
-		 * @default null		 
-		 */
-	    templateCacheVersion : null,
-	    
+                	    
 	    /**
 	     * 
 	     * &lt;script src=""&gt; whitelist for filtering web specific 
@@ -94,17 +81,93 @@ var mobilize = {
 	    
 	    // Force user agent
 	    forceUserAgent : null,
-	    
-	    // Which URL load jQuery from.
-	    // Default to Google CDN version.
-	    //jQueryURL : "http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js",
-	    //jQueryURL : "http://code.jquery.com/jquery-1.5.1.min.js",
-	    
-	    // TODO: Add cdn.mobilizejs.com URL
-	    jQueryURL : null,
-	     
+	    	     
 	     // Which HTTP GET parameter we can use to forc mobilization
 	    mobilizeQueryParameter : "mobilize"
+    },
+    
+    /**
+     * Content delivery options for mobilize.js resource loading,
+     * error reporting and user agent sampling.
+     * 
+     * @class
+     */
+    cdnOptions : {
+
+	    /**
+	     * Use mobilize.js clouad service for scripts sources.
+	     * <p>
+	     * If you need to host all files yourself, set this to false.
+	     * 
+	     * @default  true
+	     */
+	    cloud : true,
+	    
+		/**
+		 * You need to set this value in order to 
+		 * cache mobile page template in localStorage.
+		 * <p>
+		 * Every time template is upgraded this values must
+		 * be changed within your construction script tag.	
+		 * <p>
+		 * If value is null caching is not used.
+		 * <p>
+		 * @default null		 
+		 */
+	    localCacheVersion : null,
+	    
+	    
+	   /**
+	    * URL used for CDN download, error reporting and user agent sampling services.
+	    * 
+	    * @default Extract from <script class="mobilize-js-source"> 
+	    */
+	    baseURL: null,
+	    
+	    /**
+	     * Javascript and resources bundle which download from the cloud service. 
+	     * <p>
+	     * Set to null to not try to do bundled script downloading
+	     * 
+	     * @example moblize.wordpress
+	     * 
+	     * @default null
+	     */
+	    bundleName : null,
+	    
+	    /**
+	     * Filenames of Javascript files to load after bootstrap.
+	     * <p>
+	     * Template variable <code>$bundleName</code> can be used in the strings.
+	     * </p>
+	     * 
+	     * @see mobilize.bootstrap
+	     * 
+	     * @default null
+	     */
+	    javascriptBundles : ["js/jquery+jquerymobile.js"],
+	    
+	    /**
+	     * Filenames of CSS files to load after bootstrap.
+	     * <p>
+	     * 
+	     * </p>
+	     * 
+	     * 
+	     */
+	    cssBundles : ["css/jquerymobile+$bundleName.css"],
+	    
+	    /**
+	     * mobilize.js version. 
+	     * <p>
+	     * Used in cloud error reporting and user agent sampling.
+	     * <p>
+	     * Note that this variable will be updated by release scripts 
+	     * for bundle creation.
+	     * 
+	     * @private
+	     */
+	    version : "0.1dev", // $$VERSION_LINE
     },
 
     /** Async flag indicating that jQuery Mobile has been loaded */
@@ -112,8 +175,7 @@ var mobilize = {
 
     /** Async flag indicating that mobile page transform is complete */
     transformComplete : false,
-
-	
+    
 	/**
 	 * Initialize mobilize class.
 	 * 
@@ -127,26 +189,87 @@ var mobilize = {
 	 * 
 	 * @static
 	 * 
-	 * @param options 
+	 * @param options Javsacript object to override mobilize.options
+	 * 
+	 * @param cdnOptions Javascript object to override mobilize.cdnOptions
 	 */
-	init : function(options) {
+	init : function(options, cdnOptions) {
 	    	    
 	    // Override default parameters with user supplied versions
 	    
 	    if(!options) {
 	        options = {};
 	    }
-		
-
+	    
+	    if(!cdnOptions) {
+	    	cdnOptions = {};
+	    }
+	
         // Extend global options with subclass supplied ones
-        var extendedOptions = mobilize.getExtendedOptions();
-		mobilize.extend(mobilize.options, extendedOptions);
-		
+        mobilize.initPlugins();
+	
 		// Extend global options with user supplied ones
 		mobilize.extend(mobilize.options, options);
+
+        mobilize.extend(mobilize.cdnOptions, cdnOptions);
+        
+        mobilize.initCloud();
+				
+	},
+	
+	/**
+	 * Initialize CDN locations where to load Javascript files.
+	 * 
+	 * Deliver download URLs for various scripts and resources based
+	 * on 
+	 * 
+	 * @see mobilize.cdnOptions
+	 * 
+	 * @private 
+	 */
+	initCloud : function() {
 		
-		if(!mobilize.options.jQueryURL) {
-			throw "options.jQueryURL must be given to init()";
+		var opts = mobilize.cdnOptions;
+		
+		if(!opts.cloud) {
+			// Cloud services have been disabled
+			return;
+		}
+		
+		
+		if(!opts.cloudBaseURL) {
+			// Try to extract cloud URL from our <script> tag
+			var scripts = document.getElementsByTagName("script");
+			var src = null;
+			for(var i=0; i<scripts.length; i++) {
+				var script = scripts[i];
+				var klass = script.getAttribute("class");
+				
+				if(klass == "mobilize-js-source") {
+					
+					// Found our script tag
+					src = script.getAttribute("src");
+					
+					if(!src) {
+						// Inline script tag
+						continue;
+					}
+					
+					var base = mobilize.baseurl(src);
+					
+					mobilize.log("Found script source URL" + base);
+					
+					// Remove /js/ from the end of the URL
+					base = base.substring(0, base.length-4);
+					
+					opts.baseURL = base;		
+					
+					break;
+				}
+			}
+			if(!src) {
+				throw "Could not found <script class='mobilize.js.source'> in HTML to defined mobilize.js hosting location";
+			}
 		}
 		
 	},
@@ -155,9 +278,9 @@ var mobilize = {
 	 * Simple shallow copy from an object to another.
 	 * <p>
 	 * 
-	 * @tag utility
-	 * 
+	 *  
 	 * @param {Object} target Javascript object to receive new members
+	 * 
 	 * @param {Object} source Javascript object to source new members
 	 */
 	extend : function(target, source) {
@@ -168,14 +291,19 @@ var mobilize = {
 	},
 	
 	/**
-	 * Return plug-in specific options overrides
+	 * Run plug-in specific options overrides.	
+	 * <p>
+	 * The plug-in overriding mobilize.js default options
+	 * by overriding this method and manipulating
+	 * options and cdnOptions. 
+	 * <p>
+	 * At least mobilize.cdnOptions.bundleName must be set.
+	 * <p>
 	 * 
-	 * @static
-	 * 
-	 * @returns Object containing mobilize options to override
+	 * @see mobilize.options
 	 */
-	getExtendedOptions : function() {
-		return {}
+	initPlugins : function() {
+		
 	},
 	
     /**
@@ -184,13 +312,12 @@ var mobilize = {
      * Stop loading current HTML resources, start async processes
      * to get the page mobilized.
      * 
-     * @static
      */
     bootstrap : function() {
         
 		mobilize.log("Bootstrap");
         if(mobilize.checkMobileBrowser(mobilize.options)) {
-            mobilize.enableMobileRendering();
+            mobilize.renderAsMobile();
         } else {
 			mobilize.log("Web mode wanted");
 		}
@@ -281,8 +408,10 @@ var mobilize = {
 	    return vars;
 	},
 
-	/** 
-	 * See: http://www.quirksmode.org/js/cookies.html 	
+	/**
+	 * Create a new cookie 
+	 * 
+	 * @see http://www.quirksmode.org/js/cookies.html 	
 	 */
 	createCookie : function(name,value,days) {
 		if (days) {
@@ -294,8 +423,10 @@ var mobilize = {
 		document.cookie = name+"="+value+expires+"; path=/";
 	},
 	
-	/** 
-	 * See: http://www.quirksmode.org/js/cookies.html 	
+	/**
+	 * Get a cookie value by name 
+	 * 
+	 * @see http://www.quirksmode.org/js/cookies.html 	
 	 */
 	readCookie : function(name) {
 		var nameEQ = name + "=";
@@ -379,39 +510,16 @@ var mobilize = {
 		
 		return result;
 	},
-	    	
+	
 	/**
+	 * Clear conflicting jQuery objects
+	 * <p>
+	 * jQuery might ill behave if we overlay it with a different version
 	 * 
-	 * Stop loading all web page resources until mobile template is properly placed
-	 * and template transformation has taken place.
-	 * 
+	 * @private 
 	 */
-	enableMobileRendering : function() {
-	    
-		mobilize.log("Enabling mobile rendering");
+	clearConflictingJQuery : function() {
 		
-	    this.suspendRendering();
-	    
-	    this.cleanHead();
-	    
-		mobilize.log("Syncronous boostrap done");
-	    
-		// We cannot directly load template, since <body> has not been constructed
-	    var self = this;
-		
-		function onJQueryLoad() {
-			mobilize.log("jQuery load success");
-			
-			if(!jQuery) {
-				throw "jQuery object construction failed";
-			}
-			
-			jQuery(document).ready(function() { self.loadMobileTemplate(); } );
-			
-			// TODO: Handle case when document is already ready in this point
-		}
-		
-		// Clear conflicting jQuery objects
 		// - if two jQuery instances are loaded then event handlers do not function 
 		// properly
 		
@@ -421,11 +529,94 @@ var mobilize = {
 		
 		if(window.$ !== undefined) {
 			delete window.$;		
-		}
-		
-		mobilize.loadScript(mobilize.options.jQueryURL, onJQueryLoad);
-	    //
+		}	
 	},
+	    	
+	/**
+	 * Reconstruct page HTML code for mobile presentation.
+	 * <p>
+	 * Stop loading all web page resources until mobile template is properly placed
+	 * and template transformation has taken place.
+	 * 
+	 */
+	renderAsMobile : function() {
+	    
+		mobilize.log("Enabling mobile rendering");
+		
+	    this.suspendRendering();
+	    
+	    this.cleanHead();
+	    	   	
+		mobilize.loadMobileResources();
+
+	},
+	
+	/**
+	 * Convert relative paths to full CDN URLs if they are relative
+	 * 
+	 * @param uri Relative URI or full URL
+	 * 
+	 * @returns Full URL
+	 * 
+	 * @private
+	 */
+	toFullCDNURL : function(uri) {
+		if(uri.indexOf("http") >= 0) {
+			return uri;
+		} else {
+			return mobilize.cdnOptions.baseURL + "/" + uri;
+		}
+	},
+	
+	/**
+	 * Load JS and CSS files needed on the mobile page.
+	 * <p>
+	 * This function provides some logic for caching 
+	 * the result, so that the files are not reloaded again.
+	 * <p>
+	 * Note that Javascript is loaded synchronously
+	 * and transform() won't proceed until Javascript
+	 * (jQuery) is completely loaded.
+	 * <p>
+	 * CSS are loaded asyncrhonously.
+	 */
+	loadMobileResources : function() {		
+		var i;
+		var self = this;
+		var cdn = mobilize.cdnOptions;
+		
+		var jsCompleteCount = 0;
+		
+		mobilize.log("Constructing mobile <head>");
+		
+		function onJSComplete() {
+			jsCompleteCount++;
+			
+			// Proceed to tempalte transform
+			if(jsCompleteCount >= cdn.javascriptBundles.length) {
+				
+				// Now we can make an assumption jQuery Mobile is functional
+				mobilize.jQueryMobileLoaded = false;
+				
+				self.loadMobileTemplate();
+			}						
+		}
+				
+		for(i=0; i<cdn.javascriptBundles.length; i++) {
+			var js = cdn.javascriptBundles[i];
+			mobilize.log("Loading js:" + js);
+			mobilize.loadScript(mobilize.toFullCDNURL(js), onJSComplete);
+		}
+
+		for(i=0; i<cdn.cssBundles.length; i++) {
+			var css = cdn.cssBundles[i];
+			mobilize.log("Loading CSS:" +css);
+			mobilize.loadCSS(mobilize.toFullCDNURL(css));
+		}
+			
+		mobilize.log("Syncronous boostrap done");
+	},
+		
 
     /**
      * Helper function to do AJAXy requests before jQuery has been loaded.
@@ -471,6 +662,23 @@ var mobilize = {
 		}
 		
 		mobilize.getAJAX(url, loaded);
+	},
+	
+	/**
+	 * Load a CSS file for the mobile page.
+	 * <p>
+	 * The file is loaded asynchronously 
+	 * and inserted as <link> tag to the head.
+	 * <p>
+	 * TODO: Check from the cache from the existing version
+	 * 
+	 * @param url CSS url.
+	 */
+	loadCSS : function(url) {		
+		var link = document.createElement("link");
+		link.setAttribute("rel", "stylesheet");
+		link.setAttribute("href", url);		
+		document.head.appendChild(link);
 	},
 		
 	/**

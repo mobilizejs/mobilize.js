@@ -63,13 +63,20 @@ function addLoadEvent(func){var oldonload=window.onload;if(typeof window.onload!
 
 <body class="home blog logged-in">
 
-<script type="text/javascript" src="../js/mobilize.js"></script>
+<script class="mobilize-js-source" type="text/javascript" src="../js/mobilize.js"></script>
 <script type="text/javascript" src="../js/mobilize.wordpress.js"></script>	
 <script type="text/javascript">
-    mobilize.init({
-    	template : "../templates/wordpress.html",
-		jQueryURL : "../js/jquery.js"
-    });
+    
+    // Local debug initialization
+    mobilize.init(
+        {    
+        	template : "../templates/wordpress.html",
+        },
+	{
+		javascriptBundles : [ "js/jquery.js", "js/jquery.mobile.js" ], 
+		cssBundles : ["css/jquery.mobile.css", "css/wordpress.css"],
+	}
+    );
     mobilize.bootstrap();
 </script>
 	

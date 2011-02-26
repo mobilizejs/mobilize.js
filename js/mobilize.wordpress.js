@@ -1,17 +1,25 @@
 /**
  * Wordpress CMS mobilization using mobilization.js.
- *
+ *<p>
  * This functionality is retrofitted to core <i>mobilize</i> class.
- * 
- *
+ * <p>
  * @namespace Wordpress mobilization
- * 
+ * <p>
  * @extends mobilize
  */
 var mobilizeWordpress = {
 	
-	getExtendedOptions : function() {			   
-	   return {};
+	/**
+	 * Wordpress specific default options setter.
+	 */
+	initPlugins : function() {			   
+	
+	   mobilize.extend(mobilize.cdnOptions, {
+		   bundleName : "mobilize.wordpress",
+		   cssBundles : ["js/mobilize.wordpress.mobile.min.css"],
+		   javascriptBundles : ["css/mobilize.wordpress.mobile.min.js"]
+	   });
+	   
 	},
 	
 	constructBody : function() {
