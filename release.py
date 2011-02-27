@@ -29,7 +29,7 @@ bundles = [
     {
         "name" : "core",
         "bootstrap_js" : ["mobilize.js"],
-        "mobile_js" : ["jquery.js", "jquery.mobile.js"],
+        "mobile_js" : ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js"],
         "mobile_css" : ["jquery.mobile.css"],        
         "templates" : ["core.html"],
     },
@@ -37,7 +37,7 @@ bundles = [
     {
         "name" : "wordpress",
         "bootstrap_js" : ["mobilize.js", "mobilize.wordpress.js"],
-        "mobile_js" : ["jquery.js", "jquery.mobile.js"],
+        "mobile_js" : ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js"],
         "mobile_css" : ["jquery.mobile.css", "wordpress.css"],        
         "templates" : ["wordpress.html"]
     },
@@ -91,7 +91,7 @@ def process_bundle(bundle):
 
     # Create bootstrap
     create_bundle_core("mobilize.%s.js" % bundle["name"], bundle["bootstrap_js"], "js")    
-    create_bundle_core("jquery.%s.js" % bundle["name"], bundle["mobile_js"], "js")    
+    create_bundle_core("mobilize.%s.mobile.js" % bundle["name"], bundle["mobile_js"], "js")    
     create_bundle_core("mobilize.%s.mobile.css" % bundle["name"], bundle["mobile_css"], "css")    
     
     # Copy templates

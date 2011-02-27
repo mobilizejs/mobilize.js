@@ -6,7 +6,7 @@
  */
 
 /**
- * @namespace Mobilization core
+ * @namespace mobilize.js core
  * <p>
  * <i>mobilize</i> is a core class of mobilize.js. 
  * <p>
@@ -69,10 +69,7 @@ var mobilize = {
 	    
 	    // <link rel="stylesheet"> href whitelist 
 	    whitelistCSSLinks : [],
-	    
-	    // Which template file to use - relative file or URL
-	    template : "template.html",
-	    
+	    	    
 	    /** How many characters &lt;style&gt; inner text may contain it to be run through inline CSS importer check */
 	    inlineStyleMaxCheckLength : 256,
 	    
@@ -156,6 +153,14 @@ var mobilize = {
 	     * 
 	     */
 	    cssBundles : ["css/jquerymobile+$bundleName.css"],
+	    
+	    /** 
+	     * Which HTML template to use for the mobile page 
+	     * <p>
+	     * Extenders usually override this.
+	     */
+	    template : "templates/core.html",
+
 	    
 	    /**
 	     * mobilize.js version. 
@@ -852,7 +857,9 @@ var mobilize = {
 	    // + transformation result
 	    $("body").append("<div id='mobile-template-holder'>");
 	    		
-	    $("#mobile-template-holder").load(mobilize.options.template, function() {
+	    
+	    var url = mobilize.toFullCDNURL(mobilize.cdnOptions.template);
+	    $("#mobile-template-holder").load(url, function() {
 	        self.transform();
 	    });
 	},

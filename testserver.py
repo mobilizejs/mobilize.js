@@ -88,7 +88,6 @@ print "serving at port", PORT
 # This is handy if your terminal supports double clicking of the linkss
 for file in os.listdir(os.path.join(os.getcwd(), "tests")):
 	if file.endswith(".html"):
-		print "Open test page http://localhost:%d/tests/%s" % (PORT, file)
+		print "Open test page http://localhost:%d/tests/%s?mobilize=true" % (PORT, file)
 
 httpd.serve_forever()
-

@@ -11,10 +11,10 @@
  *
  */
 
-/**
- * @namespace mobilize
- */
-mobilize.extend(mobilize, {
+mobilize.extend(mobilize, 
+		
+ 	/** @lends mobilize */
+	{
 	
 	/**
 	 * Mobilize code which can be run only after loading jQuery.

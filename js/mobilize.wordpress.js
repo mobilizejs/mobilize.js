@@ -1,6 +1,6 @@
 /**
  * Wordpress CMS mobilization using mobilization.js.
- *<p>
+ * <p>
  * This functionality is retrofitted to core <i>mobilize</i> class.
  * <p>
  * @namespace Wordpress mobilization
@@ -11,13 +11,21 @@ var mobilizeWordpress = {
 	
 	/**
 	 * Wordpress specific default options setter.
+	 * <p>
+	 * This sets default download locations for files using
+	 * minified bundles and CDN URI layout. Override
+	 * this in init() call if you want to do something else.
+	 * <p>
+	 * @see mobilize.init
+	 * 
 	 */
 	initPlugins : function() {			   
 	
 	   mobilize.extend(mobilize.cdnOptions, {
 		   bundleName : "mobilize.wordpress",
-		   cssBundles : ["js/mobilize.wordpress.mobile.min.css"],
-		   javascriptBundles : ["css/mobilize.wordpress.mobile.min.js"]
+		   cssBundles : ["css/mobilize.wordpress.mobile.min.css"],
+		   javascriptBundles : ["js/mobilize.wordpress.mobile.min.js"],
+		   template : "templates/wordpress.html"
 	   });
 	   
 	},
@@ -27,9 +35,10 @@ var mobilizeWordpress = {
 		mobilize.log("Wordpress constructBody()");
 				
 		if($("body").hasClass("single-post")) {
+			// Post type page
 			this.constructPostPage();
-		}
-		else {
+		} else {
+			// Front page
 			this.constructFrontPage();
 		}
 		this.constructHeader();

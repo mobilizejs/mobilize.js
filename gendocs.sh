@@ -11,6 +11,8 @@ fi
 
 java -jar $TOOLKIT/jsrun.jar $TOOLKIT/app/run.js ./js  -x=js,jsx --directory=./docs --exclude=jquery* --template=$TOOLKIT/templates/jsdoc
 
+
+
 # for sphinx
 #java -jar jsdoc-toolkit/jsrun.jar jsdoc-toolkit/app/run.js ./js  -x=js,jsx --directory=./docs/source
 # --template=jsdoc-for-sphinx
