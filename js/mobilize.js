@@ -543,10 +543,10 @@ var mobilize = {
 	    
 		mobilize.log("Enabling mobile rendering");
 		
-	    this.suspendRendering();
+	    mobilize.suspendRendering();
 	    
-	    this.cleanHead();
-	    	   	
+	    mobilize.cleanHead();
+	    
 		mobilize.loadMobileResources();
 
 	},
@@ -592,12 +592,12 @@ var mobilize = {
 		function onJSComplete() {
 			jsCompleteCount++;
 			
+			if(jsCompleteCount == 1) {
+				// Assume jQuery loaded
+			}
+			
 			// Proceed to tempalte transform
-			if(jsCompleteCount >= cdn.javascriptBundles.length) {
-				
-				// Now we can make an assumption jQuery Mobile is functional
-				mobilize.jQueryMobileLoaded = false;
-				
+			if(jsCompleteCount >= cdn.javascriptBundles.length) {							
 				self.loadMobileTemplate();
 			}						
 		}
@@ -616,7 +616,7 @@ var mobilize = {
 			
 		mobilize.log("Syncronous boostrap done");
 	},
-		
+			
 
     /**
      * Helper function to do AJAXy requests before jQuery has been loaded.
@@ -838,15 +838,6 @@ var mobilize = {
 	    document.body.style.display = "none";
 	},
 	
-	/**
-	 * Must be called before template loading,
-	 * as immediately when jQuery Mobile script tag is inserted to DOM,
-	 * some of its event handlers are run.
-	 */
-	bindTemplateEventHandlers : function() {
-		 // Assign jQuery Mobile event handlers 
-        $(window.document).bind("mobileinit", mobilize.onMobileInit);
-	},
 	
 	/**
 	 * Start loading mobile template to DOM tree.
@@ -860,9 +851,7 @@ var mobilize = {
 	    // Create the element which will hold the mobile template
 	    // + transformation result
 	    $("body").append("<div id='mobile-template-holder'>");
-	    
-		mobilize.bindTemplateEventHandlers();
-		
+	    		
 	    $("#mobile-template-holder").load(mobilize.options.template, function() {
 	        self.transform();
 	    });
@@ -1103,24 +1092,6 @@ var mobilize = {
 		//$(document).trigger("mobilizefinish");
 
         mobilize.bindEventHandlers();
-	},
-	
-	/**
-	 * jQuery mobile initializer handler 
-	 * 
-	 * @param {Object} e
-	 */
-	onMobileInit : function(e) {
-		
-		// We'll manage our own workflow and don't want to jQuery Mobile
-		// start doing things instantly when the script is loaded
-		mobilize.log("Disabling autoInitialize, was:" + $.mobile.autoInitialize);
-		$.mobile.autoInitialize = false;
-		$.mobile.ajaxEnabled = false;
-		
-		mobilize.jQueryMobileLoaded = true;
-		mobilize.prepareFinish();
-		
 	},
 	
 	/**
