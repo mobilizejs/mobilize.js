@@ -109,10 +109,10 @@ def prepare_images():
     # Image files are shared
     print "Copying images"
     
-    images_target = os.path.join(target_path, "images")
+    images_target = os.path.join(target_path, "css", "images")
     if os.path.exists(os.path.join(images_target)):
         shutil.rmtree(images_target)
-    shutil.copytree(os.path.join(home, "images"), images_target)
+    shutil.copytree(os.path.join(home, "css", "images"), images_target)
        
 def main():
     

@@ -1,8 +1,6 @@
 /**
  * @fileoverview Pure Javascript mobilization solution
  * 
- * @module mobilize.core
- *   
  */
 
 /**

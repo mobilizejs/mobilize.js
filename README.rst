@@ -257,6 +257,13 @@ If mobilize.cdnOptions.cacheVersion is set to true, the loader tries to load cac
 from local storage. If local storage is empty or the cache version mismatchs, the loader
 proceed as decribed above.
 
+Integrating Wordpress
+========================
+
+For now, add the sample code::
+
+
+
 
         
 Issues
