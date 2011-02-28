@@ -385,20 +385,41 @@ var mobilize = {
 	        // 
 	    }
 	},
+	
+	/** Add new URL variables safely with or without existing '?' character */
+	addUrlVar : function(aURL, aNewVar){
+	    var args = mobilize.getUrlVars(aURL);
+	    var newurl = aURL.split("?",1)[0];
+	    newurl += "?";
 	    
+	    var items = []
+	    for(var i = 0; i < args.length; i++) {
+	        var a = args[i];
+	        var value = args[a];
+	        items.push(a + "=" + value);
+	    }
+	    
+	    items.push(aNewVar);
+	    
+	    newurl += items.join("&");
+	    return newurl;
+	},
 	/** 
 	 * Read URL parameters to dict.
 	 * 
 	 * See: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
 	 */
-	getUrlVars : function ()
+	getUrlVars : function (aURL)
 	{
-		// Cache this call results
-		if(this._urlvars) {
+		// Cache window.location.href call results
+		if(!aURL && this._urlvars) {
 			return this._urlvars;
 		}
+		if(!aURL) {
+		    aURL = window.location.href;
+		}
 	    var vars = [], hash;
-	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	    var hashes = aURL.slice(aURL.indexOf('?') + 1).split('&');
 	    
 	    for(var i = 0; i < hashes.length; i++)
 	    {

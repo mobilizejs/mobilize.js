@@ -126,24 +126,28 @@ var mobilizeWordpress = {
 			var output = $("<li role='option'>");
 			var title = input.find(".entry-title");
 			
-			// Add mobilize=true to get the new page show mobile version
-			// This is mainly for testing on pc
-			var link = title.find("a");
-			var href = link.attr("href");
-			//if(href) {
-				//if(href.indexOf("http://") >= 0) {
-				link.attr("href", href + "?mobilize=true");
-				//}
-			//}
-			
-			
-			
 			var text = title.text();
-			title = $("<div class='ui-btn-text'>");
 			
 			var tmp = $("<h3 class='ui-li-heading'>");
-			link.text(text);
-			tmp.append(link);
+			
+			// Add mobilize=true to get the new page show mobile version
+            // This is mainly for testing on pc as the mobile detection 
+			// should handle this automatically when the page is loaded.
+            var link = title.find("a");
+            if(link && mobilize.getUrlVars().mobilize !== undefined) {
+                var href = link.attr("href");
+                if(href) {
+                    if(href.indexOf("http://") >= 0) {
+                        console.log("href:"+href)
+                        var newurl = mobilize.addUrlVar(href, "mobilize=" + mobilize.getUrlVars().mobilize);
+                        link.attr("href", newurl);
+                        
+                    }
+                }
+                link.text(text);
+                tmp.append(link);
+            }
+            title = $("<div class='ui-btn-text'>");
 			
 			var date = input.find(".entry-date").text();
 			var info = $('<p class="ui-li-aside">');
