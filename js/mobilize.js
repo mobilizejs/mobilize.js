@@ -424,6 +424,12 @@ var mobilize = {
 		}
 		
 	    var vars = [], hash;
+	    console.log("aURL:"+aURL)
+        
+	    if(aURL.indexOf("#") >= 0 ){
+	        aURL = aURL.slice(0,aURL.indexOf("#"));
+	        console.log("aURL:"+aURL)
+	    }
 	    var hashes = aURL.slice(aURL.indexOf('?') + 1).split('&');
 	    
 	    for(var i = 0; i < hashes.length; i++)
