@@ -411,13 +411,18 @@ var mobilize = {
 	 */
 	getUrlVars : function (aURL)
 	{
+	    if(!this._urlvars) {
+	        this._urlvars = {};
+	    }
+	    if(!aURL) {
+            aURL = window.location.href;
+        }
+	    
 		// Cache window.location.href call results
-		if(!aURL && this._urlvars) {
-			return this._urlvars;
+		if(this._urlvars[aURL]) {
+			return this._urlvars[aURL];
 		}
-		if(!aURL) {
-		    aURL = window.location.href;
-		}
+		
 	    var vars = [], hash;
 	    var hashes = aURL.slice(aURL.indexOf('?') + 1).split('&');
 	    
@@ -428,7 +433,7 @@ var mobilize = {
 	        vars[hash[0]] = hash[1];
 	    }
 	    
-	    this._urlvars = vars;
+	    this._urlvars[aURL] = vars;
 	    return vars;
 	},
 

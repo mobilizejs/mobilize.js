@@ -134,14 +134,15 @@ var mobilizeWordpress = {
             // This is mainly for testing on pc as the mobile detection 
 			// should handle this automatically when the page is loaded.
             var link = title.find("a");
-            if(link && mobilize.getUrlVars().mobilize !== undefined) {
+            if(link && mobilize.getUrlVars().mobilize !== undefined) 
+            {
                 var href = link.attr("href");
-                if(href) {
-                    if(href.indexOf("http://") >= 0) {
-                        console.log("href:"+href)
+                if(href) 
+                {
+                    if(href.indexOf("http://") >= 0) 
+                    {
                         var newurl = mobilize.addUrlVar(href, "mobilize=" + mobilize.getUrlVars().mobilize);
                         link.attr("href", newurl);
-                        
                     }
                 }
                 link.text(text);
