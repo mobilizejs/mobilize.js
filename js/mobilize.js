@@ -170,7 +170,7 @@ var mobilize = {
 	     * 
 	     * @private
 	     */
-	    version : "0.1dev", // $$VERSION_LINE
+	    version : "XXX" // $$VERSION_LINE
     },
 
     /** Async flag indicating that jQuery Mobile has been loaded */

@@ -71,6 +71,7 @@ def add_extra_extension(filepath, extra_ext):
 
 
 def create_bundle_core(target, sources, type):
+    global version
     
     print "Creating bundle:" + target
     buffer = ""
@@ -78,6 +79,20 @@ def create_bundle_core(target, sources, type):
         f = open(os.path.join(home, type, s))
         buffer += f.read()
         f.close()
+    
+    # Update version
+    lines = buffer.split("\n")
+    for x in xrange(len(lines)):
+        line = lines[x]
+        if "$$VERSION_LINE" in line:
+            i = line.index('"') + 1
+            ie = line.index('"',i)
+            line = line[:i] + version + line[ie:]
+            lines[x] = line
+            
+            print "$$VERSION_LINE found. Updated version to '%s'" % version
+            break
+    buffer = "\n".join(lines)
     
     for mode in ["debug", "min"]:
         output = os.path.join(target_path, type, add_extra_extension(target, mode))    
