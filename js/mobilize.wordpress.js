@@ -164,9 +164,23 @@ var mobilizeWordpress = {
 			output.appendTo(list);
 
 		}
-		
+
 		var mainNavigation = mobilize.createNavigationBox(entries, "Recent headlines", outputter);
 		content.append(mainNavigation);		
+		
+		// Pages
+        var menu = $(".menu");
+        var items = menu.find("li");
+        list = $("<ul data-inset='true' data-role='listview'>");
+        list.prepend("<li data-role='list-divider'>Pages</li>"); // TODO: Localization
+        
+        items.each(function(){
+            var output = $("<li role='option'>");
+            output.append($(this).find("a"));
+            output.appendTo(list)
+        });
+        content.append(list);
+        
 	},
 	
 	/**
