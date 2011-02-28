@@ -69,12 +69,12 @@ function addLoadEvent(func){var oldonload=window.onload;if(typeof window.onload!
 
 <body class="single single-post postid-1 single-format-standard">
 
-<script type="text/javascript" src="../js/mobilize.js"></script>
-<script type="text/javascript" src="../js/mobilize.wordpress.js"></script>  
+<script class="mobilize-js-source" 
+        type="text/javascript" 
+    src="http://localhost:8080/js/mobilize.wordpress.min.js"></script>
 <script type="text/javascript">
     mobilize.init({
-        template : "../templates/wordpress.html",
-	    jQueryURL : "../js/jquery.js"
+        // Additional options here  
     });
     mobilize.bootstrap();
 </script>

@@ -128,17 +128,22 @@ var mobilizeWordpress = {
 			
 			// Add mobilize=true to get the new page show mobile version
 			// This is mainly for testing on pc
-			var href = title.find("a").attr("href");
-			if(href) {
-				if(href.indexOf("http://") != 0) {
-					title.find("a").attr("href", href + "?mobilize=true");
-				}
-			}
+			var link = title.find("a");
+			var href = link.attr("href");
+			//if(href) {
+				//if(href.indexOf("http://") >= 0) {
+				link.attr("href", href + "?mobilize=true");
+				//}
+			//}
+			
+			
 			
 			var text = title.text();
-			title = $("<div class='ui-btn-text'>")
-			var tmp = $("<h3 class='ui-li-heading'>")
-			tmp.text(text);
+			title = $("<div class='ui-btn-text'>");
+			
+			var tmp = $("<h3 class='ui-li-heading'>");
+			link.text(text);
+			tmp.append(link);
 			
 			var date = input.find(".entry-date").text();
 			var info = $('<p class="ui-li-aside">');
@@ -152,6 +157,7 @@ var mobilizeWordpress = {
 			output.append(entry_content);
 			
 			output.appendTo(list);
+
 		}
 		
 		var mainNavigation = mobilize.createNavigationBox(entries, "Recent headlines", outputter);
