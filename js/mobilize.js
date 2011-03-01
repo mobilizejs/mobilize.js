@@ -78,7 +78,10 @@ var mobilize = {
 	    forceUserAgent : null,
 	    	     
 	     // Which HTTP GET parameter we can use to forc mobilization
-	    mobilizeQueryParameter : "mobilize"
+	    mobilizeQueryParameter : "mobilize",
+	    
+	    /** Send mobilize.log messages to url /log?msg=<msg> */
+	    haveRemoteDebugLogging : false
     },
     
     /**
@@ -207,7 +210,7 @@ var mobilize = {
 	    if(!cdnOptions) {
 	    	cdnOptions = {};
 	    }
-	
+	    
         // Extend global options with subclass supplied ones
         mobilize.initPlugins();
 	
@@ -318,12 +321,15 @@ var mobilize = {
      */
     bootstrap : function() {
         
-		mobilize.log("Bootstrap");
-        if(mobilize.checkMobileBrowser(mobilize.options)) {
-            mobilize.renderAsMobile();
-        } else {
-			mobilize.log("Web mode wanted");
-		}
+	    function doBootstrap(){
+            if(mobilize.checkMobileBrowser(mobilize.options)) {
+                mobilize.renderAsMobile();
+            } else {
+                mobilize.log("Web mode wanted");
+            }
+        }
+	    doBootstrap = mobilize.trapped(doBootstrap);
+	    doBootstrap();
     },
 
 	
@@ -337,6 +343,12 @@ var mobilize = {
 			if(console.log) {
 				console.log(msg);
 			}
+		}
+		
+		if(mobilize.options.haveRemoteDebugLogging) {
+		    var req = new XMLHttpRequest();
+		    req.open('GET', '/log?msg=' + msg, false);
+		    req.send(null);
 		}
 	},
 	
@@ -424,11 +436,11 @@ var mobilize = {
 		}
 		
 	    var vars = [], hash;
-	    console.log("aURL:"+aURL)
+	    mobilize.log("aURL:"+aURL)
         
 	    if(aURL.indexOf("#") >= 0 ){
 	        aURL = aURL.slice(0,aURL.indexOf("#"));
-	        console.log("aURL:"+aURL)
+	        mobilize.log("aURL:"+aURL)
 	    }
 	    var hashes = aURL.slice(aURL.indexOf('?') + 1).split('&');
 	    
@@ -690,13 +702,51 @@ var mobilize = {
 	 */
 	loadScript : function(url, callback) {
         
-		function loaded(javascript) {
-			mobilize.log("Loaded payload for " + url + ", now evaling() it ");
-			eval.call(null, javascript);
-			callback();
-		}
-		
-		mobilize.getAJAX(url, loaded);
+	    //mobilize.log(navigator.userAgent.toLowerCase());
+	    // Injecting script tag doesn't work with android webkit
+	    if(navigator.userAgent.toLowerCase().indexOf("android") >= 0 ) {
+	        mobilize.log("Loading script for evaluation:" + url);
+    		function loaded(javascript) {
+    			mobilize.log("Loaded payload for " + url + ", now evaling() it ");
+    			eval.call(null, javascript);
+    			callback();
+    		}
+    	    mobilize.getAJAX(url, mobilize.trapped(loaded));
+		    return;
+	    }
+	    
+	    // Using script tag injection to have JS debugger show the source
+	    mobilize.log("injecting script tag to load:" + url);
+		var script = document.createElement("script");
+		script.type = "text/javascript";
+		script.setAttribute("src", url);
+		script.src = url;
+		script.onerror = function(e){
+            mobilize.log( String(e) );
+        };
+        
+		// From jQuery
+		//var done = false;
+		script.onload = script.onreadystatechange = function(){
+		    
+		    mobilize.log("onload")
+		    
+            if ( !this.done && (!this.readyState ||
+                    this.readyState === "loaded" || this.readyState === "complete") ) {
+                this.done = true;
+                callback();
+                
+                // Handle memory leak in IE
+                script.onload = script.onreadystatechange = null;
+                if ( document.head && script.parentNode ) {
+                    document.head.removeChild( script );
+                }
+            }
+        };
+        
+        var head = document.getElementsByTagName("head")[0];
+        head.appendChild(script);
+        
 	},
 	
 	/**
@@ -710,10 +760,11 @@ var mobilize = {
 	 * @param url CSS url.
 	 */
 	loadCSS : function(url) {		
-		var link = document.createElement("link");
+		//mobilize.log("document.head:" + String(document.head));
+	    var link = document.createElement("link");
 		link.setAttribute("rel", "stylesheet");
 		link.setAttribute("href", url);		
-		document.head.appendChild(link);
+		document.getElementsByTagName("head")[0].appendChild(link);
 	},
 		
 	/**
@@ -854,7 +905,6 @@ var mobilize = {
         mobilize.cleanJavascript();    
 		mobilize.cleanCSSLink();    
         mobilize.cleanCSSStyle();    
-
     },
 
 
@@ -889,9 +939,9 @@ var mobilize = {
 	    		
 	    
 	    var url = mobilize.toFullCDNURL(mobilize.cdnOptions.template);
-	    $("#mobile-template-holder").load(url, function() {
-	        self.transform();
-	    });
+	    
+	    var onload = mobilize.trapped(mobilize.transform, { scope : mobilize } );
+	    $("#mobile-template-holder").load(url, onload);
 	},
 	
 	/**
@@ -1101,8 +1151,10 @@ var mobilize = {
 			mobilize.log("Waiting transform() to complete");
 		}
 		
-		if(mobilize.jQueryMobileLoaded && mobilize.transformComplete) {
-			mobilize.finish();
+		mobilize.log("mobilize.jQueryMobileLoaded:"+mobilize.jQueryMobileLoaded);
+		mobilize.log("mobilize.transformComplete:"+mobilize.transformComplete);
+		if(mobilize.jQueryMobileLoaded && mobilize.transformComplete) {    
+		    mobilize.finish();
 		}
 	},
 
@@ -1142,6 +1194,183 @@ var mobilize = {
 		
 	}
 };
+
+
+// ================== Hand picked utilies from Ion project
+// ================== https://bitbucket.org/jtoivola/ion/
+// ======================================================
+
+/** Get attribute from object. Return def if the attribute or obj does not exist.*/
+mobilize.getattr = function(obj, a, def){
+    if (obj === undefined || obj[a] === undefined) {
+        return def;
+    }
+    else {
+        return obj[a];
+    }
+};
+
+/** Utility function to set default value to object if attribute is not defined */
+mobilize.setdefault = function(aObject,aAttr,aDefault){
+    if (aObject[aAttr] === undefined) {
+        aObject[aAttr] = aDefault;
+    }
+};
+
+/** Returns a function, which calls the original function after given delay
+ * with parameters given to the returned function.
+ * 
+ * @param {Function} func
+ * @param {Object} after
+ * @param {Array}  opts     List of parameters
+ * Example:
+ 
+mobilize.delayedFunction( function(arg1,arg2){
+        alert("1000="+(arg1 + arg2));
+    }, 
+    1000
+)(400,600);
+ */
+
+mobilize.delayedFunction = function callAfter(func, after, opts){
+    return function(){        
+        // Call in the same scope as the original
+        var scope = mobilize.getattr(opts, "scope", func);        
+        var args  = arguments;
+        setTimeout(function(){ func.apply(scope, args);}, after);
+    };
+};
+
+/**
+ * Returns a new function with changed scope( this=scope).
+ * @param {Function} func
+ * @param {Object} scope
+ * 
+ * Example: 
+mobilize.scope( function(a){ alert( this.a + a ); }, { a : 10 } )( 90 );
+ */
+mobilize.scope = function scope(func, scope){
+    return function(){
+        func.apply(scope, arguments);  
+    };
+};
+
+/** Utility for calling functions. 
+ * Supports callbacks, timeouts, scope change and repeating.
+ * 
+ * @param {Function} func Function to call
+ * @param {Object}   opts  Options:
+ *                    args  - arguments for the function. Use list for multiple.
+ *                    scope - Object which is referred to by 'this' in function.
+ *                    after - Call asynchronously after time in ms
+ *                    callback - Called after asynchonous operation completes.
+ *                    repeat   - How many times to repeat the function
+ */
+mobilize.call = function call(func, opts ){
+    
+    var scope = mobilize.getattr( opts, "scope", func );
+    var args  = mobilize.getattr( opts, "args", undefined );
+    var after = mobilize.getattr( opts, "after", undefined);
+    var repeat   = mobilize.getattr( opts, "repeat", 1);
+    var callback = mobilize.getattr( opts, "callback", undefined);
+    
+    // Convert single argument to list
+    if( args ){
+        if( typeof args != "object" || args.length === undefined ){
+            args = [args];
+        }
+    }
+
+    
+    if( after !== undefined ){
+        func = mobilize.scope( func, scope );
+        
+        // Call asynchronously
+        var called = mobilize.scope( function(){
+                var result = mobilize.trap(this.func, { args : this.args });
+                if( this.callback ){ 
+                    mobilize.trap(this.callback, {args : result});
+                }
+            },  
+            {func:func, callback : callback, args : args }
+        );
+        
+        for( var i = 1; i <= repeat; i++){
+            mobilize.delayedFunction(called, after * i )();
+        }
+        
+    }
+    else {
+        for( var i = 0; i < repeat; i++){
+            var result = func.apply( scope, args);
+        }
+    }
+    
+    return result;
+};
+/** Call function and catch exceptions. Logs trace (if supported)
+ * @param func: Function to call
+ * @param ots: Options passed to mobilize.call
+ *             onerror : callback to call instead of logging trace
+ *             onfinally : Always called with or without exception after 
+ *                         the function completes.
+ * */
+mobilize.trap = function trap(func, opts){
+    
+    var result = undefined;
+    try{
+        result = mobilize.call( func, opts );
+    }catch(e){        
+        if( opts && opts.onerror ){
+            opts.onerror(e);
+        }else{
+            mobilize.log( "mobilize.call options:" + String(opts) );
+            mobilize.log( "Called function:"  + func );
+            if( !e.stack){                                
+                mobilize.log( e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message );
+            }
+            else{           
+                mobilize.log( e.stack);
+            }
+            // Pass the error on
+            throw e;
+        }
+    }
+    finally{
+        if( opts && opts.onfinally ){
+            opts.onfinally();
+        }
+    }
+    return result;
+};
+ 
+/** Like mobilize.trap, but does not call the function. 
+ * Returns a decorated function instead.
+ * 
+ * Useful for callbacks, which might otherwise fail silently.
+ * @param func: Function to decorate
+ * @param options: See options of mobilize.trap and mobilize.call
+ *                 options.args are overridden with arguments given to decorator
+ *                 if any given.
+ */
+mobilize.trapped = function trapped(func, options ){
+    
+    return function(){
+        if( !options ){
+            options = {};
+        }
+        
+        if( arguments.length > 0 ){
+            options.args = arguments;
+        }
+        
+        if( !options.scope ){
+            options.scope = func;
+        }
+        return mobilize.trap( func, options );
+    };
+};
+
 
 if(typeof(exports) !== "undefined")
 	exports.mobilize = mobilize;
