@@ -13,6 +13,7 @@ Contents:
    usage
    wordpress
    development
+   support
    hosting
    testing
    documentation
