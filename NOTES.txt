@@ -3,8 +3,9 @@ Misc notes
 
 These mught get useful later.
 
-
 http://ryankirkman.com/a-quick-analysis-of-amazon-cloudfront-costs
 
 http://www.cdnjs.com/
+
+On Android, document.head is not ready when executing <script> in <body>.
 

@@ -9,8 +9,7 @@ if [ ! -e $TOOLKIT ] ; then
         unzip jsdoc_toolkit-2.4.0.zip
 fi
 
-java -jar $TOOLKIT/jsrun.jar $TOOLKIT/app/run.js ./js  -x=js,jsx --directory=./docs --exclude=jquery* --template=$TOOLKIT/templates/jsdoc
-
+java -jar $TOOLKIT/jsrun.jar $TOOLKIT/app/run.js ../js  -x=js,jsx --directory=./apidocs --exclude=jquery* --template=$TOOLKIT/templates/jsdoc
 
 
 # for sphinx
