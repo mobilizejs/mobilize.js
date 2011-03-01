@@ -212,7 +212,7 @@ var mobilizeWordpress = {
 		var x = 0;
 		var y = event.target.offsetTop;
 		window.scrollTo(x, y);
-        console.log(event);
+        mobilize.log(event);
 	}
 };
 
