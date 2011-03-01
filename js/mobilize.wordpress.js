@@ -127,17 +127,16 @@ var mobilizeWordpress = {
 			var title = input.find(".entry-title");
 			
 			var text = title.text();
-			
 			var tmp = $("<h3 class='ui-li-heading'>");
 			
-			// Add mobilize=true to get the new page show mobile version
-            // This is mainly for testing on pc as the mobile detection 
-			// should handle this automatically when the page is loaded.
-            var link = title.find("a");
-            if(link && mobilize.getUrlVars().mobilize !== undefined) 
+			var link = title.find("a");
+            if(link) 
             {
                 var href = link.attr("href");
-                if(href) 
+                // Add mobilize=true to get the new page show mobile version
+            	// This is mainly for testing on pc as the mobile detection 
+				// should handle this automatically when the page is loaded.
+                if(href && mobilize.getUrlVars().mobilize !== undefined) 
                 {
                     if(href.indexOf("http://") >= 0) 
                     {
@@ -177,7 +176,7 @@ var mobilizeWordpress = {
         items.each(function(){
             var output = $("<li role='option'>");
             output.append($(this).find("a"));
-            output.appendTo(list)
+            output.appendTo(list);
         });
         content.append(list);
         

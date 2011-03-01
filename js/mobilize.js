@@ -80,8 +80,18 @@ var mobilize = {
 	     // Which HTTP GET parameter we can use to forc mobilization
 	    mobilizeQueryParameter : "mobilize",
 	    
-	    /** Send mobilize.log messages to url /log?msg=<msg> */
-	    haveRemoteDebugLogging : false
+	    /** Send mobilize.log messages to url [remoteDebugLogBaseUrl]log?msg=[msg] */
+	    haveRemoteDebugLogging : false,
+	    
+	    remoteDebugLogBaseUrl : "/",
+	    
+	    /** Expects server to add mobilize code to the page 
+	     * If mobilize cookie is not set:
+	     * 1. Sets cookie
+	     * 2. Reloads page
+	     */
+	    reloadOnMobile : false
+	    
     },
     
     /**
@@ -347,7 +357,7 @@ var mobilize = {
 		
 		if(mobilize.options.haveRemoteDebugLogging) {
 		    var req = new XMLHttpRequest();
-		    req.open('GET', '/log?msg=' + msg, false);
+		    req.open('GET', mobilize.options.remoteDebugLogBaseUrl + 'log?msg=' + msg, false);
 		    req.send(null);
 		}
 	},

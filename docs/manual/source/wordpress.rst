@@ -15,7 +15,7 @@ Posts
 
     <div class="posts">
       <div class="post">
-        <div class="entry-title">...</div>
+        <div class="entry-title"><a src='url-to-post'>title</a></div>
         <div class="entry-content">...</div>
         <div class="entry-date">...</div>
       </div>

@@ -54,8 +54,63 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.end_headers()
         return f
     
+    def do_proxy(self):
+        import urllib2
+        
+        url = urllib.unquote(self.path.split("url=")[-1])
+        if "localhost" in url:
+            i = 0
+            i = url.index("://",i) + 3
+            i = url.index("/", i)
+            #self.path = url[i:]
+            url  = "." + url[i:]
+            f = open(url);data=f.read();f.close()
+        else:
+            print "url", url
+            resp = urllib2.urlopen(url)
+            data = resp.read();
+        
+        i = 0;
+        i = data.index("head", i)
+        i = data.index("body", i)
+        i = data.index(">", i)
+        i += 1
+        
+        injected = """
+        
+        <script type="text/javascript">
+        function mobilize_init(){
+                mobilize.init({
+                forceMobilize : true,
+                haveRemoteDebugLogging : true,
+                remoteDebugLogBaseUrl : "http://localhost:8080/"
+            });
+            mobilize.bootstrap();
+        }
+        </script>
+        
+        <script  class="mobilize-js-source" 
+                  type="text/javascript" 
+                   src="http://localhost:8080/js/mobilize.wordpress.min.js"
+                   onload="mobilize_init();">
+        </script>
+        
+        """
+        
+        data = data[:i] + injected + data[i:];
+        self.send_response(200)
+        self.end_headers()
+        
+        self.wfile.write(data)
+        
+        return 
+        
     def do_GET(self):
         #print "doGET", self.path
+        if "/proxy" in self.path:
+            self.do_proxy()
+            return
+        
         if "/log" in self.path:
             msg = urllib.unquote(self.path.split("msg=")[-1])
             while msg.endswith("/"):
