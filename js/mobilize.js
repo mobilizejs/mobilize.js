@@ -1299,11 +1299,15 @@ var mobilize = {
 	/** Utility for defloating images.
 	 * Also adds default onclick handler to show the image.
 	 * 
+	 * usage:
+	 *     mobilize.defloat(document.getElementById("img-id"))
+     *     mobilize.defloat($("#img-id")[0])
+	 * 
 	 * @param image: Image element
 	 */
 	defloat : function(image)
 	{
-        image.style.float = "none";
+        image.style["float"] = "none";
         var klass = image.getAttribute("class");
         klass = ["mobilize-resized", klass].join(" ");
         image.setAttribute("class", klass);
