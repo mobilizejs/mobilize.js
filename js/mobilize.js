@@ -192,6 +192,9 @@ var mobilize = {
     /** Async flag indicating that mobile page transform is complete */
     transformComplete : false,
     
+    /** An event handler, called once transformComplete and jQueryMobileLoaded are complete */ 
+    onCompleted : null,
+    
 	/**
 	 * Initialize mobilize class.
 	 * 
@@ -228,7 +231,7 @@ var mobilize = {
 
         mobilize.extend(mobilize.cdnOptions, cdnOptions);
         
-        if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobile) {
+        if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
             mobilize.log("mobilizejs: browser is not supported");
             return;
         }
@@ -348,7 +351,7 @@ var mobilize = {
      */
     bootstrap : function() {
         
-	    if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobile) {
+	    if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
             mobilize.log("mobilize.js: browser is not supported");
             return;
         }
@@ -1222,6 +1225,11 @@ var mobilize = {
 		//$(document).trigger("mobilizefinish");
 
         mobilize.bindEventHandlers();
+        
+        if(mobilize.onCompleted) 
+        {
+            mobilize.onCompleted();
+        }
 	},
 	
 	/**
@@ -1237,7 +1245,7 @@ var mobilize = {
 	
 	/**
 	 * Check if the browser is supported. If not, no mobilization is done
-	 * unless explicitly forced with forceMobile option.
+	 * unless explicitly forced with forceMobilize option.
 	 * 
 	 * Code from jQuery mobile, converted to use regular DOM API. 
 	 * Need to do this because we don't have jquery.mobile until 
@@ -1286,9 +1294,30 @@ var mobilize = {
 	    }
 	    
 	    return check("only all")
+	},
+	
+	/** Utility for defloating images.
+	 * Also adds default onclick handler to show the image.
+	 * 
+	 * @param image: Image element
+	 */
+	defloat : function(image)
+	{
+        image.style.float = "none";
+        var klass = image.getAttribute("class");
+        klass = ["mobilize-resized", klass].join(" ");
+        image.setAttribute("class", klass);
+        
+        // TODO: Use stylesheet?
+        image.setAttribute("width", "100%");
+        
+        if(!image.onclick) {
+            image.onclick = function(){
+                window.open(image.src);
+            };
+        }
 	}
 };
-
 
 // ================== Hand picked utilies from Ion project
 // ================== https://bitbucket.org/jtoivola/ion/

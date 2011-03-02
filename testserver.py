@@ -63,6 +63,7 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             i = url.index("://",i) + 3
             i = url.index("/", i)
             #self.path = url[i:]
+            url = url.split("?")[0]
             url  = "." + url[i:]
             f = open(url);data=f.read();f.close()
         else:
@@ -70,34 +71,36 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             resp = urllib2.urlopen(url)
             data = resp.read();
         
-        i = 0;
-        i = data.index("head", i)
-        i = data.index("body", i)
-        i = data.index(">", i)
-        i += 1
-        
-        injected = """
-        
-        <script type="text/javascript">
-        function mobilize_init(){
-                mobilize.init({
-                forceMobilize : true,
-                haveRemoteDebugLogging : true,
-                remoteDebugLogBaseUrl : "http://localhost:8080/"
-            });
-            mobilize.bootstrap();
-        }
-        </script>
-        
-        <script  class="mobilize-js-source" 
-                  type="text/javascript" 
-                   src="http://localhost:8080/js/mobilize.wordpress.min.js"
-                   onload="mobilize_init();">
-        </script>
-        
-        """
-        
-        data = data[:i] + injected + data[i:];
+        if "mobilize.init" not in data:
+            i = 0;
+            i = data.index("head", i)
+            i = data.index("body", i)
+            i = data.index(">", i)
+            i += 1
+            
+            injected = """
+            
+            <script type="text/javascript">
+            function mobilize_init(){
+                    mobilize.init({
+                    forceMobilize : true,
+                    haveRemoteDebugLogging : true,
+                    remoteDebugLogBaseUrl : "http://localhost:8080/"
+                });
+                mobilize.bootstrap();
+            }
+            </script>
+            
+            <script  class="mobilize-js-source" 
+                      type="text/javascript" 
+                       src="http://localhost:8080/js/mobilize.wordpress.min.js"
+                       onload="mobilize_init();">
+            </script>
+            
+            """
+            
+            data = data[:i] + injected + data[i:]
+            
         self.send_response(200)
         self.end_headers()
         
@@ -107,11 +110,13 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         
     def do_GET(self):
         #print "doGET", self.path
+        #if "logo_238.png" in self.path:
+        #    pass
         if "/proxy" in self.path:
             self.do_proxy()
             return
         
-        if "/log" in self.path:
+        if "/log?msg" in self.path:
             msg = urllib.unquote(self.path.split("msg=")[-1])
             while msg.endswith("/"):
                 msg = msg[:-1]
@@ -161,8 +166,15 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if "/log" in self.path:
             return
         return self.base.log_request(self, code)
+    
+    
 
+    
 SocketServer.TCPServer.allow_reuse_address = True
+SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map.update({
+       ".png" : "image/png"
+    })
+
 httpd = SocketServer.TCPServer(("", PORT), Handler)
 
 print "serving at port", PORT
