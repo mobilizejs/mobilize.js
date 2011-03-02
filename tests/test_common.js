@@ -4,7 +4,7 @@ var jsdom  = require('jsdom').jsdom
 global.window = jsdom().createWindow();
 global.jQuery = require("jquery");
 global.document = {
-		cookie : ""
+	cookie : ""
 };
 
 var mobilize = require("../js/mobilize").mobilize;
@@ -19,6 +19,29 @@ function test_getUrlVars() {
     assert.equal("5", vars.b);
     
 }
+
+function test_forceReload() {
+    mobilize.createCookie("mobilize-mobile", "");       
+    var reloadcalled = false;
+    window.location.reload = function(){
+        console.log(reloadcalled)
+        reloadcalled = true;
+    }
+    mobilize.init({reloadOnMobile : true, forceUserAgent : "android"});
+    assert.ok(reloadcalled);
+    
+    try {
+        reloadcalled = false
+        mobilize.init({reloadOnMobile : false, forceUserAgent : "android"});
+        assert.ok(false, "exception expected");
+    }catch(error){
+        // Fails with DOM stuff, which is ok here
+        assert.ok(true, "exception expected");
+    }
+    
+    assert.ok(!reloadcalled);
+}
+
 function test_baseurl() {
 	var url = "http://localhost:8080/test/template.html/?testing=123";
 	var expect = "http://localhost:8080/test/";
@@ -40,6 +63,7 @@ function test_url_parameter_add()
 
 test_baseurl();
 test_getUrlVars();
+test_forceReload();
 test_url_parameter_add();
 
 console.log("common tests passed");
