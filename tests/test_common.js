@@ -3,9 +3,15 @@ var assert = require("assert");
 var jsdom  = require('jsdom').jsdom
 global.window = jsdom().createWindow();
 global.jQuery = require("jquery");
-global.document = {
-	cookie : ""
-};
+global.document = global.window.document;
+global.document.cookie = "";
+
+document = global.document;
+document.createElement("html");
+// To get through browser support check
+document.defaultView.getComputedStyle = function(){
+    return { position : "absolute" };
+}
 
 var mobilize = require("../js/mobilize").mobilize;
 
@@ -24,7 +30,6 @@ function test_reloadOnMobile() {
     mobilize.createCookie("mobilize-mobile", "");       
     var reloadcalled = false;
     window.location.reload = function(){
-        console.log(reloadcalled)
         reloadcalled = true;
     }
     mobilize.init({reloadOnMobile : true, forceUserAgent : "android"});

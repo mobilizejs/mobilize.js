@@ -228,8 +228,12 @@ var mobilize = {
 
         mobilize.extend(mobilize.cdnOptions, cdnOptions);
         
-        // If reloadOnMobile set, set cookie and reload to allow server do its magic
+        if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobile) {
+            mobilize.log("mobilizejs: browser is not supported");
+            return;
+        }
         
+        // If reloadOnMobile set, set cookie and reload to allow server do its magic
         if(mobilize.options.reloadOnMobile && mobilize.isMobile(mobilize.options.forceUserAgent)) {
             var cookie;
             cookie = mobilize.readCookie("mobilize-mobile");
@@ -302,6 +306,7 @@ var mobilize = {
 		
 	},
 	
+	
 	/**
 	 * Simple shallow copy from an object to another.
 	 * <p>
@@ -343,6 +348,11 @@ var mobilize = {
      */
     bootstrap : function() {
         
+	    if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobile) {
+            mobilize.log("mobilize.js: browser is not supported");
+            return;
+        }
+	    
 	    function doBootstrap(){
             if(mobilize.checkMobileBrowser(mobilize.options)) {
                 mobilize.renderAsMobile();
@@ -426,7 +436,7 @@ var mobilize = {
 	    var newurl = aURL.split("?",1)[0];
 	    newurl += "?";
 	    
-	    var items = []
+	    var items = [];
 	    for(var i = 0; i < args.length; i++) {
 	        var a = args[i];
 	        var value = args[a];
@@ -458,11 +468,9 @@ var mobilize = {
 		}
 		
 	    var vars = [], hash;
-	    mobilize.log("aURL:"+aURL)
-        
+
 	    if(aURL.indexOf("#") >= 0 ){
 	        aURL = aURL.slice(0,aURL.indexOf("#"));
-	        mobilize.log("aURL:"+aURL)
 	    }
 	    var hashes = aURL.slice(aURL.indexOf('?') + 1).split('&');
 	    
@@ -1225,6 +1233,59 @@ var mobilize = {
 	 */
 	bindEventHandlers : function() {
 		
+	},
+	
+	/**
+	 * Check if the browser is supported. If not, no mobilization is done
+	 * unless explicitly forced with forceMobile option.
+	 * 
+	 * Code from jQuery mobile, converted to use regular DOM API. 
+	 * Need to do this because we don't have jquery.mobile until 
+	 * we know the page will be mobilized.
+	 */
+	isBrowserSupported : function(){
+	    // TODO: use window.matchMedia once at least one UA implements it
+	    var cache = {};
+	    var testDiv = document.createElement("div");
+	    testDiv.setAttribute("id", "mobilize-mediatest");
+	    
+	    var fakeBody = document.createElement("body");
+	    fakeBody.appendChild(testDiv);
+	    
+	    var $html = document.getElementsByTagName("html")[0];
+	    //testDiv = $( "<div id='jquery-mediatest'>" ),
+	    //fakeBody = $( "<body>" ).append( testDiv );
+
+	    function check( query ) {
+	        if ( !( query in cache ) ) {
+	            var styleBlock = document.createElement('style'),
+	                cssrule = "@media " + query + " { #mobilize-mediatest { position:absolute; } }";
+	            //must set type for IE! 
+	            styleBlock.type = "text/css";
+	            if (styleBlock.styleSheet){ 
+	              styleBlock.styleSheet.cssText = cssrule;
+	            } 
+	            else {
+	              styleBlock.appendChild(document.createTextNode(cssrule));
+	            } 
+
+	            
+                $html.insertBefore( styleBlock, $html.firstChild );
+                $html.insertBefore( fakeBody, $html.firstChild );
+                
+	            //$html.prepend( fakeBody ).prepend( styleBlock );
+                testDiv = document.getElementById("mobilize-mediatest");
+                var position = document.defaultView.getComputedStyle(testDiv, null).position;                
+	            cache[ query ] = position === "absolute";
+	            // Remove temp tags
+	            fakeBody.appendChild(styleBlock);
+	            $html.removeChild(fakeBody);
+	            //fakeBody.add( styleBlock ).remove();
+	        }
+	        return cache[ query ];
+	    }
+	    
+	    return check("only all")
 	}
 };
 
