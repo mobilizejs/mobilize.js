@@ -122,7 +122,7 @@ var mobilize = {
          * localStorage keys:
          *  mobilizejs-localCacheVersion - Previous mobilize localCacheVersion
          * 
-         * Resources are stored by their url as key
+         * Resources are stored by their bundle id as key
          * 
          * If value is null caching is not used.
          * <p>
@@ -159,6 +159,9 @@ var mobilize = {
          * @default null
          */
         javascriptBundles : ["js/jquery+jquerymobile.js"],
+        
+        /** Url to send critical internal errors */
+        errorReportingUrl : "http://cdn.mobilizejs.com/logerror/",
         
         /**
          * Filenames of CSS files to load after bootstrap.
@@ -239,6 +242,13 @@ var mobilize = {
         if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
             mobilize.log("mobilizejs: browser is not supported");
             return;
+        }
+        
+        // Check if localStorage is supported and force disable if not
+        if(typeof(localStorage) == undefined && mobilize.options.localCacheVersion) 
+        {
+            mobilize.log("localStorage not supported for caching.");
+            mobilize.options.localCacheVersion = null;
         }
         
         // If reloadOnMobile set, set cookie and reload to allow server do its magic
@@ -371,7 +381,7 @@ var mobilize = {
                 mobilize.log("Web mode wanted");
             }
         }
-        doBootstrap = mobilize.trapped(doBootstrap);
+        doBootstrap = mobilize.trappedInternal(doBootstrap);
         doBootstrap();
     },
 
@@ -391,6 +401,19 @@ var mobilize = {
         if(mobilize.options.haveRemoteDebugLogging) {
             var req = new XMLHttpRequest();
             req.open('GET', mobilize.options.remoteDebugLogBaseUrl + 'log?msg=' + msg, false);
+            req.send(null);
+        }
+    },
+    
+    /** Log critical errors. These are sent to cdn server also. 
+     * Used to log critical errors of mobilize.js to central location.
+     * */
+    logInternalError : function(msg){
+        mobilize.log(msg);
+        
+        if(mobilize.cdnOptions.errorReportingUrl) {
+            var req = new XMLHttpRequest();
+            req.open('GET', mobilize.cdnOptions.errorReportingUrl+'?msg=' + msg, false);
             req.send(null);
         }
     },
@@ -551,18 +574,17 @@ var mobilize = {
             name = (navigator.userAgent || navigator.vendor || window.opera);
         }
         
-        result = (function(a) {
-            if (/android|avantgo|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
+        function f(a,b){
+            if(/android|avantgo|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))
             {
                 return true;
             }
-            else
-            {
+            else {
                 return false;
             }
-        })(name);
+        }        
         
-        return result;
+        return f(name);
     },
     /** Check if browser is running on mobile platform or is forced mobile and update cookie
      * 
@@ -598,15 +620,15 @@ var mobilize = {
         forced = mobilize.getUrlVars()[mobilize.options.mobilizeQueryParameter];
         
         // Javascript option to always render in mobile mode
-        if(opts.forceMobilize) {
-            forced = true;
+        if(opts.forceMobilize !== undefined) {
+            forced = opts.forceMobilize;
         }
         
         if(forced !== undefined && forced !== null ) {
             result = (forced == "true" || forced == "1" || forced === true || forced === 1);
         }
         else {
-            result = mobilize.isMobile();
+            result = mobilize.isMobile(name);
         }
         
         // Update cookie
@@ -689,8 +711,12 @@ var mobilize = {
         var i;
         var self = this;
         var cdn = mobilize.cdnOptions;
-        
         var jsCompleteCount = 0;
+        var cacheVer = mobilize.cdnOptions.localCacheVersion;
+        
+        if(cacheVer) {
+            mobilize.log("localStorage enabled for caching. Version:" + cacheVer);
+        }
         
         mobilize.log("Constructing mobile <head>");
         
@@ -719,8 +745,7 @@ var mobilize = {
             mobilize.log("Loading CSS:" + bundle);
             mobilize.loadCSS(bundle, mobilize.toFullCDNURL(bundle));
         }
-        
-        var cacheVer = mobilize.cdnOptions.localCacheVersion;
+         
         if(cacheVer !== null) {
             localStorage.setItem("mobilizejs-localCacheVersion", cacheVer);
         }
@@ -777,27 +802,28 @@ var mobilize = {
             if(aBundleType == mobilize.BUNDLE_TYPE_JS) 
             {
                 eval.call(null, aSource);
-                localStorage.setItem(aBundle, javascript);
             }
             else if(aBundleType == mobilize.BUNDLE_TYPE_CSS) 
             {
-                mobilize.log("TODO: CSS localStorage");
-                
                 var s = document.createElement("style");            
                 s.innerText = aSource;
                 document.getElementsByTagName("head")[0].appendChild(s);
             }
             
-            aCallback();
+            localStorage.setItem(aBundle, aSource);
+            
+            if(aCallback) {
+                aCallback();
+            }
         }
-        applySource = mobilize.trapped(applySource);
+        applySource = mobilize.trappedInternal(applySource);
         
         // Check version
         // If localstorage has different version, the mobilize.js has been updated
         var source = localStorage.getItem(aBundle);
         var oldVer = localStorage.getItem("mobilizejs-localCacheVersion");
         var newVer = mobilize.cdnOptions.localCacheVersion;
-        if( version != newVer) {
+        if( oldVer != newVer) {
             mobilize.log("localStorage versions are different. old:" + oldVer + " new:" + newVer);
             source = null; // Force reload
         }
@@ -819,7 +845,7 @@ var mobilize = {
             eval.call(null, aJavascript);
             aCallback();
         }
-        mobilize.getAJAX(aUrl, mobilize.trapped(loaded));
+        mobilize.getAJAX(aUrl, mobilize.trappedInternal(loaded));
         return;
     },
     /**
@@ -839,7 +865,7 @@ var mobilize = {
     loadScript : function(bundle, url, callback) {
         
         if(mobilize.cdnOptions.localCacheVersion !== null) {
-            mobilize.loadResourceFromLocalStorage(mobilize.BUNDLE_TYPE_JS, bundle,url,callback);
+            mobilize.loadBundleFromLocalStorage(mobilize.BUNDLE_TYPE_JS, bundle,url,callback);
             return;
         }
         // Injecting script tag doesn't work with android webkit
@@ -897,7 +923,7 @@ var mobilize = {
     loadCSS : function(bundle, url) {        
         //mobilize.log("document.head:" + String(document.head));
         if(mobilize.cdnOptions.localCacheVersion !== null) {
-            mobilize.loadResourceFromLocalStorage(mobilize.BUNDLE_TYPE_CSS, bundle, url, callback);
+            mobilize.loadBundleFromLocalStorage(mobilize.BUNDLE_TYPE_CSS, bundle, url, null);
             return;
         }
         
@@ -1081,7 +1107,7 @@ var mobilize = {
         
         var url = mobilize.toFullCDNURL(mobilize.cdnOptions.template);
         
-        var onload = mobilize.trapped(mobilize.transform, { scope : mobilize } );
+        var onload = mobilize.trappedInternal(mobilize.transform, { scope : mobilize } );
         $("#mobile-template-holder").load(url, onload);
     },
     
@@ -1594,6 +1620,34 @@ mobilize.trapped = function trapped(func, options ){
         return mobilize.trap( func, options );
     };
 };
+
+/** Used to trap critical internal mobilizejs errors and
+ * log them to server.
+ * */ 
+mobilize.trappedInternal = function(func, options)
+{
+    if( !options ){
+        options = {};
+    }
+    options.onerror = function(e){
+        var msg = "";
+        msg += "-FUNC-:" + String(func);
+        msg += "\n-MSG-:"
+        if( !e.stack){
+            msg += String( e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message );
+        }
+        else{
+            msg += String( e.stack);
+        }
+        
+        mobilize.logInternalError(msg);
+        
+        // Pass the error on
+        throw e;
+    };
+    
+    return mobilize.trapped(func, options);
+}
 
 
 if(typeof(exports) !== "undefined") {

@@ -22,7 +22,7 @@
 	src="/js/mobilize.wordpress.min.js"></script>
 <script type="text/javascript">
 
-    window.onload = function(){
+    //window.onload = function(){
 	    //var img = document.getElementById("branding").children[2];
 	    
 	    mobilize.onCompleted = function(){
@@ -38,9 +38,12 @@
 	    	haveRemoteDebugLogging : true,
 	    	forceMobilize : true
 	    	
+	    },
+	    {
+	       localCacheVersion : "0.2"
 	    });
 	    mobilize.bootstrap();
-    }
+    //}
 </script>
 
 
@@ -170,6 +173,6 @@
 	</div><!-- #footer --> 
  
 </div><!-- #wrapper --> 
- 
+
 </body> 
 </html> 
