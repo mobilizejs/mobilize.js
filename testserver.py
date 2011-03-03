@@ -131,8 +131,7 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             mobilize = cookies.get("mobilize-mobile",None)
             if mobilize:
                 if mobilize.value == "1":
-                    print "Cookie says client is mobile"                                            
-                                
+                    print "Cookie says client is mobile"
        
         # Bundle to single file
         if "mobile" not in self.path \
@@ -169,19 +168,34 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     
     
 
+def main():
     
-SocketServer.TCPServer.allow_reuse_address = True
-SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map.update({
-       ".png" : "image/png"
-    })
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("-p", "--port",
+                      help="Server port. Default: %default",
+                      default = PORT )
+    (options, args) = parser.parse_args()
+    
+    port = int(options.port)
+    
+    SocketServer.TCPServer.allow_reuse_address = True
+    SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map.update({
+           ".png" : "image/png"
+        })
+    
+    httpd = SocketServer.TCPServer(("", port), Handler)
+    
+    print "serving at port", port
+    
+    # This is handy if your terminal supports double clicking of the linkss
+    for file in os.listdir(os.path.join(os.getcwd(), "tests")):
+        if file.endswith(".html"):
+            print "Open test page http://localhost:%d/tests/%s?mobilize=true" % (port, file)
+    
+    httpd.serve_forever()
 
-httpd = SocketServer.TCPServer(("", PORT), Handler)
+if __name__ == "__main__":
+    main()
 
-print "serving at port", PORT
 
-# This is handy if your terminal supports double clicking of the linkss
-for file in os.listdir(os.path.join(os.getcwd(), "tests")):
-    if file.endswith(".html"):
-        print "Open test page http://localhost:%d/tests/%s?mobilize=true" % (PORT, file)
-
-httpd.serve_forever()
