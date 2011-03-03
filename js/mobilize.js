@@ -245,7 +245,7 @@ var mobilize = {
         }
         
         // Check if localStorage is supported and force disable if not
-        if(typeof(localStorage) == undefined && mobilize.options.localCacheVersion) 
+        if(typeof(localStorage) === undefined && mobilize.options.localCacheVersion) 
         {
             mobilize.log("localStorage not supported for caching.");
             mobilize.options.localCacheVersion = null;
@@ -1632,7 +1632,7 @@ mobilize.trappedInternal = function(func, options)
     options.onerror = function(e){
         var msg = "";
         msg += "-FUNC-:" + String(func);
-        msg += "\n-MSG-:"
+        msg += "\n-MSG-:";
         if( !e.stack){
             msg += String( e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message );
         }
@@ -1647,7 +1647,7 @@ mobilize.trappedInternal = function(func, options)
     };
     
     return mobilize.trapped(func, options);
-}
+};
 
 
 if(typeof(exports) !== "undefined") {
