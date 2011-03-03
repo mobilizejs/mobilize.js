@@ -71,8 +71,10 @@ var mobilize = {
         /** How many characters &lt;style&gt; inner text may contain it to be run through inline CSS importer check */
         inlineStyleMaxCheckLength : 256,
         
-        // Go always with mobile rendering path (useful for testing)
-        forceMobilize : false,
+        /** true to force mobile rendering, false to force normal rendering,
+         * undefined tries to guess.
+         * */
+        forceMobilize : undefined,
         
         // Force user agent
         forceUserAgent : null,
