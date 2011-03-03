@@ -13,3 +13,7 @@ Server-side jQuery:
 
 https://github.com/mape/node-scraper
 
+About caching:
+
+http://www.stevesouders.com/blog/2010/07/12/mobile-cache-file-sizes/
+http://code.google.com/speed/page-speed/docs/caching.htm
