@@ -21,77 +21,77 @@
  *
  */
 var mobilize = {
-	
-	/**
-	 * @class 
-	 * 
-	 * <p>
-	 * Options and their default values.
-	 * <p>
-	 * These default values can be overriden by extender getExtendedOptions()
-	 * or user supplied parameters to init().
-	 * <p>
-	 * 
-	 * 
-	 * @see mobilize.init
-	 * 
-	 * @see mobilize.getExtendedOptions
-	 */
-	options : {
-                	    
-	    /**
-	     * 
-	     * &lt;script src=""&gt; whitelist for filtering web specific 
+    
+    /**
+     * @class 
+     * 
+     * <p>
+     * Options and their default values.
+     * <p>
+     * These default values can be overriden by extender getExtendedOptions()
+     * or user supplied parameters to init().
+     * <p>
+     * 
+     * 
+     * @see mobilize.init
+     * 
+     * @see mobilize.getExtendedOptions
+     */
+    options : {
+                        
+        /**
+         * 
+         * &lt;script src=""&gt; whitelist for filtering web specific 
          * elements from &lt;head&gt;
          * <p>
-	     * If src attribute has substring match of any list element,
-	     * the tag is left to mobile version also. 
-	     * <p>
-	     * @default allow scripts which have mobilize in their name.
-	     */
-	    whitelistScriptSrc : ["mobilize"],
-	    
-	    /** 
-	     * &lt;style type="text/css&gt; @import whitelist for filtering web specific 
+         * If src attribute has substring match of any list element,
+         * the tag is left to mobile version also. 
+         * <p>
+         * @default allow scripts which have mobilize in their name.
+         */
+        whitelistScriptSrc : ["mobilize"],
+        
+        /** 
+         * &lt;style type="text/css&gt; @import whitelist for filtering web specific 
          * elements from &lt;head&gt;
          * <p>
          * If CSS @import content has substring match of any list element,
          * the tag is left to mobile version also. 
-         * <p>	     
+         * <p>         
          * 
          * @see mobilize.options.inlineStyleMaxCheckLength
          * 
          * @default empty list
-	     */
-	    whitelistStyleImport : [],
-	    
-	    // <link rel="stylesheet"> href whitelist 
-	    whitelistCSSLinks : [],
-	    	    
-	    /** How many characters &lt;style&gt; inner text may contain it to be run through inline CSS importer check */
-	    inlineStyleMaxCheckLength : 256,
-	    
-	    // Go always with mobile rendering path (useful for testing)
-	    forceMobilize : false,
-	    
-	    // Force user agent
-	    forceUserAgent : null,
-	    	     
-	     // Which HTTP GET parameter we can use to forc mobilization
-	    mobilizeQueryParameter : "mobilize",
-	    
-	    /** Send mobilize.log messages to url [remoteDebugLogBaseUrl]log?msg=[msg] */
-	    haveRemoteDebugLogging : false,
-	    
-	    remoteDebugLogBaseUrl : "/",
-	    
-	    /** Expects server to add mobilize code to the page 
-	     * If mobilize cookie is not set:
-	     * 1. Sets cookie
-	     * 2. Reloads page
-	     */
-	    reloadOnMobile : false
-	    
+         */
+        whitelistStyleImport : [],
+        
+        // <link rel="stylesheet"> href whitelist 
+        whitelistCSSLinks : [],
+                
+        /** How many characters &lt;style&gt; inner text may contain it to be run through inline CSS importer check */
+        inlineStyleMaxCheckLength : 256,
+        
+        // Go always with mobile rendering path (useful for testing)
+        forceMobilize : false,
+        
+        // Force user agent
+        forceUserAgent : null,
+                 
+         // Which HTTP GET parameter we can use to forc mobilization
+        mobilizeQueryParameter : "mobilize",
+        
+        /** Send mobilize.log messages to url [remoteDebugLogBaseUrl]log?msg=[msg] */
+        haveRemoteDebugLogging : false,
+        
+        remoteDebugLogBaseUrl : "/",
+        
+        /** Expects server to add mobilize code to the page 
+         * If mobilize cookie is not set:
+         * 1. Sets cookie
+         * 2. Reloads page
+         */
+        reloadOnMobile : false
+        
     },
     
     /**
@@ -102,88 +102,93 @@ var mobilize = {
      */
     cdnOptions : {
 
-	    /**
-	     * Use mobilize.js clouad service for scripts sources.
-	     * <p>
-	     * If you need to host all files yourself, set this to false.
-	     * 
-	     * @default  true
-	     */
-	    cloud : true,
-	    
-		/**
-		 * You need to set this value in order to 
-		 * cache mobile page template in localStorage.
-		 * <p>
-		 * Every time template is upgraded this values must
-		 * be changed within your construction script tag.	
-		 * <p>
-		 * If value is null caching is not used.
-		 * <p>
-		 * @default null		 
-		 */
-	    localCacheVersion : null,
-	    
-	    
-	   /**
-	    * URL used for CDN download, error reporting and user agent sampling services.
-	    * 
-	    * @default Extract from <script class="mobilize-js-source"> 
-	    */
-	    baseURL: null,
-	    
-	    /**
-	     * Javascript and resources bundle which download from the cloud service. 
-	     * <p>
-	     * Set to null to not try to do bundled script downloading
-	     * 
-	     * @example moblize.wordpress
-	     * 
-	     * @default null
-	     */
-	    bundleName : null,
-	    
-	    /**
-	     * Filenames of Javascript files to load after bootstrap.
-	     * <p>
-	     * Template variable <code>$bundleName</code> can be used in the strings.
-	     * </p>
-	     * 
-	     * @see mobilize.bootstrap
-	     * 
-	     * @default null
-	     */
-	    javascriptBundles : ["js/jquery+jquerymobile.js"],
-	    
-	    /**
-	     * Filenames of CSS files to load after bootstrap.
-	     * <p>
-	     * 
-	     * </p>
-	     * 
-	     * 
-	     */
-	    cssBundles : ["css/jquerymobile+$bundleName.css"],
-	    
-	    /** 
-	     * Which HTML template to use for the mobile page 
-	     * <p>
-	     * Extenders usually override this.
-	     */
-	    template : "templates/core.html",
+        /**
+         * Use mobilize.js clouad service for scripts sources.
+         * <p>
+         * If you need to host all files yourself, set this to false.
+         * 
+         * @default  true
+         */
+        cloud : true,
+        
+        /**
+         * You need to set this value in order to 
+         * cache mobile page template in localStorage.
+         * <p>
+         * Every time template is upgraded this values must
+         * be changed within your construction script tag.    
+         * <p>
+         * 
+         * localStorage keys:
+         *  mobilizejs-localCacheVersion - Previous mobilize localCacheVersion
+         * 
+         * Resources are stored by their url as key
+         * 
+         * If value is null caching is not used.
+         * <p>
+         * @default null         
+         */
+        localCacheVersion : null,
+        
+       /**
+        * URL used for CDN download, error reporting and user agent sampling services.
+        * 
+        * @default Extract from <script class="mobilize-js-source"> 
+        */
+        baseURL: null,
+        
+        /**
+         * Javascript and resources bundle which download from the cloud service. 
+         * <p>
+         * Set to null to not try to do bundled script downloading
+         * 
+         * @example moblize.wordpress
+         * 
+         * @default null
+         */
+        bundleName : null,
+        
+        /**
+         * Filenames of Javascript files to load after bootstrap.
+         * <p>
+         * Template variable <code>$bundleName</code> can be used in the strings.
+         * </p>
+         * 
+         * @see mobilize.bootstrap
+         * 
+         * @default null
+         */
+        javascriptBundles : ["js/jquery+jquerymobile.js"],
+        
+        /**
+         * Filenames of CSS files to load after bootstrap.
+         * <p>
+         * 
+         * </p>
+         * 
+         * 
+         */
+        cssBundles : ["css/jquerymobile+$bundleName.css"],
+        
+        /** 
+         * Which HTML template to use for the mobile page 
+         * <p>
+         * Extenders usually override this.
+         */
+        template : "templates/core.html",
 
-	    
-	    /**
-	     * mobilize.js version. 
-	     * <p>
-	     * Used in cloud error reporting and user agent sampling.
-	     * <p>
-	     * Note that this variable will be updated by release scripts 
-	     * for bundle creation.
-	     * 
-	     * @private
-	     */
-	    version : "XXX" // $$VERSION_LINE
+        
+        /**
+         * mobilize.js version. 
+         * <p>
+         * Used in cloud error reporting and user agent sampling.
+         * <p>
+         * Note that this variable will be updated by release scripts 
+         * for bundle creation.
+         * 
+         * @private
+         */
+        version : "XXX" // $$VERSION_LINE
     },
 
     /** Async flag indicating that jQuery Mobile has been loaded */
@@ -195,39 +200,39 @@ var mobilize = {
     /** An event handler, called once transformComplete and jQueryMobileLoaded are complete */ 
     onCompleted : null,
     
-	/**
-	 * Initialize mobilize class.
-	 * 
-	 * <h2>Options<h2>
-	 * 
-	 * <table><tbody>
-	 * 
-	 * <tr><th>resourceWhitelist</th>
-	 * <td>String tags which mark head tag JS and CSS resources not to be purged</td></tr>
-	 * 
-	 * 
-	 * @static
-	 * 
-	 * @param options Javsacript object to override mobilize.options
-	 * 
-	 * @param cdnOptions Javascript object to override mobilize.cdnOptions
-	 */
-	init : function(options, cdnOptions) {
-	    	    
-	    // Override default parameters with user supplied versions	    
-	    if(!options) {
-	        options = {};
-	    }
-	    
-	    if(!cdnOptions) {
-	    	cdnOptions = {};
-	    }
-	    
+    /**
+     * Initialize mobilize class.
+     * 
+     * <h2>Options<h2>
+     * 
+     * <table><tbody>
+     * 
+     * <tr><th>resourceWhitelist</th>
+     * <td>String tags which mark head tag JS and CSS resources not to be purged</td></tr>
+     * 
+     * 
+     * @static
+     * 
+     * @param options Javsacript object to override mobilize.options
+     * 
+     * @param cdnOptions Javascript object to override mobilize.cdnOptions
+     */
+    init : function(options, cdnOptions) {
+                
+        // Override default parameters with user supplied versions        
+        if(!options) {
+            options = {};
+        }
+        
+        if(!cdnOptions) {
+            cdnOptions = {};
+        }
+        
         // Extend global options with subclass supplied ones
         mobilize.initPlugins();
-	
-		// Extend global options with user supplied ones
-		mobilize.extend(mobilize.options, options);
+    
+        // Extend global options with user supplied ones
+        mobilize.extend(mobilize.options, options);
 
         mobilize.extend(mobilize.cdnOptions, cdnOptions);
         
@@ -249,99 +254,102 @@ var mobilize = {
         }
 
         mobilize.initCloud();
-				
-	},
-	
-	/**
-	 * Initialize CDN locations where to load Javascript files.
-	 * 
-	 * Deliver download URLs for various scripts and resources based
-	 * on 
-	 * 
-	 * @see mobilize.cdnOptions
-	 * 
-	 * @private 
-	 */
-	initCloud : function() {
-		
-		var opts = mobilize.cdnOptions;
-		
-		if(!opts.cloud) {
-			// Cloud services have been disabled
-			return;
-		}
-		
-		
-		if(!opts.cloudBaseURL) {
-			// Try to extract cloud URL from our <script> tag
-			var scripts = document.getElementsByTagName("script");
-			var src = null;
-			for(var i=0; i<scripts.length; i++) {
-				var script = scripts[i];
-				var klass = script.getAttribute("class");
-				
-				if(klass == "mobilize-js-source") {
-					
-					// Found our script tag
-					src = script.getAttribute("src");
-					
-					if(!src) {
-						// Inline script tag
-						continue;
-					}
-					
-					var base = mobilize.baseurl(src);
-					
-					mobilize.log("Found script source URL" + base);
-					
-					// Remove /js/ from the end of the URL
-					base = base.substring(0, base.length-4);
-					
-					opts.baseURL = base;		
-					
-					break;
-				}
-			}
-			if(!src) {
-				throw "Could not found <script class='mobilize.js.source'> in HTML to defined mobilize.js hosting location";
-			}
-		}
-		
-	},
-	
-	
-	/**
-	 * Simple shallow copy from an object to another.
-	 * <p>
-	 * 
-	 *  
-	 * @param {Object} target Javascript object to receive new members
-	 * 
-	 * @param {Object} source Javascript object to source new members
-	 */
-	extend : function(target, source) {
+                
+    },
+    
+    /**
+     * Initialize CDN locations where to load Javascript files.
+     * 
+     * Deliver download URLs for various scripts and resources based
+     * on 
+     * 
+     * @see mobilize.cdnOptions
+     * 
+     * @private 
+     */
+    initCloud : function() {
+        
+        var opts = mobilize.cdnOptions;
+        
+        if(!opts.cloud) {
+            // Cloud services have been disabled
+            return;
+        }
+        
+        
+        if(!opts.cloudBaseURL) {
+            // Try to extract cloud URL from our <script> tag
+            var scripts = document.getElementsByTagName("script");
+            var src = null;
+            for(var i=0; i<scripts.length; i++) {
+                var script = scripts[i];
+                var klass = script.getAttribute("class");
+                
+                if(klass == "mobilize-js-source") {
+                    
+                    // Found our script tag
+                    src = script.getAttribute("src");
+                    
+                    if(!src) {
+                        // Inline script tag
+                        continue;
+                    }
+                    
+                    var base = mobilize.baseurl(src);
+                    
+                    mobilize.log("Found script source URL" + base);
+                    
+                    // Remove /js/ from the end of the URL
+                    base = base.substring(0, base.length-4);
+                    
+                    opts.baseURL = base;        
+                    
+                    break;
+                }
+            }
+            if(!src) {
+                throw "Could not found <script class='mobilize.js.source'> in HTML to defined mobilize.js hosting location";
+            }
+        }
+        
+    },
+    
+    
+    /**
+     * Simple shallow copy from an object to another.
+     * <p>
+     * 
+     *  
+     * @param {Object} target Javascript object to receive new members
+     * 
+     * @param {Object} source Javascript object to source new members
+     */
+    extend : function(target, source) {
+        var name;
+        // jslint: The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.
+        // Not true here, we want to copy them all.
         for(name in source) {
             var val = source[name];
             target[name] = val;
-        }   		
-	},
-	
-	/**
-	 * Run plug-in specific options overrides.	
-	 * <p>
-	 * The plug-in overriding mobilize.js default options
-	 * by overriding this method and manipulating
-	 * options and cdnOptions. 
-	 * <p>
-	 * At least mobilize.cdnOptions.bundleName must be set.
-	 * <p>
-	 * 
-	 * @see mobilize.options
-	 */
-	initPlugins : function() {
-		
-	},
-	
+        }           
+    },
+    
+    /**
+     * Run plug-in specific options overrides.    
+     * <p>
+     * The plug-in overriding mobilize.js default options
+     * by overriding this method and manipulating
+     * options and cdnOptions. 
+     * <p>
+     * At least mobilize.cdnOptions.bundleName must be set.
+     * <p>
+     * 
+     * @see mobilize.options
+     */
+    initPlugins : function() {
+        
+    },
+    
     /**
      * Entry point to mobilize.js machinery.
      * <p>
@@ -351,363 +359,375 @@ var mobilize = {
      */
     bootstrap : function() {
         
-	    if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
+        if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
             mobilize.log("mobilize.js: browser is not supported");
             return;
         }
-	    
-	    function doBootstrap(){
+        
+        function doBootstrap(){
             if(mobilize.checkMobileBrowser(mobilize.options)) {
                 mobilize.renderAsMobile();
             } else {
                 mobilize.log("Web mode wanted");
             }
         }
-	    doBootstrap = mobilize.trapped(doBootstrap);
-	    doBootstrap();
+        doBootstrap = mobilize.trapped(doBootstrap);
+        doBootstrap();
     },
 
-	
-	/** 
-	 * Utility for internal debug logging 
-	 * 
-	 * @param msg: message to log
-	 * */
-	log : function(msg) {
-		if(window.console) {
-			if(console.log) {
-				console.log(msg);
-			}
-		}
-		
-		if(mobilize.options.haveRemoteDebugLogging) {
-		    var req = new XMLHttpRequest();
-		    req.open('GET', mobilize.options.remoteDebugLogBaseUrl + 'log?msg=' + msg, false);
-		    req.send(null);
-		}
-	},
-	
-	/** 
-	 * <p>Get baseurl from url by ignoring file and url parameters</p> 
-	 * 
-	 * <b>Example</b>
-	 * <pre>
-	 * mobilize.baseurl(window.location.href)
-	 * </pre>
-	 * @param url : Url to parse
-	 * 
-	 * */
-	baseurl : function (aUrl) {
-		
-		var end;
-		var url;
-		
-		end = aUrl.indexOf('?');
-		
-		if(end <= 0) {
-			end = aUrl.length-1;
-		}
-		
-		url = aUrl.slice(0, end);
-		// Ignore slash at the end of url
-		if(url[url.length-1] == "/" ) {
-			url = url.slice(0,url.length-2);
-		}
-		
-		// But add the slash to result for convenient concat
-		end = url.lastIndexOf("/") + 1;
-		url = url.slice(0,end);
-		
-		return url;
-	},
-	
-	/** Make a function call and report possible exceptions back to a centralized server.
-	 * 
-	 * We use this to track problems with possible not-so-well-implemented mobile browsers.
-	 */
-	callWithErrorReporting : function(func) {
-	    try {
-	        func();
-	    } catch(e) {
-	        // 
-	    }
-	},
-	
-	/** Add new URL variables safely with or without existing '?' character */
-	addUrlVar : function(aURL, aNewVar){
-	    var args = mobilize.getUrlVars(aURL);
-	    var newurl = aURL.split("?",1)[0];
-	    newurl += "?";
-	    
-	    var items = [];
-	    for(var i = 0; i < args.length; i++) {
-	        var a = args[i];
-	        var value = args[a];
-	        items.push(a + "=" + value);
-	    }
-	    
-	    items.push(aNewVar);
-	    
-	    newurl += items.join("&");
-	    return newurl;
-	},
-	/** 
-	 * Read URL parameters to dict.
-	 * 
-	 * See: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
-	 */
-	getUrlVars : function (aURL)
-	{
-	    if(!this._urlvars) {
-	        this._urlvars = {};
-	    }
-	    if(!aURL) {
+    
+    /** 
+     * Utility for internal debug logging 
+     * 
+     * @param msg: message to log
+     * */
+    log : function(msg) {
+        if(window.console) {
+            if(console.log) {
+                console.log(msg);
+            }
+        }
+        
+        if(mobilize.options.haveRemoteDebugLogging) {
+            var req = new XMLHttpRequest();
+            req.open('GET', mobilize.options.remoteDebugLogBaseUrl + 'log?msg=' + msg, false);
+            req.send(null);
+        }
+    },
+    
+    /** 
+     * <p>Get baseurl from url by ignoring file and url parameters</p> 
+     * 
+     * <b>Example</b>
+     * <pre>
+     * mobilize.baseurl(window.location.href)
+     * </pre>
+     * @param url : Url to parse
+     * 
+     * */
+    baseurl : function (aUrl) {
+        
+        var end;
+        var url;
+        
+        end = aUrl.indexOf('?');
+        
+        if(end <= 0) {
+            end = aUrl.length-1;
+        }
+        
+        url = aUrl.slice(0, end);
+        // Ignore slash at the end of url
+        if(url[url.length-1] == "/" ) {
+            url = url.slice(0,url.length-2);
+        }
+        
+        // But add the slash to result for convenient concat
+        end = url.lastIndexOf("/") + 1;
+        url = url.slice(0,end);
+        
+        return url;
+    },
+    
+    /** Make a function call and report possible exceptions back to a centralized server.
+     * 
+     * We use this to track problems with possible not-so-well-implemented mobile browsers.
+     */
+    callWithErrorReporting : function(func) {
+        try {
+            func();
+        } catch(e) {
+            // 
+        }
+    },
+    
+    /** Add new URL variables safely with or without existing '?' character */
+    addUrlVar : function(aURL, aNewVar){
+        var args = mobilize.getUrlVars(aURL);
+        var newurl = aURL.split("?",1)[0];
+        newurl += "?";
+        
+        var items = [];
+        for(var i = 0; i < args.length; i++) {
+            var a = args[i];
+            var value = args[a];
+            items.push(a + "=" + value);
+        }
+        
+        items.push(aNewVar);
+        
+        newurl += items.join("&");
+        return newurl;
+    },
+    /** 
+     * Read URL parameters to dict.
+     * 
+     * See: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
+     */
+    getUrlVars : function (aURL)
+    {
+        if(!this._urlvars) {
+            this._urlvars = {};
+        }
+        if(!aURL) {
             aURL = window.location.href;
         }
-	    
-		// Cache window.location.href call results
-		if(this._urlvars[aURL]) {
-			return this._urlvars[aURL];
-		}
-		
-	    var vars = [], hash;
+        
+        // Cache window.location.href call results
+        if(this._urlvars[aURL]) {
+            return this._urlvars[aURL];
+        }
+        
+        var vars = [], hash;
 
-	    if(aURL.indexOf("#") >= 0 ){
-	        aURL = aURL.slice(0,aURL.indexOf("#"));
-	    }
-	    var hashes = aURL.slice(aURL.indexOf('?') + 1).split('&');
-	    
-	    for(var i = 0; i < hashes.length; i++)
-	    {
-	        hash = hashes[i].split('=');
-	        vars.push(hash[0]);
-	        vars[hash[0]] = hash[1];
-	    }
-	    
-	    this._urlvars[aURL] = vars;
-	    return vars;
-	},
+        if(aURL.indexOf("#") >= 0 ){
+            aURL = aURL.slice(0,aURL.indexOf("#"));
+        }
+        var hashes = aURL.slice(aURL.indexOf('?') + 1).split('&');
+        
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        
+        this._urlvars[aURL] = vars;
+        return vars;
+    },
 
-	/**
-	 * Create a new cookie 
-	 * 
-	 * @see http://www.quirksmode.org/js/cookies.html 	
-	 */
-	createCookie : function(name,value,days) {
-		if (days) {
-			var date = new Date();
-			date.setTime(date.getTime()+(days*24*60*60*1000));
-			var expires = "; expires="+date.toGMTString();
-		}
-		else var expires = "";
-		document.cookie = name+"="+value+expires+"; path=/";
-	},
-	
-	/**
-	 * Get a cookie value by name 
-	 * 
-	 * @see http://www.quirksmode.org/js/cookies.html 	
-	 */
-	readCookie : function(name) {
-		var nameEQ = name + "=";
-		var ca = document.cookie.split(';');
-		for(var i=0;i < ca.length;i++) {
-			var c = ca[i];
-			while (c.charAt(0)==' ') c = c.substring(1,c.length);
-			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-		}
-		return null;
-	},
-	/** 
-	 * See: http://www.quirksmode.org/js/cookies.html 	
-	 */
-	eraseCookie : function(name) {
-		createCookie(name,"",-1);
-	},
-	
-	/**
-	 * Check if browser is running on mobile platform
-	 * 
-	 * @param name: Optional userAgent string
-	 *  
-	 * @return true if browser is mobile browser 
-	 * @see: http://detectmobilebrowser.com/ for the detection code.
-	 * */
-	isMobile : function(name){
-	    if(!name) {
+    /**
+     * Create a new cookie 
+     * 
+     * @see http://www.quirksmode.org/js/cookies.html     
+     */
+    createCookie : function(name,value,days) {
+        var expires = "";
+        
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime()+(days*24*60*60*1000));
+            expires = "; expires="+date.toGMTString();
+        }
+        document.cookie = name+"="+value+expires+"; path=/";
+    },
+    
+    /**
+     * Get a cookie value by name 
+     * 
+     * @see http://www.quirksmode.org/js/cookies.html     
+     */
+    readCookie : function(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)===' ') {
+                c = c.substring(1,c.length);
+            }
+            if (c.indexOf(nameEQ) === 0) {
+                return c.substring(nameEQ.length,c.length);
+            }
+        }
+        return null;
+    },
+    /** 
+     * See: http://www.quirksmode.org/js/cookies.html     
+     */
+    eraseCookie : function(name) {
+        createCookie(name,"",-1);
+    },
+    
+    /**
+     * Check if browser is running on mobile platform
+     * 
+     * @param name: Optional userAgent string
+     *  
+     * @return true if browser is mobile browser 
+     * @see: http://detectmobilebrowser.com/ for the detection code.
+     * */
+    isMobile : function(name){
+        if(!name) {
             name = (navigator.userAgent || navigator.vendor || window.opera);
         }
         
         result = (function(a) {
-            if (/android|avantgo|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i
-                    .test(a)
-                    || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i
-                            .test(a.substr(0, 4)))
+            if (/android|avantgo|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         })(name);
         
         return result;
-	},
-	/** Check if browser is running on mobile platform or is forced mobile and update cookie
-	 * 
-	 * @param userAgent   = userAgent name. Uses browser's userAgent by default
-	 *  
-	 * @param forceMobilize = Force detection to mobile to true or false regardless of real type
-	 * 
-	 * URL parameter mobilize=<true,1> can also be used to force mobile.
-	 * 
-	 * The state is also stored to 'mobilize-mobile' cookie this
-	 * information is passed to server for the following requests. 
-	 * URL and options.force paremeters 
-	 * override cookie and detection.
-	 * 
-	 * @return: true if browser is considered as mobile browser.
-	 */ 
-	checkMobileBrowser : function (opts)
-	{
-		var forced;
-		var name;
-		if(!opts) {
-			opts = {};
-		}
-		
-		// Using cookie by default
-		// forced = mobilize.readCookie("mobilize-mobile");
+    },
+    /** Check if browser is running on mobile platform or is forced mobile and update cookie
+     * 
+     * @param userAgent   = userAgent name. Uses browser's userAgent by default
+     *  
+     * @param forceMobilize = Force detection to mobile to true or false regardless of real type
+     * 
+     * URL parameter mobilize=<true,1> can also be used to force mobile.
+     * 
+     * The state is also stored to 'mobilize-mobile' cookie this
+     * information is passed to server for the following requests. 
+     * URL and options.force paremeters 
+     * override cookie and detection.
+     * 
+     * @return: true if browser is considered as mobile browser.
+     */ 
+    checkMobileBrowser : function (opts)
+    {
+        var forced;
+        var name;
+        if(!opts) {
+            opts = {};
+        }
+        
+        // Using cookie by default
+        // forced = mobilize.readCookie("mobilize-mobile");
 
         // For user agent testing
-		name = opts.forceUserAgent;
-		
-		// Note: URL parameter and option overrides cookie		
-		// Get URL var to mobilize page
-		forced = mobilize.getUrlVars()[mobilize.options.mobilizeQueryParameter];
-		
-		// Javascript option to always render in mobile mode
-		if(opts.forceMobilize) {
-			forced = true;
-		}
-		
-		if(forced !== undefined && forced !== null ) {
-			result = (forced == "true" || forced == "1" || forced === true || forced === 1);
-		}
-		else {
-			result = mobilize.isMobile();
-		}
-		
-		// Update cookie
-		var cookie = result ? "1" : "0";
-		mobilize.createCookie("mobilize-mobile", cookie);
-		
-		return result;
-	},
-	
-	/**
-	 * Clear conflicting jQuery objects
-	 * <p>
-	 * jQuery might ill behave if we overlay it with a different version
-	 * 
-	 * @private 
-	 */
-	clearConflictingJQuery : function() {
-		
-		// - if two jQuery instances are loaded then event handlers do not function 
-		// properly
-		
-		if(window.jQuery !== undefined) {
-			delete window.jQuery;			
-		}
-		
-		if(window.$ !== undefined) {
-			delete window.$;		
-		}	
-	},
-	    	
-	/**
-	 * Reconstruct page HTML code for mobile presentation.
-	 * <p>
-	 * Stop loading all web page resources until mobile template is properly placed
-	 * and template transformation has taken place.
-	 * 
-	 */
-	renderAsMobile : function() {
-	    
-		mobilize.log("Enabling mobile rendering");
-		
-	    mobilize.suspendRendering();
-	    
-	    mobilize.cleanHead();
-	    
-		mobilize.loadMobileResources();
+        name = opts.forceUserAgent;
+        
+        // Note: URL parameter and option overrides cookie        
+        // Get URL var to mobilize page
+        forced = mobilize.getUrlVars()[mobilize.options.mobilizeQueryParameter];
+        
+        // Javascript option to always render in mobile mode
+        if(opts.forceMobilize) {
+            forced = true;
+        }
+        
+        if(forced !== undefined && forced !== null ) {
+            result = (forced == "true" || forced == "1" || forced === true || forced === 1);
+        }
+        else {
+            result = mobilize.isMobile();
+        }
+        
+        // Update cookie
+        var cookie = result ? "1" : "0";
+        mobilize.createCookie("mobilize-mobile", cookie);
+        
+        return result;
+    },
+    
+    /**
+     * Clear conflicting jQuery objects
+     * <p>
+     * jQuery might ill behave if we overlay it with a different version
+     * 
+     * @private 
+     */
+    clearConflictingJQuery : function() {
+        
+        // - if two jQuery instances are loaded then event handlers do not function 
+        // properly
+        
+        if(window.jQuery !== undefined) {
+            delete window.jQuery;            
+        }
+        
+        if(window.$ !== undefined) {
+            delete window.$;        
+        }    
+    },
+            
+    /**
+     * Reconstruct page HTML code for mobile presentation.
+     * <p>
+     * Stop loading all web page resources until mobile template is properly placed
+     * and template transformation has taken place.
+     * 
+     */
+    renderAsMobile : function() {
+        
+        mobilize.log("Enabling mobile rendering");
+        
+        mobilize.suspendRendering();
+        
+        mobilize.cleanHead();
+        
+        mobilize.loadMobileResources();
 
-	},
-	
-	/**
-	 * Convert relative paths to full CDN URLs if they are relative
-	 * 
-	 * @param uri Relative URI or full URL
-	 * 
-	 * @returns Full URL
-	 * 
-	 * @private
-	 */
-	toFullCDNURL : function(uri) {
-		if(uri.indexOf("http") >= 0) {
-			return uri;
-		} else {
-			return mobilize.cdnOptions.baseURL + "/" + uri;
-		}
-	},
-	
-	/**
-	 * Load JS and CSS files needed on the mobile page.
-	 * <p>
-	 * This function provides some logic for caching 
-	 * the result, so that the files are not reloaded again.
-	 * <p>
-	 * Note that Javascript is loaded synchronously
-	 * and transform() won't proceed until Javascript
-	 * (jQuery) is completely loaded.
-	 * <p>
-	 * CSS are loaded asyncrhonously.
-	 */
-	loadMobileResources : function() {		
-		var i;
-		var self = this;
-		var cdn = mobilize.cdnOptions;
-		
-		var jsCompleteCount = 0;
-		
-		mobilize.log("Constructing mobile <head>");
-		
-		function onJSComplete() {
-			jsCompleteCount++;
-			
-			if(jsCompleteCount == 1) {
-				// Assume jQuery loaded
-			}
-			
-			// Proceed to tempalte transform
-			if(jsCompleteCount >= cdn.javascriptBundles.length) {							
-				self.loadMobileTemplate();
-			}						
-		}
-				
-		for(i=0; i<cdn.javascriptBundles.length; i++) {
-			var js = cdn.javascriptBundles[i];
-			mobilize.log("Loading js:" + js);
-			mobilize.loadScript(mobilize.toFullCDNURL(js), onJSComplete);
-		}
+    },
+    
+    /**
+     * Convert relative paths to full CDN URLs if they are relative
+     * 
+     * @param uri Relative URI or full URL
+     * 
+     * @returns Full URL
+     * 
+     * @private
+     */
+    toFullCDNURL : function(uri) {
+        if(uri.indexOf("http") >= 0) {
+            return uri;
+        } else {
+            return mobilize.cdnOptions.baseURL + "/" + uri;
+        }
+    },
+    
+    /**
+     * Load JS and CSS files needed on the mobile page.
+     * <p>
+     * This function provides some logic for caching 
+     * the result, so that the files are not reloaded again.
+     * <p>
+     * Note that Javascript is loaded synchronously
+     * and transform() won't proceed until Javascript
+     * (jQuery) is completely loaded.
+     * <p>
+     * CSS are loaded asyncrhonously.
+     */
+    loadMobileResources : function() {        
+        var i;
+        var self = this;
+        var cdn = mobilize.cdnOptions;
+        
+        var jsCompleteCount = 0;
+        
+        mobilize.log("Constructing mobile <head>");
+        
+        function onJSComplete() {
+            jsCompleteCount++;
+            
+            if(jsCompleteCount == 1) {
+                // Assume jQuery loaded
+            }
+            
+            // Proceed to tempalte transform
+            if(jsCompleteCount >= cdn.javascriptBundles.length) {                            
+                self.loadMobileTemplate();
+            }                        
+        }
+                
+        var bundle;
+        for(i=0; i<cdn.javascriptBundles.length; i++) {
+            bundle = cdn.javascriptBundles[i];
+            mobilize.log("Loading js:" + bundle);
+            mobilize.loadScript(bundle, mobilize.toFullCDNURL(bundle), onJSComplete);
+        }
 
-		for(i=0; i<cdn.cssBundles.length; i++) {
-			var css = cdn.cssBundles[i];
-			mobilize.log("Loading CSS:" +css);
-			mobilize.loadCSS(mobilize.toFullCDNURL(css));
-		}
-			
-		mobilize.log("Syncronous boostrap done");
-	},
-			
+        for(i=0; i<cdn.cssBundles.length; i++) {
+            bundle = cdn.cssBundles[i];
+            mobilize.log("Loading CSS:" + bundle);
+            mobilize.loadCSS(bundle, mobilize.toFullCDNURL(bundle));
+        }
+        
+        var cacheVer = mobilize.cdnOptions.localCacheVersion;
+        if(cacheVer !== null) {
+            localStorage.setItem("mobilizejs-localCacheVersion", cacheVer);
+        }
+        
+        mobilize.log("Syncronous boostrap done");
+    },
+            
 
     /**
      * Helper function to do AJAXy requests before jQuery has been loaded.
@@ -717,64 +737,134 @@ var mobilize = {
      * @param callback(payload)
      */
     getAJAX : function(url, callback) {
-		var req = new XMLHttpRequest();
+        var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.onreadystatechange = function (aEvt) {
            if(req.readyState == 4) {
-		       if (req.status == 200) {
-			   	callback(req.responseText);
-			   }  else {
-			   	mobilize.log("Could not AJAX url:" + url + " got status:" + req.status);
-			   }
-		   }
-	    };
+               if (req.status == 200) {
+                   callback(req.responseText);
+               }  else {
+                   mobilize.log("Could not AJAX url:" + url + " got status:" + req.status);
+               }
+           }
+        };
         req.send(null);
-	},
-	
-	/**
-	 * Magical script loader.
-	 * 
-	 * Use AJAX to load Javascript code, then eval() it.
-	 * This ensures that code is executed (not just loaded)
-	 * when triggering the callback.
-	 * 
-	 * http://blog.client9.com/2008/11/javascript-eval-in-global-scope.html
-	 * 
-	 * @param {String} url
-	 * 
-	 * @param {Object} callbacl
-	 */
-	loadScript : function(url, callback) {
+    },
+    
+    /** Javascript type enum for bundle */
+    BUNDLE_TYPE_JS : 0x1,
+    
+    /** CSS type enum for bundle */
+    BUNDLE_TYPE_CSS : 0x2,
+    
+    /** Load resource from localstorage if possible, 
+     * otherwise use AJAX to get the resource and store it.
+     * 
+     * @param bundletype: Type of the bundle BUNDLE_TYPE_JS or BUNDLE_TYPE_CSS
+     * @param bundle: Name of the bundle resource
+     * @param aURL: URL to the bundle
+     * @param aCallback: Callback to signal completion
+     */
+    loadBundleFromLocalStorage : function(aBundleType, aBundle, aUrl, aCallback){
         
-	    //mobilize.log(navigator.userAgent.toLowerCase());
-	    // Injecting script tag doesn't work with android webkit
-	    if(navigator.userAgent.toLowerCase().indexOf("android") >= 0 ) {
-	        mobilize.log("Loading script for evaluation:" + url);
-    		function loaded(javascript) {
-    			mobilize.log("Loaded payload for " + url + ", now evaling() it ");
-    			eval.call(null, javascript);
-    			callback();
-    		}
-    	    mobilize.getAJAX(url, mobilize.trapped(loaded));
-		    return;
-	    }
-	    
-	    // Using script tag injection to have JS debugger show the source
-	    mobilize.log("injecting script tag to load:" + url);
-		var script = document.createElement("script");
-		script.type = "text/javascript";
-		script.setAttribute("src", url);
-		script.src = url;
-		script.onerror = function(e){
+        if( !(aBundleType & (mobilize.BUNDLE_TYPE_CSS | mobilize.BUNDLE_TYPE_JS) ) )
+        {
+            mobilize.log("ERROR: Invalid bundle type " + aBundleType);
+            return;
+        }
+        
+        function applySource(aSource) {
+            if(aBundleType == mobilize.BUNDLE_TYPE_JS) 
+            {
+                eval.call(null, aSource);
+                localStorage.setItem(aBundle, javascript);
+            }
+            else if(aBundleType == mobilize.BUNDLE_TYPE_CSS) 
+            {
+                mobilize.log("TODO: CSS localStorage");
+                
+                var s = document.createElement("style");            
+                s.innerText = aSource;
+                document.getElementsByTagName("head")[0].appendChild(s);
+            }
+            
+            aCallback();
+        }
+        applySource = mobilize.trapped(applySource);
+        
+        // Check version
+        // If localstorage has different version, the mobilize.js has been updated
+        var source = localStorage.getItem(aBundle);
+        var oldVer = localStorage.getItem("mobilizejs-localCacheVersion");
+        var newVer = mobilize.cdnOptions.localCacheVersion;
+        if( version != newVer) {
+            mobilize.log("localStorage versions are different. old:" + oldVer + " new:" + newVer);
+            source = null; // Force reload
+        }
+
+        if(!source) 
+        {
+            mobilize.getAJAX(aUrl, applySource);
+        }
+        else {
+            applySource(source);
+        }
+    },
+    
+    loadScriptWithAjax : function(aUrl, aCallback){
+        mobilize.log("Loading script for evaluation:" + aUrl);
+        function loaded(aJavascript) 
+        {
+            mobilize.log("Loaded payload for " + aUrl + ", now evaling() it ");
+            eval.call(null, aJavascript);
+            aCallback();
+        }
+        mobilize.getAJAX(aUrl, mobilize.trapped(loaded));
+        return;
+    },
+    /**
+     * Magical script loader.
+     * 
+     * Use AJAX to load Javascript code, then eval() it.
+     * This ensures that code is executed (not just loaded)
+     * when triggering the callback.
+     * 
+     * http://blog.client9.com/2008/11/javascript-eval-in-global-scope.html
+     * 
+     * @param {String} bundle: Name of the bundle, used to store to localStorage.
+     * @param {String} url
+     * 
+     * @param {Object} callbacl
+     */
+    loadScript : function(bundle, url, callback) {
+        
+        if(mobilize.cdnOptions.localCacheVersion !== null) {
+            mobilize.loadResourceFromLocalStorage(mobilize.BUNDLE_TYPE_JS, bundle,url,callback);
+            return;
+        }
+        // Injecting script tag doesn't work with android webkit
+        if(navigator.userAgent.toLowerCase().indexOf("android") >= 0 ) 
+        {
+            mobilize.loadScriptWithAjax(url, callback);
+            return;
+        }
+        
+        // Using script tag injection to have JS debugger show the source
+        mobilize.log("injecting script tag to load:" + url);
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.setAttribute("src", url);
+        script.src = url;
+        script.onerror = function(e){
             mobilize.log( String(e) );
         };
         
-		// From jQuery
-		//var done = false;
-		script.onload = script.onreadystatechange = function(){
-		    
-		    mobilize.log("onload")
-		    
+        // From jQuery
+        //var done = false;
+        script.onload = script.onreadystatechange = function(){
+            
+            mobilize.log("onload");
+            
             if ( !this.done && (!this.readyState ||
                     this.readyState === "loaded" || this.readyState === "complete") ) {
                 this.done = true;
@@ -791,73 +881,79 @@ var mobilize = {
         var head = document.getElementsByTagName("head")[0];
         head.appendChild(script);
         
-	},
-	
-	/**
-	 * Load a CSS file for the mobile page.
-	 * <p>
-	 * The file is loaded asynchronously 
-	 * and inserted as <link> tag to the head.
-	 * <p>
-	 * TODO: Check from the cache from the existing version
-	 * 
-	 * @param url CSS url.
-	 */
-	loadCSS : function(url) {		
-		//mobilize.log("document.head:" + String(document.head));
-	    var link = document.createElement("link");
-		link.setAttribute("rel", "stylesheet");
-		link.setAttribute("href", url);		
-		document.getElementsByTagName("head")[0].appendChild(link);
-	},
-		
-	/**
-	 * Check if a given link is on resource whitelist.
-	 * 
-	 * @param src URL
-	 * 
-	 * @param list List of substring matches. If matches do not remove the element.
-	 * 
-	 * @returns true if the src string has substring match of any list element
-	 */
-	checkResourceWhitelist : function(src, list) {
+    },
+    
+    /**
+     * Load a CSS file for the mobile page.
+     * <p>
+     * The file is loaded asynchronously 
+     * and inserted as <link> tag to the head.
+     * <p>
+     * TODO: Check from the cache from the existing version
+     * 
+     * @param {String} bundle: Name of the bundle, used to store to localStorage.
+     * @param url CSS url.
+     */
+    loadCSS : function(bundle, url) {        
+        //mobilize.log("document.head:" + String(document.head));
+        if(mobilize.cdnOptions.localCacheVersion !== null) {
+            mobilize.loadResourceFromLocalStorage(mobilize.BUNDLE_TYPE_CSS, bundle, url, callback);
+            return;
+        }
+        
+        var link = document.createElement("link");
+        link.setAttribute("rel", "stylesheet");
+        link.setAttribute("href", url);        
+        document.getElementsByTagName("head")[0].appendChild(link);
+    },
+        
+    /**
+     * Check if a given link is on resource whitelist.
+     * 
+     * @param src URL
+     * 
+     * @param list List of substring matches. If matches do not remove the element.
+     * 
+     * @returns true if the src string has substring match of any list element
+     */
+    checkResourceWhitelist : function(src, list) {
         for(var i=0; i<list.length; i++) {
             var matcher = list[i];
-			if(src.indexOf(matcher) >= 0) {
-				return true;
-			}
-        }	
-		return false;
-	},
-	
-	/**
-	 * Remove unnecessary script tags if not needed for mobile.
-	 * 
-	 * Use options.resourceWhitelist matching.
-	 */
-	cleanJavascript : function() {
-		
-		mobilize.log("Cleaning <script>s");
-		
-		var tags = document.getElementsByTagName("script");
+            if(src.indexOf(matcher) >= 0) {
+                return true;
+            }
+        }    
+        return false;
+    },
+    
+    /**
+     * Remove unnecessary script tags if not needed for mobile.
+     * 
+     * Use options.resourceWhitelist matching.
+     */
+    cleanJavascript : function() {
+        
+        mobilize.log("Cleaning <script>s");
+        
+        var tags = document.getElementsByTagName("script");
 
-		for(var i=0; i<tags.length; i++) {
-		    var script = tags[i];
-			var src = script.getAttribute("src");
-			
-			if(!src) {
-				// TODO: Inline script
-				continue;
-			}
-			
-		    if(!mobilize.checkResourceWhitelist(src, mobilize.options.whitelistScriptSrc)) {
-				mobilize.log("Cleaning script tag");
-				mobilize.log(script);
-				var parent = script.parentNode;
-				parent.removeChild(script);
-			}
-		}
-	},
+        for(var i=0; i<tags.length; i++) {
+            var script = tags[i];
+            var src = script.getAttribute("src");
+            
+            if(!src) {
+                // TODO: Inline script
+                continue;
+            }
+            
+            if(!mobilize.checkResourceWhitelist(src, mobilize.options.whitelistScriptSrc)) {
+                mobilize.log("Cleaning script tag");
+                mobilize.log(script);
+                var parent = script.parentNode;
+                parent.removeChild(script);
+            }
+        }
+    },
 
     /**
      * Remove web only <link rel="stylesheet"> tags
@@ -871,12 +967,12 @@ var mobilize = {
 
         for(var i=0; i<tags.length; i++) {
             script = tags[i];
-			
-			var rel = script.getAttribute("rel");
-			if(rel != "stylesheet") {
-				continue;
-			}          
-			
+            
+            var rel = script.getAttribute("rel");
+            if(rel != "stylesheet") {
+                continue;
+            }          
+            
             var src = script.getAttribute("href");
             if(!mobilize.checkResourceWhitelist(src, mobilize.options.whitelistCSSLinks)) {
                 var parent = script.parentNode;
@@ -895,59 +991,60 @@ var mobilize = {
      * </style>
      * 
      * Use options.resourceWhitelist matching.
-     */	
-	cleanCSSStyle : function() {
-		
-		mobilize.log("Cleaning <style>s");
-		
-		var tags = document.getElementsByTagName("style");
-		
-		for(var i=0; i<tags.length; i++) {
-		  var style = tags[i];
-		  
-		  // http://bytes.com/topic/javascript/answers/600139-get-file-name-style-tag
-
-          function remove() {
-		      var parent = style.parentNode;
-			  parent.removeChild(style);	
-		  }
-		  
-          var text = style.textContent;
-		  
-		  if(!text) {
-		  	mobilize.log("Interesting style node:");
-		  	mobilize.log(style);
-		  	continue;
-		  }
+     */    
+    cleanCSSStyle : function() {
+        
+        mobilize.log("Cleaning <style>s");
+        
+        var tags = document.getElementsByTagName("style");
+        
+        // http://bytes.com/topic/javascript/answers/600139-get-file-name-style-tag
+        function remove(style) {
+            var parent = style.parentNode;
+            parent.removeChild(style);
+        }
+        
+        for(var i=0; i<tags.length; i++) {
+            var style = tags[i];
           
-          // Make sure we don't start searching through very long
-		  // inline CSS
-		  if(text.length < mobilize.options.inlineStyleMaxCheckLength) {
-		  	
-			// This is inline CSS import
-			var matches = text.match(/@import url\(.*\);?/mg);
-			
-		  	if(matches != null) {
-			  	for(var i=0; i<matches.length; i++) {
-					if(!mobilize.checkResourceWhitelist(matches[i], mobilize.options.whitelistStyleImport)) {
-						remove();
-						break;
-					}
-				} 
-		  	}
-		  } else {
-			// too long CSS snippet, drop unconditionally
-			remove();
-		  }
-		}
-	},
+            var text = style.textContent;
+          
+            if(!text) {
+                mobilize.log("Interesting style node:");
+                mobilize.log(style);
+                continue;
+            }
+          
+            // Make sure we don't start searching through very long
+            // inline CSS
+            if(text.length < mobilize.options.inlineStyleMaxCheckLength) {
+              
+                // This is inline CSS import
+                var matches = text.match(/@import url\(.*\);?/mg);
+            
+                if(matches !== null) {
+                    for(var j=0; j<matches.length; j++) 
+                    {
+                        if(!mobilize.checkResourceWhitelist(matches[j], mobilize.options.whitelistStyleImport)) {
+                            remove(style);
+                            break;
+                        }
+                    } 
+                }
+            } else 
+            {
+                //  too long CSS snippet, drop unconditionally
+                remove(style);
+            }
+        }
+    },
 
     /**
      * Stop loading Javascripts and CSS we do not need in mobile mode.
      */
     cleanHead : function() {
         mobilize.cleanJavascript();    
-		mobilize.cleanCSSLink();    
+        mobilize.cleanCSSLink();    
         mobilize.cleanCSSStyle();    
     },
 
@@ -955,91 +1052,91 @@ var mobilize = {
     /**
      * Make sure the browser does not load anything extra before mobile transform has taken place
      */
-	suspendRendering : function() {
-    	
-		mobilize.log("Suspending page rendering");
-		
-	    if(!document.body) {
-	        // DOM tree loading, couldn't get hang off it
-	        throw "Could not find body while loading?";
-	    }
-	    
-	    document.body.style.display = "none";
-	},
-	
-	
-	/**
-	 * Start loading mobile template to DOM tree.
-	 * 
-	 * Check possible mobile template cache places.
-	 */
-	loadMobileTemplate : function() {
-	    
-	    var self = this;
-	    
-	    // Create the element which will hold the mobile template
-	    // + transformation result
-	    $("body").append("<div id='mobile-template-holder'>");
-	    		
-	    
-	    var url = mobilize.toFullCDNURL(mobilize.cdnOptions.template);
-	    
-	    var onload = mobilize.trapped(mobilize.transform, { scope : mobilize } );
-	    $("#mobile-template-holder").load(url, onload);
-	},
-	
-	/**
-	 * Put mobile template to DOM tree
-	 */
-	prepareMobileTemplate : function() {
-	    
-	},
-	
-	/**
-	 * Get rid of mobile template
-	 */
-	closeMobileTemplate : function() {
-	},
-	
-	
-	prepareTransform : function() {
+    suspendRendering : function() {
+        
+        mobilize.log("Suspending page rendering");
+        
+        if(!document.body) {
+            // DOM tree loading, couldn't get hang off it
+            throw "Could not find body while loading?";
+        }
+        
+        document.body.style.display = "none";
+    },
+    
+    
+    /**
+     * Start loading mobile template to DOM tree.
+     * 
+     * Check possible mobile template cache places.
+     */
+    loadMobileTemplate : function() {
+        
+        var self = this;
+        
+        // Create the element which will hold the mobile template
+        // + transformation result
+        $("body").append("<div id='mobile-template-holder'>");
+                
+        
+        var url = mobilize.toFullCDNURL(mobilize.cdnOptions.template);
+        
+        var onload = mobilize.trapped(mobilize.transform, { scope : mobilize } );
+        $("#mobile-template-holder").load(url, onload);
+    },
+    
+    /**
+     * Put mobile template to DOM tree
+     */
+    prepareMobileTemplate : function() {
+        
+    },
+    
+    /**
+     * Get rid of mobile template
+     */
+    closeMobileTemplate : function() {
+    },
+    
+    
+    prepareTransform : function() {
 
-	    if(!jQuery) {
+        if(!jQuery) {
             throw "jQuery needed in order to run content transform";
         }
-    	
-	},
-	
-	/**
-	 * Transform the web page content to mobile frame.
-	 * 
-	 * Subclasses must override this.
-	 * 
-	 * After the function has been finished mobilize.completeTransform() must
-	 * be called to allow async handlers to proceed. 
-	 */
-	transform : function() {
-        mobilize.constructHead();		    
-		mobilize.constructBody();
-	    mobilize.completeTransform();
-	},
-	
-	/**
-	 * We can proceed with the page visual enhancements
-	 */
-	completeTransform : function() {
-		mobilize.transformComplete = true;
-		mobilize.prepareFinish();
-	},
-	
-	/**
-	 * @param href Link as a string
-	 * 
-	 * @returns New link target as string or null if the link should be removed 
-	 */
-	rewriteLinkTarget : function(href) {
-	   return href;
-	},
+        
+    },
+    
+    /**
+     * Transform the web page content to mobile frame.
+     * 
+     * Subclasses must override this.
+     * 
+     * After the function has been finished mobilize.completeTransform() must
+     * be called to allow async handlers to proceed. 
+     */
+    transform : function() {
+        mobilize.constructHead();            
+        mobilize.constructBody();
+        mobilize.completeTransform();
+    },
+    
+    /**
+     * We can proceed with the page visual enhancements
+     */
+    completeTransform : function() {
+        mobilize.transformComplete = true;
+        mobilize.prepareFinish();
+    },
+    
+    /**
+     * @param href Link as a string
+     * 
+     * @returns New link target as string or null if the link should be removed 
+     */
+    rewriteLinkTarget : function(href) {
+       return href;
+    },
 
     /**
      * Based on mobilize options, rewrite link targets with mobile ones 
@@ -1048,181 +1145,182 @@ var mobilize = {
      * @param callback to be called if the link is to be removed
      */
     remapLinks : function(selection, removeCallback) {
-		selection.each(function() {
-			 var input = $(this);
-			 output = mobilize.rewriteLink(input);
-			 if(!output) {
-			 	if(removeCallback) {
-					removeCallback(input);
-				}
-			 }
-		});
-	},
-	
-	/**
-	 * 
-	 * @param {Object} a DOM node or jQuery object of <a>
-	 * 
-	 * @returns null if the link is to be discarded
-	 */
-	rewriteLink : function(a) {
-		var a = $(a);
-		
-		var href = a.attr("href");
-	
-	    if(!href) {
+        selection.each(function() {
+             var input = $(this);
+             output = mobilize.rewriteLink(input);
+             if(!output) {
+                 if(removeCallback) {
+                    removeCallback(input);
+                }
+             }
+        });
+    },
+    
+    /**
+     * 
+     * @param {Object} a DOM node or jQuery object of <a>
+     * 
+     * @returns null if the link is to be discarded
+     */
+    rewriteLink : function(a) {
+        a = $(a);
+        
+        var href = a.attr("href");
+    
+        if(!href) {
             // Not a link
             return null;  
         } 
           
-		href = mobilize.rewriteLinkTarget(href);
-		a.attr("href", href);
-		
-		return a;
-	},
+        href = mobilize.rewriteLinkTarget(href);
+        a.attr("href", href);
+        
+        return a;
+    },
    
-	/**
-	 * Create <head> section of a mobile rendered version.
-	 * 
-	 * The default transform is just to copy everything
-	 * in #mobile-head from template to <head> of the page.
-	 */
-	constructHead : function() {    
-	    mobilize.log("constructHead");
-	    $("head").append($("#mobile-head").children());
-	    // Make events to be fired when each CSS/Javascript has been loadeds
-	},
-	
-	
-	/**
-	 * Create jQuery Mobile navigation links out of arbitary link list.
-	 * 
-	 * Creates navigation or news box from existing jQuery content selection.
-	 * The selection can be list or arbitary elements or list of a a hrefs.
-	 * 
-	 * @param {Object} selection jQuery selection which to transform
-	 * 
-	 * @param title If present add a link box with a title using ui-list
-	 * 
-	 * @returns Constructed jQuery tree, ready to place to the document
-	 */
-	createNavigationBox : function(selection, title, outputter) {
-		
-		var list;
+    /**
+     * Create <head> section of a mobile rendered version.
+     * 
+     * The default transform is just to copy everything
+     * in #mobile-head from template to <head> of the page.
+     */
+    constructHead : function() {    
+        mobilize.log("constructHead");
+        $("head").append($("#mobile-head").children());
+        // Make events to be fired when each CSS/Javascript has been loadeds
+    },
+    
+    
+    /**
+     * Create jQuery Mobile navigation links out of arbitary link list.
+     * 
+     * Creates navigation or news box from existing jQuery content selection.
+     * The selection can be list or arbitary elements or list of a a hrefs.
+     * 
+     * @param {Object} selection jQuery selection which to transform
+     * 
+     * @param title If present add a link box with a title using ui-list
+     * 
+     * @returns Constructed jQuery tree, ready to place to the document
+     */
+    createNavigationBox : function(selection, title, outputter) {
+        
+        var list;
 
-		list = $("<ul data-inset='true' data-role='listview'>");
-		selection.each(function() {
-			 
-			 var input = $(this);
-			 var a;
-			 var contentish;
-			 
-			 mobilize.log("Creating navigation box link " + this);
-			 
-			 // We can be iterating through <a> or <li> element
-			 if(this.tagName.toLowerCase() == 'a') {
+        list = $("<ul data-inset='true' data-role='listview'>");
+        selection.each(function() {
+             
+             var input = $(this);
+             var a;
+             var contentish;
+             var content;
+             
+             mobilize.log("Creating navigation box link " + this);
+             
+             // We can be iterating through <a> or <li> element
+             if(this.tagName.toLowerCase() == 'a') {
                 a = input;         
-				contentish = false;          			 	
-			 } else {
-			 	var content = input;
-				
-				// Assume we have 0 or 1 links in the content HTML
-			 	a = content.find("a");
-				if(a.size() == 0) {
-					a = null;
-				}
-				contentish = true;
-			 }
-			 
-			 if (a) {
-			 	var a = mobilize.rewriteLink(a);
-			 }
-			 
-			 if (outputter) {
-			     outputter(list, input, a);	 
-			 } else {
-			 	
-				// Create normal bulleted lists
-				var output = $("<li role='option'>");
-				
-			 	if (a) {
-			 		output.append(a).appendTo(list);
-			 	}
-			 	
-			 	if (contentish) {
-			 		// Format link content
-					output.appendTo(content.children());
-				}
-			}
-		});
-		
-		if(title) {
-			list.prepend("<li data-role='list-divider'>" + title + "</li>");
-		}
-		
-		return list;
-	},
-	
-	/**
-	 * Create <body> section of a mobile rendered version.
-	 * 
-	 * This transformation is always CMS specific 
-	 * and your subclass must override this function.
-	 */
-	constructBody : function() {        
-	},
-	
-	/**
-	 * Make the transformed mobile template body visible and remove the other body data.
-	 */
-	swapBody : function() { 
-	    var mobileBody = $("#mobile-body").detach();
-	    $("body").empty();
-	    $("body").append(mobileBody.children());
-	},
-	
-	/**
-	 * Check that all async conditions have been completed allowing us to finish the page.
-	 */
-	prepareFinish : function() {
-		
-		mobilize.log("prepareFinish()");
-		if(!mobilize.jQueryMobileLoaded) {
-			mobilize.log("Waiting for jQuery Mobile to load");			
-		}
-		
-		if(!mobilize.transformComplete) {
-			mobilize.log("Waiting transform() to complete");
-		}
-		
-		mobilize.log("mobilize.jQueryMobileLoaded:"+mobilize.jQueryMobileLoaded);
-		mobilize.log("mobilize.transformComplete:"+mobilize.transformComplete);
-		if(mobilize.jQueryMobileLoaded && mobilize.transformComplete) {    
-		    mobilize.finish();
-		}
-	},
+                contentish = false;                           
+             } else {
+                 content = input;
+                
+                // Assume we have 0 or 1 links in the content HTML
+                 a = content.find("a");
+                if(a.size() === 0) {
+                    a = null;
+                }
+                contentish = true;
+             }
+             
+             if (a) {
+                 a = mobilize.rewriteLink(a);
+             }
+             
+             if (outputter) {
+                 outputter(list, input, a);     
+             } else {
+                 
+                 // Create normal bulleted lists
+                 var output = $("<li role='option'>");
+                
+                 if (a) {
+                     output.append(a).appendTo(list);
+                 }
+                 
+                 if (contentish) {
+                     // Format link content
+                    output.appendTo(content.children());
+                 }
+            }
+        });
+        
+        if(title) {
+            list.prepend("<li data-role='list-divider'>" + title + "</li>");
+        }
+        
+        return list;
+    },
+    
+    /**
+     * Create <body> section of a mobile rendered version.
+     * 
+     * This transformation is always CMS specific 
+     * and your subclass must override this function.
+     */
+    constructBody : function() {        
+    },
+    
+    /**
+     * Make the transformed mobile template body visible and remove the other body data.
+     */
+    swapBody : function() { 
+        var mobileBody = $("#mobile-body").detach();
+        $("body").empty();
+        $("body").append(mobileBody.children());
+    },
+    
+    /**
+     * Check that all async conditions have been completed allowing us to finish the page.
+     */
+    prepareFinish : function() {
+        
+        mobilize.log("prepareFinish()");
+        if(!mobilize.jQueryMobileLoaded) {
+            mobilize.log("Waiting for jQuery Mobile to load");            
+        }
+        
+        if(!mobilize.transformComplete) {
+            mobilize.log("Waiting transform() to complete");
+        }
+        
+        mobilize.log("mobilize.jQueryMobileLoaded:"+mobilize.jQueryMobileLoaded);
+        mobilize.log("mobilize.transformComplete:"+mobilize.transformComplete);
+        if(mobilize.jQueryMobileLoaded && mobilize.transformComplete) {    
+            mobilize.finish();
+        }
+    },
 
-	/**
-	 * Mobile transformation is done. Show mobile site to the user.
-	 */
-	finish : function() {
-	   
-	    this.swapBody();
-	   
+    /**
+     * Mobile transformation is done. Show mobile site to the user.
+     */
+    finish : function() {
+       
+        this.swapBody();
+       
         // Draw jQuery Mobile chrome
-		try{
-			$.mobile.initializePage();
-		}catch(e){
-			mobilize.log("mobilize::finish initializePage failed>" + e);
-		}
+        try{
+            $.mobile.initializePage();
+        }catch(e){
+            mobilize.log("mobilize::finish initializePage failed>" + e);
+        }
 
         // Show constructed page to the user
-	    $("body").show();
-		
-		// Execute handlers which can be run
-		// after jQuery Mobile has completed its internal transforms
-		mobilize.log("Triggering mobilizefinish");
-		//$(document).trigger("mobilizefinish");
+        $("body").show();
+        
+        // Execute handlers which can be run
+        // after jQuery Mobile has completed its internal transforms
+        mobilize.log("Triggering mobilizefinish");
+        //$(document).trigger("mobilizefinish");
 
         mobilize.bindEventHandlers();
         
@@ -1230,83 +1328,84 @@ var mobilize = {
         {
             mobilize.onCompleted();
         }
-	},
-	
-	/**
-	 * Subclass may override.
-	 * 
-	 * This is called after jQuery Mobile has been set up.
-	 * You can now attach event handlers to jQuery UI elements.
-	 * 
-	 */
-	bindEventHandlers : function() {
-		
-	},
-	
-	/**
-	 * Check if the browser is supported. If not, no mobilization is done
-	 * unless explicitly forced with forceMobilize option.
-	 * 
-	 * Code from jQuery mobile, converted to use regular DOM API. 
-	 * Need to do this because we don't have jquery.mobile until 
-	 * we know the page will be mobilized.
-	 */
-	isBrowserSupported : function(){
-	    // TODO: use window.matchMedia once at least one UA implements it
-	    var cache = {};
-	    var testDiv = document.createElement("div");
-	    testDiv.setAttribute("id", "mobilize-mediatest");
-	    
-	    var fakeBody = document.createElement("body");
-	    fakeBody.appendChild(testDiv);
-	    
-	    var $html = document.getElementsByTagName("html")[0];
-	    //testDiv = $( "<div id='jquery-mediatest'>" ),
-	    //fakeBody = $( "<body>" ).append( testDiv );
+    },
+    
+    /**
+     * Subclass may override.
+     * 
+     * This is called after jQuery Mobile has been set up.
+     * You can now attach event handlers to jQuery UI elements.
+     * 
+     */
+    bindEventHandlers : function() {
+        
+    },
+    
+    /**
+     * Check if the browser is supported. If not, no mobilization is done
+     * unless explicitly forced with forceMobilize option.
+     * 
+     * Code from jQuery mobile, converted to use regular DOM API. 
+     * Need to do this because we don't have jquery.mobile until 
+     * we know the page will be mobilized.
+     */
+    isBrowserSupported : function(){
+        // TODO: use window.matchMedia once at least one UA implements it
+        var cache = {};
+        var testDiv = document.createElement("div");
+        testDiv.setAttribute("id", "mobilize-mediatest");
+        
+        var fakeBody = document.createElement("body");
+        fakeBody.appendChild(testDiv);
+        
+        var $html = document.getElementsByTagName("html")[0];
+        //testDiv = $( "<div id='jquery-mediatest'>" ),
+        //fakeBody = $( "<body>" ).append( testDiv );
 
-	    function check( query ) {
-	        if ( !( query in cache ) ) {
-	            var styleBlock = document.createElement('style'),
-	                cssrule = "@media " + query + " { #mobilize-mediatest { position:absolute; } }";
-	            //must set type for IE! 
-	            styleBlock.type = "text/css";
-	            if (styleBlock.styleSheet){ 
-	              styleBlock.styleSheet.cssText = cssrule;
-	            } 
-	            else {
-	              styleBlock.appendChild(document.createTextNode(cssrule));
-	            } 
+        function check( query ) {
+            if ( !( query in cache ) ) {
+                var styleBlock = document.createElement('style'),
+                    cssrule = "@media " + query + " { #mobilize-mediatest { position:absolute; } }";
+                //must set type for IE! 
+                styleBlock.type = "text/css";
+                if (styleBlock.styleSheet){ 
+                  styleBlock.styleSheet.cssText = cssrule;
+                } 
+                else {
+                  styleBlock.appendChild(document.createTextNode(cssrule));
+                } 
 
-	            
+                
                 $html.insertBefore( styleBlock, $html.firstChild );
                 $html.insertBefore( fakeBody, $html.firstChild );
                 
-	            //$html.prepend( fakeBody ).prepend( styleBlock );
+                //$html.prepend( fakeBody ).prepend( styleBlock );
                 testDiv = document.getElementById("mobilize-mediatest");
                 var position = document.defaultView.getComputedStyle(testDiv, null).position;                
-	            cache[ query ] = position === "absolute";
-	            // Remove temp tags
-	            fakeBody.appendChild(styleBlock);
-	            $html.removeChild(fakeBody);
-	            //fakeBody.add( styleBlock ).remove();
-	        }
-	        return cache[ query ];
-	    }
-	    
-	    return check("only all")
-	},
-	
-	/** Utility for defloating images.
-	 * Also adds default onclick handler to show the image.
-	 * 
-	 * usage:
-	 *     mobilize.defloat(document.getElementById("img-id"))
+                cache[ query ] = position === "absolute";
+                // Remove temp tags
+                fakeBody.appendChild(styleBlock);
+                $html.removeChild(fakeBody);
+                //fakeBody.add( styleBlock ).remove();
+            }
+            return cache[ query ];
+        }
+        
+        return check("only all");
+    },
+    
+    /** Utility for defloating images.
+     * Also adds default onclick handler to show the image.
+     * 
+     * usage:
+     *     mobilize.defloat(document.getElementById("img-id"))
      *     mobilize.defloat($("#img-id")[0])
-	 * 
-	 * @param image: Image element
-	 */
-	defloat : function(image)
-	{
+     * 
+     * @param image: Image element
+     */
+    defloat : function(image)
+    {
+        // jslint complains: ['float'] is better written in dot notation, but required for YUI Compressor to work
         image.style["float"] = "none";
         var klass = image.getAttribute("class");
         klass = ["mobilize-resized", klass].join(" ");
@@ -1320,7 +1419,7 @@ var mobilize = {
                 window.open(image.src);
             };
         }
-	}
+    }
 };
 
 // ================== Hand picked utilies from Ion project
@@ -1376,7 +1475,7 @@ mobilize.delayedFunction = function callAfter(func, after, opts){
  * Example: 
 mobilize.scope( function(a){ alert( this.a + a ); }, { a : 10 } )( 90 );
  */
-mobilize.scope = function scope(func, scope){
+mobilize.scope = function (func, scope){
     return function(){
         func.apply(scope, arguments);  
     };
@@ -1408,7 +1507,7 @@ mobilize.call = function call(func, opts ){
         }
     }
 
-    
+    var i;
     if( after !== undefined ){
         func = mobilize.scope( func, scope );
         
@@ -1422,18 +1521,16 @@ mobilize.call = function call(func, opts ){
             {func:func, callback : callback, args : args }
         );
         
-        for( var i = 1; i <= repeat; i++){
+        for( i = 1; i <= repeat; i++){
             mobilize.delayedFunction(called, after * i )();
         }
         
     }
     else {
-        for( var i = 0; i < repeat; i++){
-            var result = func.apply( scope, args);
+        for( i = 0; i < repeat; i++){
+            func.apply( scope, args);
         }
     }
-    
-    return result;
 };
 /** Call function and catch exceptions. Logs trace (if supported)
  * @param func: Function to call
@@ -1499,5 +1596,6 @@ mobilize.trapped = function trapped(func, options ){
 };
 
 
-if(typeof(exports) !== "undefined")
-	exports.mobilize = mobilize;
+if(typeof(exports) !== "undefined") {
+    exports.mobilize = mobilize;
+}
