@@ -44,6 +44,14 @@ BUNDLES = [
         "mobile_css" : ["jquery.mobile.css", "wordpress.css"],        
         "templates" : ["wordpress.html"]
     },
+    
+    {
+        "name" : "sphinx",
+        "bootstrap_js" : ["mobilize.js", "mobilize.sphinx.js"],
+        "mobile_js" : ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js"],
+        "mobile_css" : ["jquery.mobile.css", "sphinx.css"],        
+        "templates" : ["sphinx.html"]
+    },
 
 ]
 

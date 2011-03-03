@@ -1,0 +1,26 @@
+/**
+ * Wordpres theming layer on the top of standard jQuery Mobile
+ */
+
+/* Fix required field asterisk to be on the same line as the field */
+#respond label {
+	display: inline-block;	
+}
+
+/* Make labels more readable */
+
+#respond label {
+	color: black;
+	font-size: 120%;
+}
+
+#commentform .required {
+	color: red;
+}
+
+/* Make footer to look little bit more sane */
+.ui-footer {
+	padding: 10px 0;
+	text-align: center;
+	font-weight: lighter;
+}

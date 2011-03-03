@@ -10,6 +10,8 @@ import SimpleHTTPServer
 import SocketServer
 import urllib
 import Cookie
+import urllib2
+from urlparse import urlparse
 
 PORT = 8080
 
@@ -54,11 +56,25 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.end_headers()
         return f
     
+    def read_proxy_args(self):
+        from urlparse import urlparse
+        u =urlparse(self.path)
+        args = dict([x.split("=") for x in u.query.split("&")])
+        args["options"] = dict([x.split(":") for x in args.get("options",":").split(",")])
+        return args
+
     def do_proxy(self):
-        import urllib2
-        
-        url = urllib.unquote(self.path.split("url=")[-1])
-        if "localhost" in url:
+        """
+        GET parameters
+        url       - Source url to get content from
+        bundleurl - Url to load the initial mobilize.js
+        options - Options set for mobilize.init([options])
+                    <value>:<key>,<value>:<key>
+        """
+        args = self.read_proxy_args()
+        url = args["url"]
+         
+        if "localhost:%d" % (PORT) in url:
             i = 0
             i = url.index("://",i) + 3
             i = url.index("/", i)
@@ -71,7 +87,16 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             resp = urllib2.urlopen(url)
             data = resp.read();
         
+        # TODO: Add support for overloading existing mobilize.
         if "mobilize.init" not in data:
+            options = {
+                "forceMobilize" : 1,
+                "haveRemoteDebugLogging" : 1,
+                "remoteDebugLogBaseUrl" : "http://localhost:%d/" % ( PORT )
+            }
+            
+            options.update( args.get("options",{}))
+            
             i = 0;
             i = data.index("head", i)
             i = data.index("body", i)
@@ -82,26 +107,29 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             
             <script type="text/javascript">
             function mobilize_init(){
-                    mobilize.init({
-                    forceMobilize : true,
-                    haveRemoteDebugLogging : true,
-                    remoteDebugLogBaseUrl : "http://localhost:8080/"
-                });
+                    mobilize.init(%(OPTIONS)s);
                 mobilize.bootstrap();
             }
             </script>
             
             <script  class="mobilize-js-source" 
                       type="text/javascript" 
-                       src="http://localhost:8080/js/mobilize.wordpress.min.js"
+                       src="%(BUNDLEURL)s"
                        onload="mobilize_init();">
             </script>
             
-            """
+            """ % {
+                "OPTIONS" : options,
+                "BUNDLEURL"  : args.get("bundleurl", "http://localhost:8080/js/mobilize.wordpress.min.js")
+            }
             
             data = data[:i] + injected + data[i:]
             
         self.send_response(200)
+         
+        #self.response.headers.dict["cookie"] = cookies;
+        self.send_header("Set-Cookie", "proxy-url=%s" % ( url ))
+        
         self.end_headers()
         
         self.wfile.write(data)
@@ -109,12 +137,9 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         return 
         
     def do_GET(self):
-        #print "doGET", self.path
-        #if "logo_238.png" in self.path:
-        #    pass
-        if "/proxy" in self.path:
-            self.do_proxy()
-            return
+        
+            
+        
         
         if "/log?msg" in self.path:
             msg = urllib.unquote(self.path.split("msg=")[-1])
@@ -125,19 +150,11 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.end_headers()
             return
         
-        if "cookie" in self.headers.dict:
-            cookies = Cookie.SimpleCookie()
-            cookies.load(self.headers.dict["cookie"])       
-            mobilize = cookies.get("mobilize-mobile",None)
-            if mobilize:
-                if mobilize.value == "1":
-                    print "Cookie says client is mobile"
-       
         # Bundle to single file
-        if "mobile" not in self.path \
+        if "/proxy" not in self.path \
+        and "mobile" not in self.path \
         and "mobilize" in self.path \
-        and "js" in self.path \
-        and "min" in self.path:
+        and "js" in self.path:
             parts = self.path.split("/")
             filename = parts[-1]
             without_min = filename.replace(".min", "")
@@ -157,7 +174,50 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             
             f.close()
             return
+        
+        # Don't proxy these as the proxied server doesn't have them. 
+        if self.path.startswith("/js")  \
+        or self.path.startswith("/css") \
+        or self.path.startswith("/templates"):
+            return self.base.do_GET(self);
+         
+        if "/proxy" in self.path:
+            self.do_proxy()
+            return
+        
+        
+        #print "doGET", self.path
+        #if "logo_238.png" in self.path:
+        #    pass
+        
+        
+        if "/noproxy" in self.path:
+            self.send_response(200)
+            self.send_header("Set-Cookie", "proxy-url=0")
+            self.end_headers()
             
+            return
+        
+        if "cookie" in self.headers.dict:
+            cookies = Cookie.SimpleCookie()
+            cookies.load(self.headers.dict["cookie"])       
+            mobilize = cookies.get("mobilize-mobile",None)
+            if mobilize:
+                if mobilize.value == "1":
+                    print "Cookie says client is mobile"
+                    
+            proxyurl = cookies.get("proxy-url",None)
+            
+            if proxyurl and proxyurl.value != "0":
+                url = proxyurl.value + self.path
+                print "Proxy:", url 
+                
+                resp = urllib2.urlopen(url)
+                data = resp.read();
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(data)
+                return;
         
         return self.base.do_GET(self)
 
@@ -169,7 +229,7 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     
 
 def main():
-    
+    global PORT
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("-p", "--port",
@@ -178,6 +238,7 @@ def main():
     (options, args) = parser.parse_args()
     
     port = int(options.port)
+    PORT = port
     
     SocketServer.TCPServer.allow_reuse_address = True
     SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map.update({
@@ -189,9 +250,11 @@ def main():
     print "serving at port", port
     
     # This is handy if your terminal supports double clicking of the linkss
-    for file in os.listdir(os.path.join(os.getcwd(), "tests")):
-        if file.endswith(".html"):
-            print "Open test page http://localhost:%d/tests/%s?mobilize=true" % (port, file)
+    testsdir = os.path.join(os.getcwd(), "tests")
+    if os.path.exists(testsdir):
+        for file in os.listdir(testsdir):
+            if file.endswith(".html"):
+                print "Open test page http://localhost:%d/tests/%s?mobilize=true" % (port, file)
     
     httpd.serve_forever()
 
