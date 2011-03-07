@@ -225,7 +225,7 @@ var mobilize = {
     init : function(options, cdnOptions) {
         
         if(mobilize._init_called) {
-            mobilize.log("WARNING: init called more than once. Is mobilize.js initialized both manually and via autoload?");
+            mobilize.log_w("init called more than once. Is mobilize.js initialized both manually and via autoload?");
             return;
         }
         mobilize._init_called = true;
@@ -282,7 +282,7 @@ var mobilize = {
 
         // Needed to avoid trouble with autoload
         if(mobilize._bootstrap_called) {
-            mobilize.log("WARNING: bootstrap called more than once. Is mobilize.js initialized both manually and via autoload?");
+            mobilize.log_w("bootstrap called more than once. Is mobilize.js initialized both manually and via autoload?");
             return;
         }
         mobilize._bootstrap_called = true;

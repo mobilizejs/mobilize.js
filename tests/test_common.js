@@ -36,11 +36,8 @@ function test_reloadOnMobile() {
     assert.ok(reloadcalled);
     
     reloadcalled = false
-    assert.throws(
-        function(){
-            mobilize.init({reloadOnMobile : false, forceUserAgent : "android"});
-        }
-    );
+    
+    mobilize.init({reloadOnMobile : false, forceUserAgent : "android"});
     assert.ok(!reloadcalled);
 }
 
