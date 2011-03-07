@@ -4,6 +4,7 @@
 
 .. contents :: :local:
 
+
 Unit testing
 ============
 
@@ -13,22 +14,27 @@ Installing NodeJS
 -----------------
 See: https://github.com/ry/node/wiki/Installation
 
-Run:
+.. code-block:: sh
+
 	mkdir ~/local
 	./configure --prefix=$HOME/local/node
 	make
 	make install
 	export PATH=$HOME/local/node/bin:$PATH
 
-** Installing NPM(NodeJS Package Manager) **
+Installing NPM(NodeJS Package Manager)
+--------------------------------------
+
 See: http://npmjs.org/
 
-Run:
+.. code-block:: sh
 
 	curl http://npmjs.org/install.sh | sudo sh
 
-** Install jQuery for NodeJS **
-Run:
+Install jQuery for NodeJS
+-------------------------
+
+.. code-block:: sh
 
 	npm install jquery
 
@@ -37,9 +43,39 @@ Running tests
 
 Go to tests folder and execute:
 
+.. code-block:: sh
+
 	node <testname>.js
 
-TODO: Script for running all tests.
+
+
+Code analysis
+=============
+
+We enforce practice to scan the sources with jslint before commit.
+This is achieved via pre-commit hook. To enable the hook, you must
+run script ./run-this-after-clone, which symlinks the githooks folder
+to ./git/hooks folder. This is required as git does not support
+hooks in repository.
+
+You can also run the scan manually with jslint.py, which adds an
+error filtering layer to skip errors we have determined to be invalid.
+ 
+If jslint finds error, jslint.py checks if the error line has "jslint:ignore" text
+and ignores the error if it exists.
+
+This will scan all but jquery files(which we don't care about):
+
+.. code-block:: sh
+
+    python jslint.py "js/*.js-jquery*"
+
+Install jslint for NodeJS
+-------------------------
+
+.. code-block:: sh
+
+    npm install jslint
 
 Content delivery testing
 ==========================
