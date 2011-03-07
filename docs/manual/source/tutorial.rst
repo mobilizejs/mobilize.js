@@ -114,7 +114,43 @@ for more examples.
 
 .. code-block:: html
 
+        <script type="application/javascript">
+              window.mobilizeAutoload = false;
+        </script>
+        <script class="mobilize-js-source" 
+                type="text/javascript" 
+            src="http://localhost:8080/js/mobilize.js"></script>
 
+        <script type="text/javascript" src="http://localhost:8080/js/mobilize.sphinx.js"></script>
+        
+        <script type="text/javascript">
+            mobilize.init(
+                {
+                    // Additional options here  
+                },
+                {                     
+                    // Additional CDN options here
+                    cloud : false, // Disable automatic JS + CSS resolving
+                    
+                    baseURL : "http://localhost:8080", // Test server
+                    
+                    // Load JS files locally
+                    javascriptBundles : [ 
+                       "js/jquery.js",
+                       "js/mobilize.onjq.js",
+                       "js/jquery.mobile.js"
+                     ],
+                    
+                     // Load CSS files locally
+                     cssBundles : [
+                       "css/jquery.mobile.css",
+                       "css/sphinx.css"                       
+                     ],
+                     
+                     template : "../templates/sphinx.html"
+                });
+            mobilize.bootstrap();
+        </script>
     
 Bootstrapping custom mobilize.js 
 ==================================

@@ -34,18 +34,46 @@ var mobilizeSphinx= {
     constructBody : function() {
         
         mobilize.log("Sphinx constructBody()");
-                
-        if($("body").hasClass("single-post")) {
-            // Post type page
-            this.constructPostPage();
-        } else {
-            // Front page
-            this.constructFrontPage();
+
+        // Cache the content area selector
+        this.content = $("#mobile-body div[data-role=content]");
+        if (this.content.size() === 0) {
+            throw "No template content section to fill in";
         }
+
+        this.cleanBacklinks();                				
+
         this.constructHeader();
+        this.constructText();
+		this.constructContents();
+
         this.constructFooter();
+		
+		// Just remove this for now
+		$("#indices-and-tables").remove();
         
     },
+	
+	/**
+	 * Create jQuery Mobile navigation out of TOC
+	 */
+	constructContents : function() {
+		// <li class="toctree-l1"><a href="installation.html" class="reference internal ui-link">Installation</a></li>
+		var toc = this.createNavigationBox($(".toctree-l1 > a"), "Contents");
+		
+		// Replace the existing TOC with pimped version
+		var oldTOC = $(".toctree-wrapper");
+		
+		// Delete <p>Contents:</p>
+		oldTOC.prev().remove();
+		// this.content.append(toc);
+		
+		var parent = oldTOC.parent();
+		
+		parent.after(oldTOC, toc);
+		
+		oldTOC.remove();
+	},
     
     constructHeader : function() {
         // Set page heading from <title> tag
@@ -77,42 +105,13 @@ var mobilizeSphinx= {
     },
      
     /**
-     * This is a nasty one
+     * Move Sphinx main text to the mobile template.
      */
-    constructFrontPage : function() {
+    constructText : function() {
     
-        var baseurl = mobilize.baseurl(window.location.href);
-        
         // Move box on the left hand to body first
-        var content = $("#mobile-body div[data-role=content]");
-        if(content.size() === 0) 
-        {
-            throw "No template content section to fill in";
-        }
-        content.append($(".content"));
-		
-        /*
-        var newcontent = $("<div>");
-        
-        var c = $(".section");
-        c.find(".toctree-l1").each(function(){
-            var newh = $('<div data-role="collapsible" data-collapsed="true">');
-            //var ul = $("<ul>");
-            //ul.append($(this));
-            
-            var header = this.firstChild.innerText;
-            var content = $("<p>");
-            content.append(this);
-            
-            newh.append("<h3>" + header + "</h3>");
-            newh.append(content);
-            
-            newcontent.append(newh);
-        });
-        
-        content.append(newcontent);
-        */
-         
+        this.content.append($(".content"));
+		         
     },
     
     /**
@@ -124,7 +123,16 @@ var mobilizeSphinx= {
      */
      bindEventHandlers : function(event, data) {
          
-     }
+     },
+	 
+	 /**
+	  * Remove Sphinx permalinks and bacl to TOC links 
+	  * 
+	  * a title="Permalink to this headline" href="#welcome-to-mobilize-js-s-documentation" class="headerlink"
+	  */
+	 cleanBacklinks : function() {
+	 	$("a.headerlink").remove();
+	 }
      
 };
 
