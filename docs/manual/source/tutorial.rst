@@ -18,6 +18,7 @@ The target audience of this tutorial are
 
 * Mobile extension authors who want to use mobilize.js as a mobilization backend
 
+
 Prerequirements
 -------------------
 

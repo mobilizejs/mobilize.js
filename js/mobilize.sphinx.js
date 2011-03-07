@@ -175,6 +175,7 @@ var mobilizeSphinx= {
 			return;
 		}
 
+
         var prev = $(".bottomnav a:first");
 		var next = $(".bottomnav a:last");
 
