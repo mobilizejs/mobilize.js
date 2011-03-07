@@ -1,0 +1,24 @@
+<!-- 
+This is for testing internal error reporting to cloud.
+ -->
+ 
+<html>
+
+<script>
+window.mobilizeAutoload = false;
+</script>
+<script src="/js/mobilize.js"></script>
+
+
+<script>
+
+mobilize.cdnOptions.errorReportingUrl = "http://localhost:9999/logerror";
+mobilize.logInternalError("testver", "big trace here");
+</script>
+
+
+<body>
+
+</body>
+ 
+</html>
