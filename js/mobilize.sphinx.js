@@ -84,7 +84,8 @@ var mobilizeSphinx= {
         
         // Move box on the left hand to body first
         var content = $("#mobile-body div[data-role=content]");
-        if(content.size() == 0) {
+        if(content.size() === 0) 
+        {
             throw "No template content section to fill in";
         }
         content.append($(".content"));
@@ -121,7 +122,7 @@ var mobilizeSphinx= {
      */
      bindEventHandlers : function(event, data) {
          
-     },
+     }
      
 };
 
