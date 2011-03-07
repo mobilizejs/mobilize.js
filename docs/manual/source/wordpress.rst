@@ -4,6 +4,14 @@
 
 .. contents :: :local:
 
+Enabling
+========
+
+To enable mobilize, add following script tag to the page.
+
+.. code-block:: html
+
+    <script src="http://cdn.mobilizejs.com/releases/trunk/js/mobilize.wordpress.min.js"></script>
 
 Front page
 ==========

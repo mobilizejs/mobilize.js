@@ -21,11 +21,18 @@
         type="text/javascript" 
 	src="/js/mobilize.wordpress.min.js"></script>
 <script type="text/javascript">
-    mobilize.init({
-    	// Additional options here
-    	haveRemoteDebugLogging : true	
-    });
-    mobilize.bootstrap();
+
+    mobilize.onCompleted = function(){
+	    var img = $('<img src="/media/logo_238.png">');
+        
+        mobilize.defloat(img[0])
+        
+       $("div [data-role=content]").prepend(img)
+    }
+
+    mobilize.options.haveRemoteDebugLogging = true;
+    mobilize.options.forceMobilize = true
+    mobilize.cdnOptions.localCacheVersion = "0.2"
 </script>
 
 
@@ -155,6 +162,6 @@
 	</div><!-- #footer --> 
  
 </div><!-- #wrapper --> 
- 
+
 </body> 
 </html> 

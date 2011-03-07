@@ -3,19 +3,21 @@
 
     Ad hoc Python script for making a mobilize.js release.
     
-    TODO: Add real minifying
-    
-    TODO: Run .js files through version line replacement
+    .js and .css files are run through YUI Compressor.
     
     Usage:
     
-        release.py [version tag]
+        release.py [options] [version tag]
         
     
-    Example::
+    Create release to releases/trunk folder::
     
-        release.py trunk 
+        release.py trunk
         
+    Create release to /path/to/release/dir/trunk folder::
+        
+        release.py -d /path/to/release/dir trunk
+
     Use version tag trunk for running tests. 
 
 """
@@ -23,9 +25,10 @@
 import os
 import shutil
 import sys
+import tempfile
 
 # Define different user usabble clouad service bundles
-bundles = [
+BUNDLES = [
     {
         "name" : "core",
         "bootstrap_js" : ["mobilize.js"],
@@ -41,25 +44,36 @@ bundles = [
         "mobile_css" : ["jquery.mobile.css", "wordpress.css"],        
         "templates" : ["wordpress.html"]
     },
+    
+    {
+        "name" : "sphinx",
+        "bootstrap_js" : ["mobilize.js", "mobilize.sphinx.js"],
+        "mobile_js" : ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js"],
+        "mobile_css" : ["jquery.mobile.css", "sphinx.css"],        
+        "templates" : ["sphinx.html"]
+    },
 
 ]
 
-version = None
+OPTIONS = None
+VERSION = None
 
-global target_path
+global TARGET_PATH
 
-home = os.getcwd()
+WORKDIR = os.getcwd()
 
-def create_paths():
 
-    global target_path
+def create_paths( ):
+
+    global TARGET_PATH
     
-    target_path = os.path.join(home, "releases", version)
+    TARGET_PATH = os.path.join(OPTIONS.targetdir, VERSION)
+    TARGET_PATH = os.path.abspath(TARGET_PATH)
     
-    if not os.path.exists(target_path):
-        os.makedirs(target_path)
+    if not os.path.exists(TARGET_PATH):
+        os.makedirs(TARGET_PATH)
         for subpath in ["js", "css", "templates", "images"]:
-            os.makedirs(os.path.join(target_path, subpath))
+            os.makedirs(os.path.join(TARGET_PATH, subpath))
     
 def add_extra_extension(filepath, extra_ext):
     """
@@ -71,12 +85,12 @@ def add_extra_extension(filepath, extra_ext):
 
 
 def create_bundle_core(target, sources, type):
-    global version
+    global VERSION
     
     print "Creating bundle:" + target
     buffer = ""
     for s in sources:
-        f = open(os.path.join(home, type, s))
+        f = open(os.path.join(WORKDIR, type, s))
         buffer += f.read()
         f.close()
     
@@ -87,18 +101,32 @@ def create_bundle_core(target, sources, type):
         if "$$VERSION_LINE" in line:
             i = line.index('"') + 1
             ie = line.index('"',i)
-            line = line[:i] + version + line[ie:]
+            line = line[:i] + VERSION + line[ie:]
             lines[x] = line
             
-            print "$$VERSION_LINE found. Updated version to '%s'" % version
+            print "$$VERSION_LINE found. Updated version to '%s'" % VERSION
             break
     buffer = "\n".join(lines)
     
     for mode in ["debug", "min"]:
-        output = os.path.join(target_path, type, add_extra_extension(target, mode))    
-        f = open(output, "wt")
-        f.write(buffer)
-        f.close()
+        output = os.path.join(TARGET_PATH, type, add_extra_extension(target, mode))
+        if not OPTIONS.no_compress and mode == "min" and type in ["js", "css"]:
+            # Implementes issue #16: Add YUI compressor to release.py
+            fh,path = tempfile.mkstemp(suffix = os.path.basename("."+type))
+            try:
+                f = open(path, 'wt')
+                f.write(buffer)
+                f.close()
+                yui = "java -jar tools/yuicompressor-2.4.2.jar -o %(TARGET)s %(SOURCE)s" % \
+                    {"TARGET" : output, "SOURCE" : path}
+                print yui
+                os.system(yui)
+            finally:
+                os.remove(path)
+        else:
+            f = open(output, "wt")
+            f.write(buffer)
+            f.close()
         
     
 def process_bundle(bundle):    
@@ -111,9 +139,9 @@ def process_bundle(bundle):
     
     # Copy templates
     for t in bundle["templates"]:
-        source = os.path.join(home, "templates", t)
+        source = os.path.join(WORKDIR, "templates", t)
         print "Copying template " + source
-        target = os.path.join(target_path, "templates")
+        target = os.path.join(TARGET_PATH, "templates")
         shutil.copy(source, target)
     
     
@@ -124,28 +152,42 @@ def prepare_images():
     # Image files are shared
     print "Copying images"
     
-    images_target = os.path.join(target_path, "css", "images")
+    images_target = os.path.join(TARGET_PATH, "css", "images")
     if os.path.exists(os.path.join(images_target)):
         shutil.rmtree(images_target)
-    shutil.copytree(os.path.join(home, "css", "images"), images_target)
+    shutil.copytree(os.path.join(WORKDIR, "css", "images"), images_target)
        
 def main():
     
-    global version
+    global OPTIONS
+    global VERSION
     
-    if len(sys.argv) < 2:
-        print "Usage release.py [version tag]"
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("-d", "--dir", dest="targetdir",
+                      help="Target directory to write the results. Default: %default",
+                      default = os.path.join(WORKDIR, "releases"))
+    parser.add_option("", "--no-compress",
+                      help="Disable compression",
+                      action="store_true",
+                      default = False)
+    
+    (OPTIONS, args) = parser.parse_args()
+    
+    if len(args) == 0:
+        print "Usage release.py [options] [version tag]"
+        print "See more help with -h"
         sys.exit(1)
         
-    version = sys.argv[1] 
-
-    print "mobilize.js release version %s" % version
+    VERSION = args[0] 
+    
+    print "mobilize.js release version %s" % VERSION
     create_paths()
     
     # Create bundles and copy bundle specific files
-    for b in bundles:
+    for b in BUNDLES:
         process_bundle(b)
-        
+    
     prepare_images()
 
 

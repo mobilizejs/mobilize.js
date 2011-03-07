@@ -12,6 +12,7 @@ Contents:
    installation
    usage
    wordpress
+   sphinx
    development
    hosting
    testing
