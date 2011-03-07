@@ -11,9 +11,13 @@ window.mobilizeAutoload = false;
 
 
 <script>
-
 mobilize.cdnOptions.errorReportingUrl = "http://localhost:9999/logerror";
 mobilize.logInternalError("testver", "big trace here");
+
+mobilize.trappedInternal(function(){
+    var fail = success_on_failure;
+})();
+
 </script>
 
 

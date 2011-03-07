@@ -521,12 +521,17 @@ var mobilize = {
     /** Log critical errors. These are also sent to cdn server. 
      * Used to log critical errors of mobilize.js to central location.
      * */
-    logInternalError : function(msg){
-        mobilize.log_e(msg);
+    logInternalError : function(version, msg){
+        mobilize.log_e("version:" + version + "\n" + msg);
         
         if(mobilize.cdnOptions.errorReportingUrl) {
             var req = new XMLHttpRequest();
-            req.open('GET', mobilize.cdnOptions.errorReportingUrl+'?msg=' + msg, false);
+            var url;
+            url = mobilize.cdnOptions.errorReportingUrl;
+            url += "?version=" + version;
+            url += "&msg="+msg;
+            
+            req.open('GET', url, false);
             req.send(null);
         }
     },
@@ -1744,10 +1749,8 @@ mobilize.trappedInternal = function(func, options)
         options = {};
     }
     options.onerror = function(e){
-        var msg = "";
-        msg += "-VER-:" + mobilize.cdnOptions.version;
-        msg += "\n-FUNC-:" + String(func);
-        msg += "\n-MSG-:";
+        
+        var msg = String(func) + "\n";
         if( !e.stack){
             msg += e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message;
         }
@@ -1755,7 +1758,7 @@ mobilize.trappedInternal = function(func, options)
             msg += String( e.stack);
         }
         
-        mobilize.logInternalError(msg);
+        mobilize.logInternalError(mobilize.cdnOptions.version, msg);
         
         // Pass the error on
         throw e;
