@@ -1,5 +1,5 @@
 ====================================
- Writing your own site mobilization
+ Writing mobilization for your site
 ====================================
 
 .. contents :local:
@@ -107,6 +107,15 @@ Then ``mobilize.mysite.js`` would contain:
         }
 
     });
+
+Alternatively if you are developing mobilize.js itself and you want to use the trunk
+version of the Javascript files you can do bootstrap locally. See *tests* folder
+for more examples.
+
+.. code-block:: html
+
+
+    
 Bootstrapping custom mobilize.js 
 ==================================
 

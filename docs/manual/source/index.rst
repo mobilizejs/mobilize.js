@@ -17,6 +17,7 @@ Contents:
    hosting
    testing
    documentation
+   troubleshooting
    issues
 
 Indices and tables

@@ -1,5 +1,5 @@
 =============================
- Integrating with Wordpress
+ Wordpress integration
 =============================
 
 .. contents :: :local:

@@ -1,5 +1,5 @@
 =============================
- Integrating with Sphinx
+ Sphinx integration
 =============================
 
 .. contents :: :local:

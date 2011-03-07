@@ -21,6 +21,7 @@ var mobilizeSphinx= {
      */
     initPlugins : function() {             
     
+	   mobilize.log("Setting up Sphinx extender");
        mobilize.extend(mobilize.cdnOptions, {
            bundleName : "mobilize.sphinx",
            cssBundles : ["css/mobilize.sphinx.mobile.min.css"],
@@ -89,6 +90,7 @@ var mobilizeSphinx= {
             throw "No template content section to fill in";
         }
         content.append($(".content"));
+		
         /*
         var newcontent = $("<div>");
         

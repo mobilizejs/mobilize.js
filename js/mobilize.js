@@ -247,6 +247,8 @@ var mobilize = {
 
         mobilize.extend(mobilize.cdnOptions, cdnOptions);
         
+		mobilize.log(mobilize.cdnOptions);
+		
         if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
             mobilize.log("mobilizejs: browser is not supported");
             return;
@@ -286,8 +288,7 @@ var mobilize = {
             return;
         }
         mobilize._bootstrap_called = true;
-        
-        
+                
         if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
             mobilize.log("mobilize.js: browser is not supported");
             return;
@@ -300,6 +301,8 @@ var mobilize = {
                 mobilize.log("Web mode wanted");
             }
         }
+		
+		// Do not let errors fall through
         doBootstrap = mobilize.trappedInternal(doBootstrap);
         doBootstrap();
     },
@@ -466,14 +469,29 @@ var mobilize = {
     /** 
      * Utility for internal debug logging.
      * 
+     * Support kinky devices, e.g. Nokia, which do not have console of any sort 
+     * by sending log output to remote server via AJAX.
+     * 
+     * @param tag: Debugging tag, e.g. log level (optional)
+     * 
      * @param msg: message to log
      * */
     log : function(aTag, aMsg) {
-        
-        if(!aMsg) {
+    
+	    if(!aMsg) {
             aMsg = aTag;
             aTag = "DEBUG:";
         }
+	    
+		// Pass messages to console as is
+		// (as it may be an object, not string)
+		if(window.console) {
+            if(console.log) {
+                console.log(aMsg);
+				return;
+            }
+        }
+	
         
         var msg = [aTag];
         if(typeof(aMsg) != "string") {
@@ -493,13 +511,7 @@ var mobilize = {
         }
         
         msg = msg.join(" ");
-        
-        if(window.console) {
-            if(console.log) {
-                console.log(msg);
-            }
-        }
-        
+                
         if(mobilize.options.haveRemoteDebugLogging) {
             var req = new XMLHttpRequest();
             req.open('GET', mobilize.options.remoteDebugLogBaseUrl + 'log?msg=' + msg, false);
@@ -809,6 +821,10 @@ var mobilize = {
         if(uri.indexOf("http") >= 0) {
             return uri;
         } else {
+			console.log(mobilize.cdnOptions);
+			if(mobilize.cdnOptions.baseURL === null) {
+				throw "mobilize.cdnOptions.baseURL must be defined or set cloud=true";
+			}
             return mobilize.cdnOptions.baseURL + "/" + uri;
         }
     },
@@ -1007,18 +1023,20 @@ var mobilize = {
         //var done = false;
         script.onload = script.onreadystatechange = function(){
             
-            mobilize.log("onload");
+            mobilize.log("script onload for " + url);
             
             if ( !this.done && (!this.readyState ||
                     this.readyState === "loaded" || this.readyState === "complete") ) {
                 this.done = true;
                 callback();
                 
+				// XXX: Mikko: Disabled as this made debugging little bit tricky
+				// We don't support IE in any case, or care if it leaks
                 // Handle memory leak in IE
-                script.onload = script.onreadystatechange = null;
+                /*script.onload = script.onreadystatechange = null;
                 if ( document.head && script.parentNode ) {
                     document.head.removeChild( script );
-                }
+                }*/
             }
         };
         
