@@ -179,7 +179,7 @@ var mobilizeSphinx= {
         var prev = $(".bottomnav a:first");
 		var next = $(".bottomnav a:last");
 
-        var group = $("<div class=mobile-next-prev data-role=controlgroup data-type=horizontal>");
+        var group = $("<div class=mobile-next-prev data-role=controlgroup data-type=vertical>");
 		prev.attr("data-icon", "arrow-l");
 		prev.attr("data-role", "button");
         next.attr("data-icon", "arrow-r");
