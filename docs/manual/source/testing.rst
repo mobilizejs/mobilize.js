@@ -24,10 +24,12 @@ Run:
 See: http://npmjs.org/
 
 Run:
+
 	curl http://npmjs.org/install.sh | sudo sh
 
 ** Install jQuery for NodeJS **
 Run:
+
 	npm install jquery
 
 Running tests

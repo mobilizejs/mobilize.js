@@ -368,26 +368,34 @@ var mobilize = {
                 throw msg;
             }
             
-            var i = src.indexOf("://");
-            if(i >= 0)
-            {
-                i += 3;
-            }
-            else 
-            {
-                i = 0;
-            }
-            
-            var ie = src.substring(i, src.length).indexOf("/") + i;
-            var base = src.substring(0,ie);
-            
-            opts.baseURL = base;
+            var base = mobilize.baseurl(src);
+
+            // Remove /js/ from the end of the URL
+            base = base.substring(0, base.length-4);
+            opts.baseURL = base; 
             
             mobilize.log_d("Found script source URL " + opts.baseURL);
         }
         
     },
-
+    
+    /** Parse domain url */
+    domainurl : function (src) {
+        var i = src.indexOf("://");
+        if(i >= 0)
+        {
+            i += 3;
+        }
+        else 
+        {
+            i = 0;
+        }
+        
+        var ie = src.substring(i, src.length).indexOf("/") + i;
+        var base = src.substring(0,ie);
+        return base;
+    },
+    
     /** Execute mobilization automatically.
      * 
      * To prevent this, set window.mobilizeAutoload = false;
