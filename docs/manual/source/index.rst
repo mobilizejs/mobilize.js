@@ -11,8 +11,8 @@ Contents:
    
    installation
    usage
-   wordpress
-   sphinx
+   extenders/index
+   tutorial
    development
    hosting
    testing
