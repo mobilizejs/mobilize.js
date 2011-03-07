@@ -4,8 +4,8 @@
 
 .. contents :: :local:
 
-Walkthrough
-------------
+Introduction
+=============
 
 In this chapter, a masked magician reveals the trick 
 behind mobilize.js magic. We explain what 
