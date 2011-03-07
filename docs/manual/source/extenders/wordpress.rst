@@ -4,6 +4,14 @@
 
 .. contents :: :local:
 
+Introduction
+============
+
+This chapter explains what kind of Wordpress web mark-up sematics (CSS class names).
+you need to have in order to make mobilize.js work with it out of the box.
+
+This is the same as Wordpress 3.1 default theme class names.
+
 Enabling
 ========
 

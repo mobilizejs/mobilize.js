@@ -18,7 +18,7 @@ The target audience of this tutorial are
 
 * Mobile extension authors who want to use mobilize.js as a mobilization backend
 
-Prerequisitements
+Prerequirements
 -------------------
 
 In order to understand this tutorial you should understand
@@ -27,7 +27,7 @@ In order to understand this tutorial you should understand
 
 * `jQuery DOM manipulation <http://docs.jquery.org>`_
 
-* `jQuery Mobile mark-up basics <http://docs.jquerymobile.org>`_
+* `jQuery Mobile mark-up basics <http://jquerymobile.com/test/>`_
 
 If you manage to read through :doc:`walkthrough how mobilize.js works </development>`
 and you are not *totally* lost you should be ok.
@@ -109,8 +109,14 @@ Then ``mobilize.mysite.js`` would contain:
     });
 
 Alternatively if you are developing mobilize.js itself and you want to use the trunk
-version of the Javascript files you can do bootstrap locally. See *tests* folder
+version of the Javascript files you can bootstrap the framework locally. See *tests* folder
 for more examples.
+
+In this case, you manually link Javascript files and CSS files
+as bundles and mobilize.js will load each file individually.
+This way line number debug info stays intact.
+
+The order of files is shown below.
 
 .. code-block:: html
 

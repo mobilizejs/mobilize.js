@@ -47,6 +47,8 @@ var mobilizeSphinx= {
         this.constructText();
 		this.constructContents();
 
+        this.constructPrevNextNavigation();
+
         this.constructFooter();
 		
 		// Just remove this for now
@@ -55,22 +57,33 @@ var mobilizeSphinx= {
     },
 	
 	/**
-	 * Create jQuery Mobile navigation out of TOC
+	 * Create jQuery Mobile version of table of contents.
+	 * 
+	 * Get the first level of TOC.. nested TOC not supported in mobile nav.
+	 * 
 	 */
 	constructContents : function() {
 		// <li class="toctree-l1"><a href="installation.html" class="reference internal ui-link">Installation</a></li>
-		var toc = this.createNavigationBox($(".toctree-l1 > a"), "Contents");
 		
-		// Replace the existing TOC with pimped version
-		var oldTOC = $(".toctree-wrapper");
+		// TOC can be generated using Sphinx .. toctree ::
+		// or reST .. contents :: :local: resulting to different output
+		var toc = this.createNavigationBox($(".toctree-l1 > a, #contents > ul > li > a"), "Contents");
 		
-		// Delete <p>Contents:</p>
-		oldTOC.prev().remove();
-		// this.content.append(toc);
+		// Get the handle to Sphinx standard TOC
+		var oldTOC = $(".toctree-wrapper, #contents");
 		
-		var parent = oldTOC.parent();
-		
-		parent.after(oldTOC, toc);
+		// Delete <p>Contents:</p> before .. toctree ::
+		var lead = oldTOC.prev();
+		if(lead.size() > 0) {
+			if (lead.get(0).tagName.toLowerCase() == "p") {
+				lead.remove();
+			}
+		}
+
+        // Replace the existing TOC with pimped version		
+		//var parent = oldTOC.parent();		
+		//parent.after(oldTOC, toc);
+		oldTOC.after(toc);
 		
 		oldTOC.remove();
 	},
@@ -99,9 +112,22 @@ var mobilizeSphinx= {
      */ 
     constructBackButton : function(header) {
         
-        if(window.location.href.indexOf("/index.html") < 0) {
+        /*if(window.location.href.indexOf("/index.html") < 0) {
             header.prepend("<a data-icon=back href='/'>Back</a>");
-        }
+        }*/
+		
+		var uplink = $("a.uplink:first");
+		
+		// <a href="index.html" class="uplink">Contents</a>
+		if(uplink.size() > 0) {
+			// Sphinx template has inserted uplink
+			if (uplink.attr("href") != "#") {
+			    // Not a front page
+				uplink.attr("data-icon", "back");
+				header.prepend(uplink);
+			// header.prepend("<a data-icon=back href='/'>Back</a>");
+			}
+		}
     },
      
     /**
@@ -122,7 +148,7 @@ var mobilizeSphinx= {
      * @param {Object} data
      */
      bindEventHandlers : function(event, data) {
-         
+         // TODO: Add Search button handling here
      },
 	 
 	 /**
@@ -132,8 +158,38 @@ var mobilizeSphinx= {
 	  */
 	 cleanBacklinks : function() {
 	 	$("a.headerlink").remove();
-	 }
+	 },
      
+	 /** 
+	  * Create next and previous chapter quick links
+	  */
+	 constructPrevNextNavigation : function() {
+//	   	<div data-role="controlgroup" data-type="horizontal" >
+//            <a href="index.html" data-role="button" data-icon="arrow-u" data-iconpos="notext">Up</a>
+//            <a href="index.html" data-role="button" data-icon="arrow-d" data-iconpos="notext">Down</a>
+//            <a href="index.html" data-role="button" data-icon="delete" data-iconpos="notext">Delete</a>
+//        </div>
+        
+		if($(".bottomnav a").size() != 3) {
+			// should prev, up, next
+			return;
+		}
+
+        var prev = $(".bottomnav a:first");
+		var next = $(".bottomnav a:last");
+
+        var group = $("<div class=mobile-next-prev data-role=controlgroup data-type=horizontal>");
+		prev.attr("data-icon", "arrow-l");
+		prev.attr("data-role", "button");
+        next.attr("data-icon", "arrow-r");
+		next.attr("data-role", "button");
+		next.attr("data-iconpos", "right");
+
+		group.append(prev);
+		group.append(next);
+		
+		this.content.append(group);	
+	 }
 };
 
 mobilize.extend(mobilize, mobilizeSphinx);
