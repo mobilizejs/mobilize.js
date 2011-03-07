@@ -1,0 +1,11 @@
+#!/usr/bin/python
+
+import sys
+from subprocess import call
+
+# Returns 0 if ok, amount of errored files if not
+result = call("python jslint.py js/*.js", shell = True)
+
+# Non-zero aborts commit
+sys.exit(result) 
+
