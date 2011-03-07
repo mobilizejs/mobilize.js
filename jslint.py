@@ -1,9 +1,17 @@
-""" Wrapper for invoking jslint and filtering ignored errors """
+""" Wrapper for invoking jslint and filtering ignored errors 
+
+node and pylint module required
+
+# Install pylint via node package manager
+npm install pylint
+
+"""
 
 import os
 import sys
 import glob
 from subprocess import *
+import fnmatch
 
 IGNORE_MARKER = "jslint:ignore"
 
@@ -44,23 +52,40 @@ def jslint(source):
         if IGNORE_MARKER not in jslines[row]:
             has_errors = True
             print "%d,%d: %s" % ( lintresult.row, lintresult.col, lintresult.msg)
-        #else:
-            #print "%d,%d: %slintresult.row
         
     return has_errors
     
 def main(files):
-    files = [x for x in files if x.endswith(".js")]
+    #files = [x for x in files if x.endswith(".js")]
     if len(files) == 0:
         raise SystemExit("Usage jslint.py [files]\n> python jslint.py js/*.js")
+
+    print files
     failure = 0
     for x in files:
-        for source in glob.glob(x):
-            print "-- Checking:", source
-            if jslint(source):
-                failure += 1 
+        parts = x.split("-")
+        ignored = ""
+        path = parts[0]
+        if len(parts):
+            ignored = parts[1]
+            
+        ignored = ignored.split(",")
+        for source in glob.glob(path):
+            folder = os.path.dirname(source)
+            for i in ignored:
+                i = os.path.join(folder,i)
+                if fnmatch.fnmatch(source, i):
+                    print
+                    print "== Ignored:", source
+                    break
+            else:
+                print
+                print "-- Checking:", source
+                if jslint(source):
+                    failure += 1 
         
     sys.exit(failure)
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main(sys.argv[1:])
+    
