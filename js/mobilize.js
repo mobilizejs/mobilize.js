@@ -444,7 +444,7 @@ var mobilize = {
         var name;
         // jslint: The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.
         // Not true here, we want to copy them all.
-        for(name in source) {
+        for(name in source) { // jslint:ignore
             var val = source[name];
             target[name] = val;
         }           
@@ -483,7 +483,8 @@ var mobilize = {
         if(typeof(aMsg) != "string") {
             // jslint: ignore The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.
             // We need 'em all
-            for(var a in aMsg) {
+            for(var a in aMsg) // jslint:ignore
+            { 
                 try {
                     msg.push(String(aMsg[a]));
                 }catch(e){
@@ -1548,7 +1549,8 @@ var mobilize = {
     defloat : function(image)
     {
         // jslint complains: ['float'] is better written in dot notation, but required for YUI Compressor to work
-        image.style["float"] = "none";
+        image.style["float"] = "none"; // jslint:ignore
+        
         var klass = image.getAttribute("class");
         klass = ["mobilize-resized", klass].join(" ");
         image.setAttribute("class", klass);
