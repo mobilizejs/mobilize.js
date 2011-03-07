@@ -330,37 +330,60 @@ var mobilize = {
         
         if(!opts.cloudBaseURL) {
             // Try to extract cloud URL from our <script> tag
-            var scripts = document.getElementsByTagName("script");
-            var src = null;
-            for(var i=0; i<scripts.length; i++) {
-                var script = scripts[i];
-                var klass = script.getAttribute("class");
+            var script = document.getElementsByClassName("mobilize-js-source");
+            var src = 0;
+            
+            if(!script.length) {
                 
-                if(klass == "mobilize-js-source") {
+                // Try to determine from src attribute if class not set. 
+                // This is needed for convenient autoload.
+                // It's tedious to set the mobilize-js-source class for Sphinx template,
+                // but now we can just add it to the template's script_files field.
+                var scripts = document.getElementsByTagName("script");
+                for(var i=0; i<scripts.length; i++) {
+                    script = scripts[i];
                     
                     // Found our script tag
                     src = script.getAttribute("src");
-                    
                     if(!src) {
                         // Inline script tag
                         continue;
                     }
                     
-                    var base = mobilize.baseurl(src);
-                    
-                    mobilize.log("Found script source URL" + base);
-                    
-                    // Remove /js/ from the end of the URL
-                    base = base.substring(0, base.length-4);
-                    
-                    opts.baseURL = base;        
-                    
-                    break;
+                    if(src.indexOf("mobilize.") >= 0) {
+                        // Current 'script' ok
+                        break;
+                    }
                 }
             }
-            if(!src) {
-                throw "Could not found <script class='mobilize-js-source'> in HTML to defined mobilize.js hosting location";
+            else {
+                script = script[0];
+                src = script.src;
             }
+            
+            if(!src) {
+                var msg;
+                msg = "Could not found <script> with class='mobilize-js-source' or src with 'mobilize.' text in HTML to resolve mobilize.js hosting location";
+                mobilize.log_e(msg);
+                throw msg;
+            }
+            
+            var i = src.indexOf("://");
+            if(i >= 0)
+            {
+                i += 3;
+            }
+            else 
+            {
+                i = 0;
+            }
+            
+            var ie = src.substring(i, src.length).indexOf("/") + i;
+            var base = src.substring(0,ie);
+            
+            opts.baseURL = base;
+            
+            mobilize.log_d("Found script source URL " + opts.baseURL);
         }
         
     },
@@ -384,6 +407,8 @@ var mobilize = {
                     return;
                 }
                 mobilize._autoload_called = true;
+                
+                mobilize.log_d("Autoloading mobilize.js");
                 
                 mobilize.init();
                 mobilize.bootstrap();
@@ -431,13 +456,35 @@ var mobilize = {
         
     },
      
-    
+     
     /** 
-     * Utility for internal debug logging 
+     * Utility for internal debug logging.
      * 
      * @param msg: message to log
      * */
-    log : function(msg) {
+    log : function(aTag, aMsg) {
+        
+        if(!aMsg) {
+            aMsg = aTag;
+            aTag = "DEBUG:";
+        }
+        
+        var msg = [aTag];
+        if(typeof(aMsg) != "string") {
+            for(var a in aMsg) {
+                try {
+                    msg.push(String(aMsg[a]));
+                }catch(e){
+                    msg.push(typeof(aMsg[a]));
+                }
+            }
+        }
+        else {
+            msg.push(aMsg);
+        }
+        
+        msg = msg.join(" ");
+        
         if(window.console) {
             if(console.log) {
                 console.log(msg);
@@ -451,22 +498,22 @@ var mobilize = {
         }
     },
     /** Log debug message */
-    log_d : function(msg){
-        mobilize.log("DEBUG:" + msg);
+    log_d : function(){
+        mobilize.log("DEBUG:", arguments);
     },
     /** Log warning message */
     log_w : function(msg){
-        mobilize.log("WARNING:" + msg);
+        mobilize.log("WARNING:", arguments);
     },
     /** Log error message */
     log_e : function(msg){
-        mobilize.log("ERROR:" + msg);
+        mobilize.log("ERROR:", arguments);
     },
     /** Log critical errors. These are also sent to cdn server. 
      * Used to log critical errors of mobilize.js to central location.
      * */
     logInternalError : function(msg){
-        mobilize.log(msg);
+        mobilize.log_e(msg);
         
         if(mobilize.cdnOptions.errorReportingUrl) {
             var req = new XMLHttpRequest();
@@ -1016,7 +1063,7 @@ var mobilize = {
      */
     cleanJavascript : function() {
         
-        mobilize.log("Cleaning <script>s");
+        mobilize.log_d("Cleaning <script>s");
         
         var tags = document.getElementsByTagName("script");
 
@@ -1030,8 +1077,7 @@ var mobilize = {
             }
             
             if(!mobilize.checkResourceWhitelist(src, mobilize.options.whitelistScriptSrc)) {
-                mobilize.log("Cleaning script tag");
-                mobilize.log(script);
+                mobilize.log_d("Cleaning script tag", src);
                 var parent = script.parentNode;
                 parent.removeChild(script);
             }
@@ -1689,7 +1735,8 @@ mobilize.trappedInternal = function(func, options)
     }
     options.onerror = function(e){
         var msg = "";
-        msg += "-FUNC-:" + String(func);
+        msg += "-VER-:" + mobilize.cdnOptions.version;
+        msg += "\n-FUNC-:" + String(func);
         msg += "\n-MSG-:";
         if( !e.stack){
             msg += e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message;
