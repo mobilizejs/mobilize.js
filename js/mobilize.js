@@ -396,6 +396,8 @@ var mobilize = {
         return base;
     },
     
+    
+    
     /** Execute mobilization automatically.
      * 
      * To prevent this, set window.mobilizeAutoload = false;
@@ -406,22 +408,22 @@ var mobilize = {
      * */
     autoload : function()
     {
+        function doAutoload()
+        {
+            // Don't do twice.
+            if(mobilize._autoload_called) {
+                return;
+            }
+            mobilize._autoload_called = true;
+            
+            mobilize.log_d("Autoloading mobilize.js");
+            
+            mobilize.init();
+            mobilize.bootstrap();
+        }
+        
         if(window.mobilizeAutoload === undefined || window.mobilizeAutoload) 
         {
-            function doAutoload(){
-                
-                // Don't do twice.
-                if(mobilize._autoload_called) {
-                    return;
-                }
-                mobilize._autoload_called = true;
-                
-                mobilize.log_d("Autoloading mobilize.js");
-                
-                mobilize.init();
-                mobilize.bootstrap();
-            }
-            
             if ( document.addEventListener ) {
                 document.addEventListener( "DOMContentLoaded", doAutoload, false );
             }
@@ -479,6 +481,8 @@ var mobilize = {
         
         var msg = [aTag];
         if(typeof(aMsg) != "string") {
+            // jslint: ignore The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.
+            // We need 'em all
             for(var a in aMsg) {
                 try {
                     msg.push(String(aMsg[a]));
