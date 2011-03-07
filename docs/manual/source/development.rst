@@ -1,5 +1,5 @@
 ================================
- Developing with mobilize.js
+ How mobilize.js works
 ================================
 
 .. contents :: :local:
@@ -7,7 +7,9 @@
 Walkthrough
 ------------
 
-In this chapter, masked magician reveals the trick behind mobilize.js magic.
+In this chapter, a masked magician reveals the trick 
+behind mobilize.js magic. We explain what 
+happens when mobilize.js is run on your page.
 
 Background
 ===========
