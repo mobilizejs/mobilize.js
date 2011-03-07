@@ -260,19 +260,15 @@ var mobilize = {
         }
         
         // If reloadOnMobile set, set cookie and reload to allow server do its magic
-        if(mobilize.options.reloadOnMobile && mobilize.isMobile(mobilize.options.forceUserAgent)) {
-            var cookie;
-            cookie = mobilize.readCookie("mobilize-mobile");
-            if(!cookie) 
-            {
-                mobilize.createCookie("mobilize-mobile", "1");
-                window.location.reload();
-                return;
-            }
+        if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options))
+        {
+            mobilize.createCookie("mobilize-mobile", "1");
+            window.location.reload();
+            return;
         }
 
         mobilize.initCloud();
-                
+
     },
     
     /**
@@ -675,7 +671,7 @@ var mobilize = {
      * See: http://www.quirksmode.org/js/cookies.html     
      */
     eraseCookie : function(name) {
-        createCookie(name,"",-1);
+        mobilize.createCookie(name,"",-1);
     },
     
     /**

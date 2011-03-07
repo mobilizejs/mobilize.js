@@ -12,6 +12,7 @@ import urllib
 import Cookie
 import urllib2
 from urlparse import urlparse
+import fnmatch
 
 PORT = 8080
 
@@ -135,10 +136,31 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.wfile.write(data)
         
         return 
+    
+    def do_cookie_altering(self):
+        
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write("""
+        <html> 
+        <head>
+        
+        <script>
+        window.mobilizeAutoload = false;
+        </script>
+        
+        <script src="/js/mobilize.js"></script>
+        
+        </head>
+        <body>
+        <pre>Page changed by server thanks to mobilize-mobile cookie and mobilize.options.reloadOnMobile = true        
+        </pre>
+        <a href='javascript:mobilize.eraseCookie("mobilize-mobile");window.location.href="/tests/cookie-test.html"'>Erase cookie</a>
+        </body>
+        </html>
+        """)
         
     def do_GET(self):
-        
-            
         
         
         if "/log?msg" in self.path:
@@ -149,7 +171,7 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.end_headers()
             return
-        
+
         # Bundle to single file
         if "/proxy" not in self.path \
         and "mobile" not in self.path \
@@ -174,6 +196,39 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             
             f.close()
             return
+        elif fnmatch.fnmatch(self.path, "*mobilize*.mobile.*js"):
+             f = open("js/jquery.js"); data = f.read(); f.close()
+             data += "\n"
+             f = open("js/jquery.mobile.js"); data += f.read(); f.close()
+             
+             ctype = self.guess_type("js/mobilize.js")
+             self.send_response(200)
+             self.send_header("Content-type", ctype)
+             # Allow AJAXy from directly opened test files
+             self.send_header("Access-Control-Allow-Origin", "*")
+             self.end_headers()
+             
+             self.wfile.write(data)
+             
+             return
+        elif fnmatch.fnmatch(self.path, "*mobilize*.mobile.*css"):
+             data = ""
+             f = open("css/jquery.mobile.css"); data += f.read(); f.close()
+             
+             custom = os.path.basename(self.path).split(".")
+             custom = "css/%s.css" % ( custom[1])
+             f = open(custom); data += f.read(); f.close()
+             
+             ctype = self.guess_type("css/jquery.mobile.css")
+             self.send_response(200)
+             self.send_header("Content-type", ctype)
+             # Allow AJAXy from directly opened test files
+             self.send_header("Access-Control-Allow-Origin", "*")
+             self.end_headers()
+             
+             self.wfile.write(data)
+             
+             return
         
         # Don't proxy these as the proxied server doesn't have them. 
         if self.path.startswith("/js")  \
@@ -205,6 +260,11 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             if mobilize:
                 if mobilize.value == "1":
                     print "Cookie says client is mobile"
+                    
+                    if "cookie-test.html" in self.path:
+                        self.do_cookie_altering()
+                        return
+                    
                     
             proxyurl = cookies.get("proxy-url",None)
             
