@@ -81,7 +81,7 @@ Here is an example how to perform a simpe custom mobilize.js initialization
 
     mobilize.js is designed to be executed as <body> script, right after <body> has been opened.
 
-Then ``mobilize.mysite.js`` would contain:
+Then ``mobilize.mysite.js`` would contain::
     
     mobilize.extends(mobilize, {
     

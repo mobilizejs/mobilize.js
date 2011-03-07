@@ -190,6 +190,10 @@ var mobilizeSphinx= {
 		group.append(next);
 		
 		this.content.append(group);	
+		
+		// remove old bottomnav
+		
+		$(".bottomnav").remove();
 	 }
 };
 

@@ -12,6 +12,20 @@ you need to have in order to make mobilize.js work with it out of the box.
 
 This is the same as Wordpress 3.1 default theme class names.
 
+Walkthrough
+===========
+
+* Follow Wordpress 3.1 class names with your theme
+
+* Add <script> to your theme <body>
+
+* Add :doc:`front page overrides </tutorial>`
+  if you want to play around with category or tag navigation 
+
+.. note ::
+    
+    Roadmap exists for a Wordpress plug-in solution which is compatible with all web themes.
+
 Enabling
 ========
 

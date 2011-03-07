@@ -149,6 +149,48 @@ For the post content there should be element with id=&#8221;comments&#8221;.</p>
 </pre></div>
 </div>
 </div>
+
+<ul><li>Test 1</li><li>Test 2</li></ul>
+
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"http://cdn.mobilizejs.com/releases/0.1/js/mobilize.core.debug.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+    <span class="c">&lt;!-- Your custom extender goes here --&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"http://localhost/mobilize.mysite.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre>
+
+
+<div class="highlight-python"><pre>mobilize.extends(mobilize, {
+
+    initPlugins : function() {
+
+       mobilize.extend(mobilize.cdnOptions, {
+
+           // Identifier tag for this extender
+           // This is used for error reporting, etc.
+           bundleName : "mobilize.yoursite",
+           // CSS files to load *after* mobilization
+           cssBundles : ["./mobilize.yoursite.css"],
+           // CSS files to load *after* mobilization
+           javascriptBundles : ["./mobilize.yoursite.css"],
+
+           // HTML barebone tmeplate for the mobile site
+           template : "templates/wordpress.html"
+       });
+
+    },
+
+    constructBody : function() {
+        // Perform transformation here
+    }
+
+});</pre>
+
+
+</div>
+</div>
+
+
 <div class="section" id="id1">
 <h3><a class="toc-backref" href="#id7">Pages</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;comments</span><span class="nt">&gt;</span>

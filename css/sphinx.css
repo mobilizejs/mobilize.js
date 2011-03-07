@@ -31,3 +31,16 @@
     text-align: center;	
 }
 
+/* Make sure bulleted link lists have enough space */
+
+.content ul li {
+    line-height: 2em;	
+}
+
+/* Try be smart with fixed with code examples */
+
+.highlight {
+	overflow-x: auto;
+	overflow-y: visible;
+}
+ 
