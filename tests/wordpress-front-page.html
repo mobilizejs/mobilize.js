@@ -22,28 +22,17 @@
 	src="/js/mobilize.wordpress.min.js"></script>
 <script type="text/javascript">
 
-    //window.onload = function(){
-	    //var img = document.getElementById("branding").children[2];
-	    
-	    mobilize.onCompleted = function(){
-		    var img = $('<img src="/media/logo_238.png">');
-	        
-	        mobilize.defloat(img[0])
-	        
-	       $("div [data-role=content]").prepend(img)
-	    }
-	    
-	    mobilize.init({
-	    	// Additional options here
-	    	haveRemoteDebugLogging : true,
-	    	forceMobilize : true
-	    	
-	    },
-	    {
-	       localCacheVersion : "0.2"
-	    });
-	    mobilize.bootstrap();
-    //}
+    mobilize.onCompleted = function(){
+	    var img = $('<img src="/media/logo_238.png">');
+        
+        mobilize.defloat(img[0])
+        
+       $("div [data-role=content]").prepend(img)
+    }
+
+    mobilize.options.haveRemoteDebugLogging = true;
+    mobilize.options.forceMobilize = true
+    mobilize.cdnOptions.localCacheVersion = "0.2"
 </script>
 
 

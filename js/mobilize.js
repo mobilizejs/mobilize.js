@@ -223,7 +223,13 @@ var mobilize = {
      * @param cdnOptions Javascript object to override mobilize.cdnOptions
      */
     init : function(options, cdnOptions) {
-                
+        
+        if(mobilize._init_called) {
+            mobilize.log("WARNING: init called more than once. Is mobilize.js initialized both manually and via autoload?");
+            return;
+        }
+        mobilize._init_called = true;
+        
         // Override default parameters with user supplied versions        
         if(!options) {
             options = {};
@@ -267,6 +273,39 @@ var mobilize = {
 
         mobilize.initCloud();
                 
+    },
+    
+    /**
+     * Entry point to mobilize.js machinery.
+     * <p>
+     * Stop loading current HTML resources, start async processes
+     * to get the page mobilized.
+     * 
+     */
+    bootstrap : function() {
+
+        // Needed to avoid trouble with autoload
+        if(mobilize._bootstrap_called) {
+            mobilize.log("WARNING: bootstrap called more than once. Is mobilize.js initialized both manually and via autoload?");
+            return;
+        }
+        mobilize._bootstrap_called = true;
+        
+        
+        if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
+            mobilize.log("mobilize.js: browser is not supported");
+            return;
+        }
+        
+        function doBootstrap(){
+            if(mobilize.checkMobileBrowser(mobilize.options)) {
+                mobilize.renderAsMobile();
+            } else {
+                mobilize.log("Web mode wanted");
+            }
+        }
+        doBootstrap = mobilize.trappedInternal(doBootstrap);
+        doBootstrap();
     },
     
     /**
@@ -320,12 +359,42 @@ var mobilize = {
                 }
             }
             if(!src) {
-                throw "Could not found <script class='mobilize.js.source'> in HTML to defined mobilize.js hosting location";
+                throw "Could not found <script class='mobilize-js-source'> in HTML to defined mobilize.js hosting location";
             }
         }
         
     },
-    
+
+    /** Execute mobilization automatically.
+     * 
+     * To prevent this, set window.mobilizeAutoload = false;
+     * 
+     * And initialize mobilize manually:
+     *  mobilize.init();
+     *  mobilize.bootstrap();
+     * */
+    autoload : function()
+    {
+        if(window.mobilizeAutoload === undefined || window.mobilizeAutoload) 
+        {
+            function doAutoload(){
+                
+                // Don't do twice.
+                if(mobilize._autoload_called) {
+                    return;
+                }
+                mobilize._autoload_called = true;
+                
+                mobilize.init();
+                mobilize.bootstrap();
+            }
+            
+            if ( document.addEventListener ) {
+                document.addEventListener( "DOMContentLoaded", doAutoload, false );
+            }
+            window.addEventListener( "load", doAutoload, false );
+        }
+    },
     
     /**
      * Simple shallow copy from an object to another.
@@ -361,32 +430,7 @@ var mobilize = {
     initPlugins : function() {
         
     },
-    
-    /**
-     * Entry point to mobilize.js machinery.
-     * <p>
-     * Stop loading current HTML resources, start async processes
-     * to get the page mobilized.
-     * 
-     */
-    bootstrap : function() {
-        
-        if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
-            mobilize.log("mobilize.js: browser is not supported");
-            return;
-        }
-        
-        function doBootstrap(){
-            if(mobilize.checkMobileBrowser(mobilize.options)) {
-                mobilize.renderAsMobile();
-            } else {
-                mobilize.log("Web mode wanted");
-            }
-        }
-        doBootstrap = mobilize.trappedInternal(doBootstrap);
-        doBootstrap();
-    },
-
+     
     
     /** 
      * Utility for internal debug logging 
@@ -406,8 +450,19 @@ var mobilize = {
             req.send(null);
         }
     },
-    
-    /** Log critical errors. These are sent to cdn server also. 
+    /** Log debug message */
+    log_d : function(msg){
+        mobilize.log("DEBUG:" + msg);
+    },
+    /** Log warning message */
+    log_w : function(msg){
+        mobilize.log("WARNING:" + msg);
+    },
+    /** Log error message */
+    log_e : function(msg){
+        mobilize.log("ERROR:" + msg);
+    },
+    /** Log critical errors. These are also sent to cdn server. 
      * Used to log critical errors of mobilize.js to central location.
      * */
     logInternalError : function(msg){
@@ -1109,7 +1164,8 @@ var mobilize = {
         
         var url = mobilize.toFullCDNURL(mobilize.cdnOptions.template);
         
-        var onload = mobilize.trappedInternal(mobilize.transform, { scope : mobilize } );
+        // Don't report this as internal error as it's most likely user error
+        var onload = mobilize.trapped(mobilize.transform, { scope : mobilize } );
         $("#mobile-template-holder").load(url, onload);
     },
     
@@ -1636,7 +1692,7 @@ mobilize.trappedInternal = function(func, options)
         msg += "-FUNC-:" + String(func);
         msg += "\n-MSG-:";
         if( !e.stack){
-            msg += String( e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message );
+            msg += e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message;
         }
         else{
             msg += String( e.stack);
@@ -1655,3 +1711,7 @@ mobilize.trappedInternal = function(func, options)
 if(typeof(exports) !== "undefined") {
     exports.mobilize = mobilize;
 }
+
+// Execute mobilization automatically.
+// To prevent autoloading, set window.mobilizeAutoload = false;
+mobilize.autoload();
