@@ -62,7 +62,6 @@ global TARGET_PATH
 
 WORKDIR = os.getcwd()
 
-
 def create_paths( ):
 
     global TARGET_PATH
@@ -137,12 +136,15 @@ def process_bundle(bundle):
     create_bundle_core("mobilize.%s.mobile.js" % bundle["name"], bundle["mobile_js"], "js")    
     create_bundle_core("mobilize.%s.mobile.css" % bundle["name"], bundle["mobile_css"], "css")    
     
-    # Copy templates
-    for t in bundle["templates"]:
-        source = os.path.join(WORKDIR, "templates", t)
-        print "Copying template " + source
-        target = os.path.join(TARGET_PATH, "templates")
-        shutil.copy(source, target)
+    # Local deploys can use templates as is
+    if not OPTIONS.localdeploy:
+                        
+        # Copy templates
+        for t in bundle["templates"]:
+            source = os.path.join(WORKDIR, "templates", t)
+            print "Copying template " + source
+            target = os.path.join(TARGET_PATH, "templates")
+            shutil.copy(source, target)
     
     
     # Copy images
@@ -150,12 +152,16 @@ def process_bundle(bundle):
 
 def prepare_images():
     # Image files are shared
-    print "Copying images"
-    
+        
     images_target = os.path.join(TARGET_PATH, "css", "images")
+    
+    source = os.path.join(WORKDIR, "css", "images")
+    print "Copying images to:" + images_target + " from:" + source
+    
     if os.path.exists(os.path.join(images_target)):
         shutil.rmtree(images_target)
-    shutil.copytree(os.path.join(WORKDIR, "css", "images"), images_target)
+                    
+    shutil.copytree(source, images_target)
        
 def main():
     
@@ -167,19 +173,28 @@ def main():
     parser.add_option("-d", "--dir", dest="targetdir",
                       help="Target directory to write the results. Default: %default",
                       default = os.path.join(WORKDIR, "releases"))
+
+    parser.add_option("-l", "--local-process", dest="localdeploy",
+                      help="Compress and merge files CSS and JS files for local testing",
+                      default = None)
+    
     parser.add_option("", "--no-compress",
                       help="Disable compression",
                       action="store_true",
                       default = False)
     
     (OPTIONS, args) = parser.parse_args()
-    
-    if len(args) == 0:
-        print "Usage release.py [options] [version tag]"
-        print "See more help with -h"
-        sys.exit(1)
         
-    VERSION = args[0] 
+    #if len(args) == 0:
+    #    print "Usage release.py [options] [version tag]"
+    #    print "See more help with -h"
+    #    sys.exit(1)
+    
+    if OPTIONS.localdeploy == "true":        
+        OPTIONS.targetdir = "."    
+        VERSION = ""
+    else:
+        VERSION = args[0] 
     
     print "mobilize.js release version %s" % VERSION
     create_paths()
