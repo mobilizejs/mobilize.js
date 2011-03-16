@@ -4,6 +4,15 @@
 
 .. contents:: :local:
 
+Online documentation
+=========================
+
+Compiled HTML documentation is available on-line.
+
+* `User Manual <http://localhost:8080/docs/manual/index.html>`_
+
+* `API Documentation <http://localhost:8080/docs/apidocs/index.html>`_
+
 API documentation
 ========================
 
@@ -28,7 +37,9 @@ Sphinx documentation
 Example::
 
 	cd docs/manual
-	make
+	make html
+	
+	
 	
 	
 	

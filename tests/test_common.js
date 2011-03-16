@@ -3,9 +3,15 @@ var assert = require("assert");
 var jsdom  = require('jsdom').jsdom
 global.window = jsdom().createWindow();
 global.jQuery = require("jquery");
-global.document = {
-		cookie : ""
-};
+global.document = global.window.document;
+global.document.cookie = "";
+
+document = global.document;
+document.createElement("html");
+// To get through browser support check
+document.defaultView.getComputedStyle = function(){
+    return { position : "absolute" };
+}
 
 var mobilize = require("../js/mobilize").mobilize;
 
@@ -19,6 +25,22 @@ function test_getUrlVars() {
     assert.equal("5", vars.b);
     
 }
+
+function test_reloadOnMobile() {
+    mobilize.createCookie("mobilize-mobile", "");       
+    var reloadcalled = false;
+    window.location.reload = function(){
+        reloadcalled = true;
+    }
+    mobilize.init({reloadOnMobile : true, forceUserAgent : "android"});
+    assert.ok(reloadcalled);
+    
+    reloadcalled = false
+    
+    mobilize.init({reloadOnMobile : false, forceUserAgent : "android"});
+    assert.ok(!reloadcalled);
+}
+
 function test_baseurl() {
 	var url = "http://localhost:8080/test/template.html/?testing=123";
 	var expect = "http://localhost:8080/test/";
@@ -28,7 +50,7 @@ function test_baseurl() {
 	
 }
 
-function test_url_parameter_add()
+function test_addUrlVar()
 {
     // Adding mobilize.js to url
     var url = "http://localhost:8080/test?test=asd"
@@ -40,6 +62,7 @@ function test_url_parameter_add()
 
 test_baseurl();
 test_getUrlVars();
-test_url_parameter_add();
+test_reloadOnMobile();
+test_addUrlVar();
 
-console.log("common tests passed");
+console.log("Common tests passed");

@@ -41,4 +41,7 @@ flattened-eggs
 jsdoc*
 releases
 
+.DS_Store
+docs/apidocs/*
+
 

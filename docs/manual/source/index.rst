@@ -11,12 +11,14 @@ Contents:
    
    installation
    usage
-   wordpress
+   extenders/index
+   tutorial
    development
    support
    hosting
    testing
    documentation
+   troubleshooting
    issues
 
 Indices and tables

@@ -56,6 +56,15 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     
     def do_GET(self):
         #print "doGET", self.path
+            
+        if "cookie" in self.headers.dict:
+            cookies = Cookie.SimpleCookie()
+            cookies.load(self.headers.dict["cookie"])       
+            mobilize = cookies.get("mobilize-mobile",None)
+            if mobilize:
+                if mobilize.value == "1":
+                    print "Cookie says client is mobile"                                            
+                                
         if "/log" in self.path:
             msg = urllib.unquote(self.path.split("msg=")[-1])
             while msg.endswith("/"):
@@ -65,15 +74,6 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.end_headers()
             return
         
-        if "cookie" in self.headers.dict:
-            cookies = Cookie.SimpleCookie()
-            cookies.load(self.headers.dict["cookie"])       
-            mobilize = cookies.get("mobilize-mobile",None)
-            if mobilize:
-                if mobilize.value == "1":
-                    print "Cookie says client is mobile"                                            
-                                
-       
         # Bundle to single file
         if "mobile" not in self.path \
         and "mobilize" in self.path \
@@ -107,8 +107,8 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             return
         return self.base.log_request(self, code)
 
-SocketServer.TCPServer.allow_reuse_address = True
 httpd = SocketServer.TCPServer(("", PORT), Handler)
+httpd.allow_reuse_address = True
 
 print "serving at port", PORT
 
