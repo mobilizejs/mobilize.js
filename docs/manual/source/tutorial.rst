@@ -252,6 +252,9 @@ Checking cookie presence and value
       
 If ``mobilize.options.reloadOnMobile`` is set to true
 
+* Mobile browser must be jQuery Mobile compatible (grade A). It is detected 
+  based on user agent regexp and Javascript features. 
+
 * When mobile browser is detected a cookie is set: ``mobilize-mobile=1``
 
 * Page is automatically reloaded if mobilize-mobile cookie has not been set before

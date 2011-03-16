@@ -35,7 +35,7 @@ function xlog($msg) {
 
 
 /**
- * Check if mobilize.js mobile cookie has been set.
+ * Check if mobilize.js mobile cookie has been set to mobile mode.
  * 
  * @return true if the client wants to render the page in mobile optimized way 
  */
