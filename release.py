@@ -89,7 +89,9 @@ def create_bundle_core(target, sources, type):
     print "Creating bundle:" + target
     buffer = ""
     for s in sources:
-        f = open(os.path.join(WORKDIR, type, s))
+        path = os.path.join(WORKDIR, type, s)
+        print "Including file:" + path
+        f = open(path)
         buffer += f.read()
         f.close()
     

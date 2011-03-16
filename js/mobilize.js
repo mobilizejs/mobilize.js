@@ -154,16 +154,19 @@ var mobilize = {
          * Filenames of Javascript files to load after bootstrap.
          * <p>
          * Template variable <code>$bundleName</code> can be used in the strings.
-         * </p>
+         * <p>
+         * Must be set by the extender
+         * <p>
          * 
          * @see mobilize.bootstrap
          * 
          * @default null
          */
-        javascriptBundles : ["js/jquery+jquerymobile.js"],
+        javascriptBundles : null,
         
         /** Url to send critical internal errors */
-        errorReportingURL : "http://cdn.mobilizejs.com/logerror/",
+        //errorReportingURL : "http://cdn.mobilizejs.com/logerror/",
+		errorReportingURL : null,
         
         /**
          * Filenames of CSS files to load after bootstrap.
@@ -292,30 +295,39 @@ var mobilize = {
 
         // Needed to avoid trouble with autoload
         if(mobilize._bootstrap_called) {
-            mobilize.log_w("bootstrap called more than once. Is mobilize.js initialized both manually and via autoload?");
-            return;
+            throw "bootstrap called more than once. Is mobilize.js initialized both manually and via autoload?";
         }
-        mobilize._bootstrap_called = true;
-                
+        
+		mobilize._bootstrap_called = true;
+		
+		var existingCookie = mobilize.readCookie("mobilize-mobile"); 
+
+                        
         if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
             mobilize.log("mobilize.js: browser is not supported");
             return;
-        }
+        }			
+
+        // checkMobileBrowser() will set the cookie
 		
         // If reloadOnMobile set, set cookie and reload to allow server do its magic
-        if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options))
-        {
-			mobilize.log("reload on mobile check");
-            if (!mobilize.readCookie("mobilize-mobile")) {
-				mobilize.log("Creating cookie and triggering reload");
-                mobilize.createCookie("mobilize-mobile", "1");
+        if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options)) {
+							
+		    var cookie = mobilize.readCookie("mobilize-mobile");
+			mobilize.log("reload on mobile check, got new cookie value:" + cookie + "  got old cookiea value:" + existingCookie);
+			
+            if (existingCookie != "1" && cookie == "1") {						
+				mobilize.log("Mobile cookie has changed. Server has asked us to reload in this situation (reloadOnMobile).");
+				mobilize.log("Refreshing page");                
                 window.location.reload();
                 return;
-            }
+            } 
+			
 			mobilize.log("Cookie already exists - continue with normal mobile flow");
         }		
         
-        function doBootstrap(){
+        function startProcess() {
+			mobilize.log("startProcess")
             if(mobilize.checkMobileBrowser(mobilize.options)) {
                 mobilize.renderAsMobile();
             } else {
@@ -324,8 +336,11 @@ var mobilize = {
         }
 		
 		// Do not let errors fall through
-        doBootstrap = mobilize.trappedInternal(doBootstrap);
-        doBootstrap();
+        //startProcess = mobilize.trappedInternal(startProcess);
+        
+        // TODO: Execute events which we can do before DOM model must be ready	
+		document.addEventListener("DOMContentLoaded", startProcess, false);
+		//startProcess();				
     },
     
     /**
@@ -416,13 +431,20 @@ var mobilize = {
     
     
     /** Execute mobilization automatically.
-     * 
+     * <p>
      * To prevent this, set window.mobilizeAutoload = false;
-     * 
+     * <p> 
      * And initialize mobilize manually:
      *  mobilize.init();
      *  mobilize.bootstrap();
-     * */
+     * <p>
+     * Try autoload as early as possible to trigger forceReloadOnMobile action as early as possible
+     * (don't load web page content for too long if we can abort early). This
+     * function must be called from the last shared desktop + extender bundle JS file.
+     * So if you have mobilize.js + mobilize.wordpress.js, mobilize.autoload() call
+     * must be placed at the end of mobilize.wordpress.js.
+     * 
+     */
     autoload : function()
     {
         function doAutoload()
@@ -438,14 +460,8 @@ var mobilize = {
             mobilize.init();
             mobilize.bootstrap();
         }
-        
-        if(window.mobilizeAutoload === undefined || window.mobilizeAutoload) 
-        {
-            if ( document.addEventListener ) {
-                document.addEventListener( "DOMContentLoaded", doAutoload, false );
-            }
-            window.addEventListener( "load", doAutoload, false );
-        }
+        		
+		doAutoload();
     },
     
     /**
@@ -723,19 +739,19 @@ var mobilize = {
         
         return f(name);
     },
-    /** Check if browser is running on mobile platform or is forced mobile and update cookie
-     * 
+    /** Check if browser is running on mobile platform or is forced mobile and update cookie.
+     * <p>
      * @param userAgent   = userAgent name. Uses browser's userAgent by default
-     *  
+     * <p>
      * @param forceMobilize = Force detection to mobile to true or false regardless of real type
-     * 
+     * <p>
      * URL parameter mobilize=<true,1> can also be used to force mobile.
-     * 
+     * <p>
      * The state is also stored to 'mobilize-mobile' cookie this
      * information is passed to server for the following requests. 
      * URL and options.force paremeters 
      * override cookie and detection.
-     * 
+     * <p>
      * @return: true if browser is considered as mobile browser.
      */ 
     checkMobileBrowser : function (opts)
@@ -767,13 +783,14 @@ var mobilize = {
         else {
             result = mobilize.isMobile(name);
         }
-        
-        // Update cookie
-        var cookie = result ? "1" : "0";
-        mobilize.createCookie("mobilize-mobile", cookie);
-        
+		
+		
+		mobilize.createCookie("mobilize-mobile", result ? "1" : "0");
+                
         return result;
     },
+	
+	
     
     /**
      * Clear conflicting jQuery objects
@@ -898,7 +915,7 @@ var mobilize = {
 				var entry = scriptsToLoad.pop();
 				var bundle = entry[0];
 				var url = entry[1];
-				mobilize.log("Loading script " + script);				
+				mobilize.log("Loading script " + url);				
 				mobilize.loadScript(bundle, url, loadNextScript);				
 			}
 		}
@@ -1848,6 +1865,8 @@ mobilize.trappedInternal = function(func, options)
     }
     options.onerror = function(e){
         
+		mobilize.log("trappedInternal onerror");
+		
         var msg = String(func) + "\n";
         if( !e.stack){
             msg += e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message;
@@ -1870,6 +1889,3 @@ if(typeof(exports) !== "undefined") {
     exports.mobilize = mobilize;
 }
 
-// Execute mobilization automatically.
-// To prevent autoloading, set window.mobilizeAutoload = false;
-mobilize.autoload();
