@@ -20,6 +20,10 @@ var mobilizeWordpress = {
      * 
      */
     initPlugins: function () {
+		
+		mobilize.extend(mobilize.options, {
+			 reloadOnMobile : true // Assume we have some sort of server-side support running on Wordpress
+		});
 
         mobilize.extend(mobilize.cdnOptions, {
             bundleName: "mobilize.wordpress",
@@ -30,23 +34,36 @@ var mobilizeWordpress = {
 
     },
 
+    /**
+     * Construct mobile page body according different Wordpress template formats.
+     */
     constructBody: function () {
 
         mobilize.log("Wordpress constructBody()");
 
-        if ($("body").hasClass("single-post")) {
+        var body = $(document.body);
+		
+        if (body.hasClass("single-post")) {
             // Post type page
-            this.constructPostPage();
-
-        } else {
-            // Front page
+            this.constructPost();
+        } else if(body.hasClass('page')) {
+            this.constructPage();			
+        } else if(body.hasClass('home')){
+            // Assume front page
             this.constructFrontPage();
-        }
+        } else {
+			throw "Unknown Wordpress page class:" + body.attr("class");
+		}
+		
+		// These elements are shared between different page types
         this.constructHeader();
         this.constructFooter();
 
     },
 
+    /**
+     * Create jQuery Mobile header with buttons
+     */
     constructHeader: function () {
         // Set page heading from <title> tag
         var header;
@@ -58,6 +75,9 @@ var mobilizeWordpress = {
         mobilize.constructBackButton(header);
     },
 
+    /**
+     * Create jQuery Mobile footer
+     */
     constructFooter: function () {
         //$("#mobile-body div[data-role=footer]").append($("#site-info"));         
         // Put site slogan to footer 
@@ -76,12 +96,23 @@ var mobilizeWordpress = {
         }
     },
 
-    constructPostPage: function () {
+    /**
+     * Transform Wordpress info page
+     */
+    constructPage : function () {
+        var content = $("#mobile-body div[data-role=content]");
+        var entry_content = $(".entry-content");
+        content.append(entry_content);		
+	},
 
-        // Add back button to header
+    /**
+     * Transform wordpress blog post page
+     */
+    constructPost: function () {
+
         // The header is defined in to template.html(core.html)
         var header;
-        header = $("#mobile-body div[data-role=header]");
+        //header = $("#mobile-body div[data-role=header]");
 
         var content = $("#mobile-body div[data-role=content]");
         var entry_content = $(".entry-content");

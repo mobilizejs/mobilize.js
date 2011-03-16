@@ -8,7 +8,7 @@
     Usage:
     
         release.py [options] [version tag]
-        
+    
     
     Create release to releases/trunk folder::
     

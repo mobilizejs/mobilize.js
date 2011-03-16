@@ -163,7 +163,7 @@ var mobilize = {
         javascriptBundles : ["js/jquery+jquerymobile.js"],
         
         /** Url to send critical internal errors */
-        errorReportingUrl : "http://cdn.mobilizejs.com/logerror/",
+        errorReportingURL : "http://cdn.mobilizejs.com/logerror/",
         
         /**
          * Filenames of CSS files to load after bootstrap.
@@ -204,6 +204,9 @@ var mobilize = {
     
     /** An event handler, called once transformComplete and jQueryMobileLoaded are complete */ 
     onCompleted : null,
+	
+	/** Have we tried to hide body temporary yet */
+	suspendRenderingAttempted : false,
     
     /**
      * Initialize mobilize class.
@@ -264,10 +267,23 @@ var mobilize = {
         // If reloadOnMobile set, set cookie and reload to allow server do its magic
         if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options))
         {
-            mobilize.createCookie("mobilize-mobile", "1");
-            window.location.reload();
-            return;
+			if (!mobilize.readCookie("mobilize-mobile")) {
+				mobilize.createCookie("mobilize-mobile", "1");
+				window.location.reload();
+				return;
+			}
         }
+
+        // Enable Firebug/Webkit logging output if available
+        if(console.log) {
+			
+			// This will keep line numbers intact for
+			// Javascript debug messages
+			
+			// XXX: Looks like this trick does not work on iOS logging
+			
+			// mobilize.log = console.log; 			
+		}
 
         mobilize.initCloud();
 
@@ -476,13 +492,8 @@ var mobilize = {
      * 
      * @param msg: message to log
      * */
-    log : function(aTag, aMsg) {
-    
-	    if(!aMsg) {
-            aMsg = aTag;
-            aTag = "DEBUG:";
-        }
-	    
+    log : function(aMsg) {
+    	    
 		// Pass messages to console as is
 		// (as it may be an object, not string)
 		if(window.console) {
@@ -492,54 +503,48 @@ var mobilize = {
             }
         }
 	
-        
-        var msg = [aTag];
-        if(typeof(aMsg) != "string") {
-            // jslint: ignore The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.
-            // We need 'em all
-            for(var a in aMsg) // jslint:ignore
-            { 
-                try {
-                    msg.push(String(aMsg[a]));
-                }catch(e){
-                    msg.push(typeof(aMsg[a]));
-                }
-            }
-        }
-        else {
-            msg.push(aMsg);
-        }
-        
-        msg = msg.join(" ");
-                
+	   /*            
         if(mobilize.options.haveRemoteDebugLogging) {
             var req = new XMLHttpRequest();
             req.open('GET', mobilize.options.remoteDebugLogBaseUrl + 'log?msg=' + msg, false);
             req.send(null);
-        }
+        }*/		
     },
+	
     /** Log debug message */
-    log_d : function(){
-        mobilize.log("DEBUG:", arguments);
+    log_d : function(msg){
+        mobilize.log(msg);
     },
     /** Log warning message */
     log_w : function(msg){
-        mobilize.log("WARNING:", arguments);
+        mobilize.log(msg);
     },
     /** Log error message */
     log_e : function(msg){
-        mobilize.log("ERROR:", arguments);
+        if(console.error) {
+			console.error(msg);
+		}
     },
     /** Log critical errors. These are also sent to cdn server. 
      * Used to log critical errors of mobilize.js to central location.
      * */
     logInternalError : function(version, msg){
-        mobilize.log_e("version:" + version + "\n" + msg);
         
-        if(mobilize.cdnOptions.errorReportingUrl) {
+		console.log(version);
+		console.log(msg);
+		console.log(mobilize.log_e);
+		console.error("test");
+		try {
+			mobilize.log_e("version:" + version + "\n" + msg);
+		} catch(e) {
+			// IOS madness
+			throw "Logging failure";
+		}
+		
+        if(mobilize.cdnOptions.errorReportingURL) {
             var req = new XMLHttpRequest();
             var url;
-            url = mobilize.cdnOptions.errorReportingUrl;
+            url = mobilize.cdnOptions.errorReportingURL;
             url += "?version=" + version;
             url += "&msg="+msg;
             
@@ -821,7 +826,7 @@ var mobilize = {
         if(uri.indexOf("http") >= 0) {
             return uri;
         } else {
-			console.log(mobilize.cdnOptions);
+			//console.log(mobilize.cdnOptions);
 			if(mobilize.cdnOptions.baseURL === null) {
 				throw "mobilize.cdnOptions.baseURL must be defined or set cloud=true";
 			}
@@ -863,16 +868,41 @@ var mobilize = {
             
             // Proceed to tempalte transform
             if(jsCompleteCount >= cdn.javascriptBundles.length) {                            
-                self.loadMobileTemplate();
+
             }                        
         }
+		
+		var scriptsToLoad = [];		
                 
-        var bundle;
+        var bundle, scriptURL;
         for(i=0; i<cdn.javascriptBundles.length; i++) {
             bundle = cdn.javascriptBundles[i];
-            mobilize.log("Loading js:" + bundle);
-            mobilize.loadScript(bundle, mobilize.toFullCDNURL(bundle), onJSComplete);
+			scriptURL = mobilize.toFullCDNURL(bundle);
+            scriptsToLoad.push([bundle, scriptURL]);
         }
+		
+		// Prepare for pop() loading, zero index first
+		scriptsToLoad.reverse();
+
+        // Force synchronous loading of scripts
+		// in first to last order		
+		function loadNextScript() {
+			if(scriptsToLoad.length == 0) {
+				mobilize.log("All scripts loaded");
+				// All done -> Foooorwaaaard
+                self.loadMobileTemplate();				
+			} else {
+				
+				var entry = scriptsToLoad.pop();
+				var bundle = entry[0];
+				var url = entry[1];
+				mobilize.log("Loading script " + script);				
+				mobilize.loadScript(bundle, url, loadNextScript);				
+			}
+		}
+
+        // Bootstrap script loading
+		loadNextScript();
 
         for(i=0; i<cdn.cssBundles.length; i++) {
             bundle = cdn.cssBundles[i];
@@ -1216,6 +1246,26 @@ var mobilize = {
     suspendRendering : function() {
         
         mobilize.log("Suspending page rendering");
+		
+		function onLoaded() {
+			mobilize.log("Second body rendering suspect added, called from DOMContentLoaded");
+			mobilize.suspendRendering();
+		}
+		
+		// This happens when we have been invoked from <head>,
+		// we cannot suspect body until it is created
+		if(!document.body) {
+			
+			if (!mobilize.suspendRenderingAttempted) {
+			    mobilize.suspendRenderingAttempted = true;
+				
+				mobilize.log("No <body> available, trying to suspend rendering later");
+				if (document.addEventListener) {
+					document.addEventListener("DOMContentLoaded", onLoaded, false);					
+				}
+				return;
+			}
+		}
         
         if(!document.body) {
             // DOM tree loading, couldn't get hang off it

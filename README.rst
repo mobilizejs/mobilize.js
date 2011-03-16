@@ -19,7 +19,7 @@ Features
 Installation and further info
 ===============================
 
-* http://docs.mobilizejs.com
+* http://mobilizejs.com
 
 Authors
 =======
