@@ -288,6 +288,8 @@ var mobilize = {
      */
     bootstrap : function() {
 
+        mobilize.log("bootstrap()");
+
         // Needed to avoid trouble with autoload
         if(mobilize._bootstrap_called) {
             mobilize.log_w("bootstrap called more than once. Is mobilize.js initialized both manually and via autoload?");
@@ -303,11 +305,14 @@ var mobilize = {
         // If reloadOnMobile set, set cookie and reload to allow server do its magic
         if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options))
         {
+			mobilize.log("reload on mobile check");
             if (!mobilize.readCookie("mobilize-mobile")) {
+				mobilize.log("Creating cookie and triggering reload");
                 mobilize.createCookie("mobilize-mobile", "1");
                 window.location.reload();
                 return;
             }
+			mobilize.log("Cookie already exists - continue with normal mobile flow");
         }		
         
         function doBootstrap(){
