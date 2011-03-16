@@ -931,7 +931,10 @@ var mobilize = {
      * @param callback(payload)
      */
     getAJAX : function(url, callback) {
-        var req = new XMLHttpRequest();
+        		
+		mobilize.log("AJAX loading:" + url);
+		
+		var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.onreadystatechange = function (aEvt) {
            if(req.readyState == 4) {
@@ -1006,6 +1009,46 @@ var mobilize = {
         }
     },
     
+    /**
+     * Magical dynamic Javascript file loader.
+     * <p>
+     * Load a JS script from 
+     * <p>
+     * <ul>
+     * <li>Local cache if available
+     * <li>Using <script> inject if supported by platform
+     * <li>Using AJAX and eval()
+     * </ul>
+     * <p>
+     * @param {String} bundle: Name of the bundle, used to store to localStorage.
+     * @param {String} url
+     * @param {Object} callbacl
+     */
+    loadScript : function(bundle, url, callback) {
+        
+		// Check if we can use a cached version
+        if(mobilize.cdnOptions.localCacheVersion !== null) {
+            mobilize.loadBundleFromLocalStorage(mobilize.BUNDLE_TYPE_JS, bundle,url,callback);
+            return;
+        }
+		
+        // Injecting script tag doesn't work with android webkit
+        //if(navigator.userAgent.toLowerCase().indexOf("android") >= 0 )
+		if(false) {
+            mobilize.loadScriptWithAjax(url, callback);            
+        } else {
+			mobilize.loadScriptWithTag(bundle, url, callback);
+		}
+	},
+
+    /**
+     * Load JS script using AJAX + eval().
+     * <p>
+     * http://blog.client9.com/2008/11/javascript-eval-in-global-scope.html
+     * <p>
+     * @param {Object} aUrl
+     * @param {Object} aCallback
+     */
     loadScriptWithAjax : function(aUrl, aCallback){
         mobilize.log("Loading script for evaluation:" + aUrl);
         function loaded(aJavascript) 
@@ -1017,32 +1060,16 @@ var mobilize = {
         mobilize.getAJAX(aUrl, mobilize.trappedInternal(loaded));
         return;
     },
+
+		
     /**
-     * Magical script loader.
+     * Load a script file by injecting new <script> in <head> 
      * 
-     * Use AJAX to load Javascript code, then eval() it.
-     * This ensures that code is executed (not just loaded)
-     * when triggering the callback.
-     * 
-     * http://blog.client9.com/2008/11/javascript-eval-in-global-scope.html
-     * 
-     * @param {String} bundle: Name of the bundle, used to store to localStorage.
-     * @param {String} url
-     * 
-     * @param {Object} callbacl
+     * @param {Object} bundle
+     * @param {Object} url
+     * @param {Object} callback
      */
-    loadScript : function(bundle, url, callback) {
-        
-        if(mobilize.cdnOptions.localCacheVersion !== null) {
-            mobilize.loadBundleFromLocalStorage(mobilize.BUNDLE_TYPE_JS, bundle,url,callback);
-            return;
-        }
-        // Injecting script tag doesn't work with android webkit
-        if(navigator.userAgent.toLowerCase().indexOf("android") >= 0 ) 
-        {
-            mobilize.loadScriptWithAjax(url, callback);
-            return;
-        }
+	loadScriptWithTag : function(bundle, url, callback) {
         
         // Using script tag injection to have JS debugger show the source
         mobilize.log("injecting script tag to load:" + url);
