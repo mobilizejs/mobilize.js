@@ -264,16 +264,6 @@ var mobilize = {
             mobilize.options.localCacheVersion = null;
         }
         
-        // If reloadOnMobile set, set cookie and reload to allow server do its magic
-        if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options))
-        {
-			if (!mobilize.readCookie("mobilize-mobile")) {
-				mobilize.createCookie("mobilize-mobile", "1");
-				window.location.reload();
-				return;
-			}
-        }
-
         // Enable Firebug/Webkit logging output if available
         if(console.log) {
 			
@@ -309,6 +299,16 @@ var mobilize = {
             mobilize.log("mobilize.js: browser is not supported");
             return;
         }
+		
+        // If reloadOnMobile set, set cookie and reload to allow server do its magic
+        if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options))
+        {
+            if (!mobilize.readCookie("mobilize-mobile")) {
+                mobilize.createCookie("mobilize-mobile", "1");
+                window.location.reload();
+                return;
+            }
+        }		
         
         function doBootstrap(){
             if(mobilize.checkMobileBrowser(mobilize.options)) {
