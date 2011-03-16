@@ -329,25 +329,21 @@ var mobilize = {
     },
     
     /**
-     * Initialize CDN locations where to load Javascript files.
-     * 
+     * Initialize URL location from where to load Javascript files.
+     * <p>
      * Deliver download URLs for various scripts and resources based
-     * on 
-     * 
+     * on script tag with class="mobilize-js-source".
+     * <p>
      * @see mobilize.cdnOptions
      * 
      * @private 
      */
     initCloud : function() {
+		
+		mobilize.log("Initializing URL base for media resources");
         
         var opts = mobilize.cdnOptions;
-        
-        if(!opts.cloud) {
-            // Cloud services have been disabled
-            return;
-        }
-        
-        
+                       
         if(!opts.cloudBaseURL) {
             // Try to extract cloud URL from our <script> tag
             var script = document.getElementsByClassName("mobilize-js-source");
@@ -355,6 +351,7 @@ var mobilize = {
             
             if(!script.length) {
                 
+				mobilize.log("No <script> hints found, do it hard way");
                 // Try to determine from src attribute if class not set. 
                 // This is needed for convenient autoload.
                 // It's tedious to set the mobilize-js-source class for Sphinx template,
@@ -387,8 +384,8 @@ var mobilize = {
                 mobilize.log_e(msg);
                 throw msg;
             }
-            
-            var base = mobilize.baseurl(src);
+			
+			var base = mobilize.baseurl(src);
 
             // Remove /js/ from the end of the URL
             base = base.substring(0, base.length-4);
@@ -833,7 +830,7 @@ var mobilize = {
         } else {
 			//console.log(mobilize.cdnOptions);
 			if(mobilize.cdnOptions.baseURL === null) {
-				throw "mobilize.cdnOptions.baseURL must be defined or set cloud=true";
+				throw "mobilize.cdnOptions.baseURL must be defined or set cloud=true to try to auto-resolve files";
 			}
             return mobilize.cdnOptions.baseURL + "/" + uri;
         }
@@ -1200,6 +1197,7 @@ var mobilize = {
             if(!mobilize.checkResourceWhitelist(src, mobilize.options.whitelistCSSLinks)) {
                 var parent = script.parentNode;
                 parent.removeChild(script);
+				mobilize.log("Removing stylesheet:" + src);
             }
         }
     },

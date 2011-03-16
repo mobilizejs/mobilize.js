@@ -31,7 +31,7 @@ var mobilizeWordpress = {
             javascriptBundles: ["js/mobilize.wordpress.mobile.min.js"],
             template: "templates/wordpress.html"
         });
-
+		
     },
 
     /**
@@ -40,10 +40,7 @@ var mobilizeWordpress = {
     constructBody: function () {
 
         mobilize.log("Wordpress constructBody()");
-		
-		// Assume the first <link> in <head> points to the theme CSS
-		mobilize.log("Mobilizing Wordpress theme:" + $("head link[type=text/css]:first").attr("href"));
-
+						
         var body = $(document.body);
 		
         if (body.hasClass("single-post")) {

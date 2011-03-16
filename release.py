@@ -152,11 +152,17 @@ def process_bundle(bundle):
 
 def prepare_images():
     # Image files are shared
+    
+    if OPTIONS.localdeploy:
+        print "Dont' process images locally"
+        return
         
     images_target = os.path.join(TARGET_PATH, "css", "images")
     
     source = os.path.join(WORKDIR, "css", "images")
     print "Copying images to:" + images_target + " from:" + source
+    
+    
     
     if os.path.exists(os.path.join(images_target)):
         shutil.rmtree(images_target)
