@@ -7,19 +7,29 @@
 Introduction
 ============
 
-This chapter explains what kind of Wordpress web mark-up sematics (CSS class names).
-you need to have in order to make mobilize.js work with it out of the box.
+Mobilize.js is available for Wordpress in two ways 
 
-This is the same as Wordpress 3.1 default theme class names.
+* *Mobilize.js for Wordpress* plug-in, available from Wordpress Install Plug-ins*. This
+  option is for blog authors that want to mobilize their blogs easily.
+  
+* Direct integration to the theme code with <script> tag. This is for theme authors
+  and site managers who want to customize how their mobile site looks and feels.
+
+This chapter deals with the latter use case: how do you customize your mobile output.
 
 Walkthrough
 ===========
+
+This chapter explains what kind of Wordpress web mark-up sematics (CSS class names).
+you need to have in order to make mobilize.js work with it out of the box.
+
+This is the same as Wordpress 3.1 default theme (twentyten) class names.
 
 * Follow Wordpress 3.1 class names with your theme
 
 * Add <script> to your theme <body>
 
-* Add :doc:`front page overrides </tutorial>`
+* Add :doc:`page specific overrides </tutorial>`
   if you want to play around with category or tag navigation 
 
 .. note ::
@@ -29,14 +39,18 @@ Walkthrough
 Enabling
 ========
 
-To enable mobilize, add following script tag to the page.
+To enable mobilize.js, add following <script> tag to the page right after <body>.
 
 .. code-block:: html
 
-    <script src="http://cdn.mobilizejs.com/releases/trunk/js/mobilize.wordpress.min.js"></script>
+    <body>
+        <script class="mobilize-js-source" src="http://cdn.mobilizejs.com/releases/trunk/js/mobilize.wordpress.min.js"></script>
 
-Front page
-==========
+
+
+Semantics
+=====================
+
 To correctly convert the front page it must follow the default theme structure( Wordpress 3.1). 
  
 Posts
@@ -62,24 +76,32 @@ Pages
       </ul>
     </div>
 
-Post page
-=========
+Posts
+----------
 
 For content there should be element with class="entry-content".
 For the post content there should be element with id="comments".
 
 The content inside those tags are used as-is.
 
-Content
--------
 .. code-block:: html
 
     <div class="entry-content">
 
 Pages
------
+-----------
 
 .. code-block:: html
 
     <div id="comments>
 
+Advanced overrides
+--------------------
+
+Check ``mobilize.wordpress.js`` how Wordpress page elements
+are transformed into jQuery Mobile template.
+
+You can override mobilize.wordpress Javascript functions one by one if needed.
+In this case, you need to disable the auto-run mode of mobilize.js.
+
+XXX: Add example.

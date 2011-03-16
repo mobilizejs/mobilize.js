@@ -117,48 +117,73 @@ In this case, you manually link Javascript files and CSS files
 as bundles and mobilize.js will load each file individually.
 This way line number debug info stays intact.
 
-The order of files is shown below.
+The order of <scripts> tags and more detailed arguments are shown in the example below.
 
 .. code-block:: html
 
-        <script type="application/javascript">
-              window.mobilizeAutoload = false;
+    <body>
+
+        <script type="text/javascript">
+         // Don't start executing mobilize whilst loaading JS file, but wait
+         // for our manual (development commands)
+         window.mobilizeAutoload = false;
         </script>
+  
         <script class="mobilize-js-source" 
                 type="text/javascript" 
-            src="http://localhost:8080/js/mobilize.js"></script>
-
-        <script type="text/javascript" src="http://localhost:8080/js/mobilize.sphinx.js"></script>
-        
-        <script type="text/javascript">
-            mobilize.init(
-                {
-                    // Additional options here  
-                },
-                {                     
-                    // Additional CDN options here
-                    cloud : false, // Disable automatic JS + CSS resolving
-                    
-                    baseURL : "http://localhost:8080", // Test server
-                    
-                    // Load JS files locally
-                    javascriptBundles : [ 
-                       "js/jquery.js",
-                       "js/mobilize.onjq.js",
-                       "js/jquery.mobile.js"
-                     ],
-                    
-                     // Load CSS files locally
-                     cssBundles : [
-                       "css/jquery.mobile.css",
-                       "css/sphinx.css"                       
-                     ],
-                     
-                     template : "../templates/sphinx.html"
-                });
-            mobilize.bootstrap();
+                src="http://localhost:8080/js/mobilize.js"
+                >
         </script>
-    
+
+        <script type="text/javascript" 
+                src="http://localhost:8080/js/mobilize.wordpress.js"
+                >
+        </script>
+
+        <script type="text/javascript">        
+
+             // Setup mobilize.js to load files from local development server
+             function setupMobilizeForWordpressDevelopment(){
+        
+                 mobilize.init({
+                     // Make the page load as mobile always
+                     forceMobilize: undefined // true: always mobile  
+                 }, {
+                     // Additional CDN options here
+                     cloud: false, // Disable automatic JS + CSS resolving
+                     // Don't do cloud error reporting
+                     // (it would useful for production deployment only)
+                     errorReportingURL: false,
+                     
+                     baseURL: "http://localhost:8080", // Test server
+                     // Load JS files locally
+                     javascriptBundles: ["js/jquery.js", 
+                                         "js/mobilize.onjq.js", 
+                                         "js/jquery.mobile.js"],
+                     
+                     // Load CSS files locally
+                     cssBundles: ["css/jquery.mobile.css", 
+                                 "css/wordpress.css"],
+                     
+                     template: "../templates/wordpress.html"
+                 });
+                 
+                 // Since we are not in auto-run mode,
+                 // we start doing the stuff after we have set-up
+                 // our options for development correctly
+                 mobilize.bootstrap();
+                 
+             }
+        
+             setupMobilizeForWordpressDevelopment();
+      
+        
+        </script>
+        
+        ...
+        
+See ``mobilizejs.php`` from ``mobilizejs-for-wordpress`` for further examples.      
+              
 Bootstrapping custom mobilize.js 
 ==================================
 
@@ -211,7 +236,83 @@ More info
 Bundle and version information
 ===================================
 
+TODO: XXX
 
-Cookie handling and the server side
-------------------------------------
+Cookie handling and the server side optimizations
+---------------------------------------------------
+
+mobilize.js can communicate with the server through
+
+* setting cookie values
+
+* page reloads when mobile browser is available
+
+Checking cookie presence and value
+====================================
       
+If ``mobilize.options.reloadOnMobile`` is set to true
+
+* When mobile browser is detected a cookie is set: ``mobilize-mobile=1``
+
+* Page is automatically reloaded if mobilize-mobile cookie has not been set before
+
+This allows server-side HTML output to perform optimizations for mobile browsers
+
+* Do not output extra stylesheets 
+
+* Do not output extra Javascript
+
+* Do not output irrelevant HTML code for mobile, like Wordpress admin bar,
+  because it wouldn't be visible in any case
+  
+Below is a PHP example to check the presence of the cookie
+
+.. code-block:: php
+
+    /**
+     * Check if mobilize.js mobile cookie has been set to mobile mode.
+     * 
+     * @return true if the client wants to render the page in mobile optimized way 
+     */
+    function is_mobile() {
+        
+        // Javascript cookie has been set and it is set to mobile mode
+        if(array_key_exists('mobilize-mobile', $_COOKIE)) {
+            return $_COOKIE['mobilize-mobile'] == '1';
+        }
+        
+        return false;
+    }
+
+Suppressing <body> rendering
+===============================
+
+By default, browsers try to render the page very greedily.
+Unless you do the mobile transform on the server-side 
+there ought to be elements which flicker on the mobile screen
+before the web page has been completely transformed to the mobile page.
+
+mobilize.js can optimize this by supressing body rendering 
+using CSS directly on the server-side when mobile browser is detected.
+
+Example::
+
+    /**
+     * Add our rendering supressing stylesheet to prevent
+     * the page flashing before jQuery mobile styles are loaded
+     */
+    function mobilizejs_head() {
+        if(is_mobile()) {
+            ?>      
+              <style type="text/css">
+                  body { display: none; }
+              </style>      
+            <?
+        }
+    }
+ 
+.. note ::
+
+    Support for placeholder animation is on its way, so you do not 
+    need to show completely white page. 
+

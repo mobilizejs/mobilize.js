@@ -50,9 +50,9 @@ function is_mobile() {
 	xlog("Cookies");
 	xlog(print_r($_COOKIE, true));
 	
-	// Javascript cookie has been set
-    if(array_key_exists('mobilize-mobile' , $_COOKIE)) {
-        return true;
+	// Javascript cookie has been set and it is set to mobile mode
+    if(array_key_exists('mobilize-mobile', $_COOKIE)) {
+        return $_COOKIE['mobilize-mobile'] == '1';
     }
     
     return false;
