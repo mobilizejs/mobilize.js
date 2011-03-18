@@ -1,5 +1,5 @@
 ========================================
- Content delivery network and hosting 
+ Hosting mobilize.js files 
 ========================================
 
 .. contents :: :local:

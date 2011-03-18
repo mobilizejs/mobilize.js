@@ -23,11 +23,5 @@ mobilize:
 	If true or 1, forces mobilization of the page.
 	If false or 0, forces normal page even if mobile browser.
 
-Cookie
-======
-
-After ``mobilize.js`` is loaded for the first time, a cookie is created.
-This cookie is present in all requests going to the server so that 
-the server can adapt for the mobile user agent in the future.
 
 

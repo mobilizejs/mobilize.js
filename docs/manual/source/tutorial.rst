@@ -247,45 +247,8 @@ mobilize.js can communicate with the server through
 
 * page reloads when mobile browser is available
 
-Checking cookie presence and value
-====================================
-      
-If ``mobilize.options.reloadOnMobile`` is set to true
-
-* Mobile browser must be jQuery Mobile compatible (grade A). It is detected 
-  based on user agent regexp and Javascript features. 
-
-* When mobile browser is detected a cookie is set: ``mobilize-mobile=1``
-
-* Page is automatically reloaded if mobilize-mobile cookie has not been set before
-
-This allows server-side HTML output to perform optimizations for mobile browsers
-
-* Do not output extra stylesheets 
-
-* Do not output extra Javascript
-
-* Do not output irrelevant HTML code for mobile, like Wordpress admin bar,
-  because it wouldn't be visible in any case
-  
-Below is a PHP example to check the presence of the cookie
-
-.. code-block:: php
-
-    /**
-     * Check if mobilize.js mobile cookie has been set to mobile mode.
-     * 
-     * @return true if the client wants to render the page in mobile optimized way 
-     */
-    function is_mobile() {
-        
-        // Javascript cookie has been set and it is set to mobile mode
-        if(array_key_exists('mobilize-mobile', $_COOKIE)) {
-            return $_COOKIE['mobilize-mobile'] == '1';
-        }
-        
-        return false;
-    }
+See :doc:`server-side tips and tricks </serverside>`
+for more info.
 
 Suppressing <body> rendering
 ===============================

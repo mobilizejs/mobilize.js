@@ -15,6 +15,7 @@ Contents:
    tutorial
    development
    support
+   serverside
    hosting
    testing
    documentation
