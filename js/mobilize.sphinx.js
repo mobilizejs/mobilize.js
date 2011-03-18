@@ -199,3 +199,6 @@ var mobilizeSphinx= {
 
 mobilize.extend(mobilize, mobilizeSphinx);
 
+// Execute mobilization automatically.
+// To prevent autoloading, set window.mobilizeAutoload = false;
+mobilize.autoload();

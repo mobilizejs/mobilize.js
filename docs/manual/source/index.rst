@@ -14,6 +14,7 @@ Contents:
    integrations/index
    tutorial
    development
+   support
    hosting
    testing
    documentation

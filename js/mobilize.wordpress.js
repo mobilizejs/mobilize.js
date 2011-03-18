@@ -31,7 +31,7 @@ var mobilizeWordpress = {
             javascriptBundles: ["js/mobilize.wordpress.mobile.min.js"],
             template: "templates/wordpress.html"
         });
-
+		
     },
 
     /**
@@ -40,7 +40,7 @@ var mobilizeWordpress = {
     constructBody: function () {
 
         mobilize.log("Wordpress constructBody()");
-
+						
         var body = $(document.body);
 		
         if (body.hasClass("single-post")) {
@@ -241,3 +241,7 @@ var mobilizeWordpress = {
 };
 
 mobilize.extend(mobilize, mobilizeWordpress);
+
+// Execute mobilization automatically.
+// To prevent autoloading, set window.mobilizeAutoload = false;
+mobilize.autoload();

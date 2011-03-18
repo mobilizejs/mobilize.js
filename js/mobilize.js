@@ -154,16 +154,19 @@ var mobilize = {
          * Filenames of Javascript files to load after bootstrap.
          * <p>
          * Template variable <code>$bundleName</code> can be used in the strings.
-         * </p>
+         * <p>
+         * Must be set by the extender
+         * <p>
          * 
          * @see mobilize.bootstrap
          * 
          * @default null
          */
-        javascriptBundles : ["js/jquery+jquerymobile.js"],
+        javascriptBundles : null,
         
         /** Url to send critical internal errors */
-        errorReportingURL : "http://cdn.mobilizejs.com/logerror/",
+        //errorReportingURL : "http://cdn.mobilizejs.com/logerror/",
+		errorReportingURL : null,
         
         /**
          * Filenames of CSS files to load after bootstrap.
@@ -288,29 +291,43 @@ var mobilize = {
      */
     bootstrap : function() {
 
+        mobilize.log("bootstrap()");
+
         // Needed to avoid trouble with autoload
         if(mobilize._bootstrap_called) {
-            mobilize.log_w("bootstrap called more than once. Is mobilize.js initialized both manually and via autoload?");
-            return;
+            throw "bootstrap called more than once. Is mobilize.js initialized both manually and via autoload?";
         }
-        mobilize._bootstrap_called = true;
-                
+        
+		mobilize._bootstrap_called = true;
+		
+		var existingCookie = mobilize.readCookie("mobilize-mobile"); 
+
+                        
         if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
             mobilize.log("mobilize.js: browser is not supported");
             return;
-        }
+        }			
+
+        // checkMobileBrowser() will set the cookie
 		
         // If reloadOnMobile set, set cookie and reload to allow server do its magic
-        if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options))
-        {
-            if (!mobilize.readCookie("mobilize-mobile")) {
-                mobilize.createCookie("mobilize-mobile", "1");
+        if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options)) {
+							
+		    var cookie = mobilize.readCookie("mobilize-mobile");
+			mobilize.log("reload on mobile check, got new cookie value:" + cookie + "  got old cookiea value:" + existingCookie);
+			
+            if (existingCookie != "1" && cookie == "1") {						
+				mobilize.log("Mobile cookie has changed. Server has asked us to reload in this situation (reloadOnMobile).");
+				mobilize.log("Refreshing page");                
                 window.location.reload();
                 return;
-            }
+            } 
+			
+			mobilize.log("Cookie already exists - continue with normal mobile flow");
         }		
         
-        function doBootstrap(){
+        function startProcess() {
+			mobilize.log("startProcess")
             if(mobilize.checkMobileBrowser(mobilize.options)) {
                 mobilize.renderAsMobile();
             } else {
@@ -319,30 +336,29 @@ var mobilize = {
         }
 		
 		// Do not let errors fall through
-        doBootstrap = mobilize.trappedInternal(doBootstrap);
-        doBootstrap();
+        //startProcess = mobilize.trappedInternal(startProcess);
+        
+        // TODO: Execute events which we can do before DOM model must be ready	
+		document.addEventListener("DOMContentLoaded", startProcess, false);
+		//startProcess();				
     },
     
     /**
-     * Initialize CDN locations where to load Javascript files.
-     * 
+     * Initialize URL location from where to load Javascript files.
+     * <p>
      * Deliver download URLs for various scripts and resources based
-     * on 
-     * 
+     * on script tag with class="mobilize-js-source".
+     * <p>
      * @see mobilize.cdnOptions
      * 
      * @private 
      */
     initCloud : function() {
+		
+		mobilize.log("Initializing URL base for media resources");
         
         var opts = mobilize.cdnOptions;
-        
-        if(!opts.cloud) {
-            // Cloud services have been disabled
-            return;
-        }
-        
-        
+                       
         if(!opts.cloudBaseURL) {
             // Try to extract cloud URL from our <script> tag
             var script = document.getElementsByClassName("mobilize-js-source");
@@ -350,6 +366,7 @@ var mobilize = {
             
             if(!script.length) {
                 
+				mobilize.log("No <script> hints found, do it hard way");
                 // Try to determine from src attribute if class not set. 
                 // This is needed for convenient autoload.
                 // It's tedious to set the mobilize-js-source class for Sphinx template,
@@ -382,8 +399,8 @@ var mobilize = {
                 mobilize.log_e(msg);
                 throw msg;
             }
-            
-            var base = mobilize.baseurl(src);
+			
+			var base = mobilize.baseurl(src);
 
             // Remove /js/ from the end of the URL
             base = base.substring(0, base.length-4);
@@ -414,13 +431,20 @@ var mobilize = {
     
     
     /** Execute mobilization automatically.
-     * 
+     * <p>
      * To prevent this, set window.mobilizeAutoload = false;
-     * 
+     * <p> 
      * And initialize mobilize manually:
      *  mobilize.init();
      *  mobilize.bootstrap();
-     * */
+     * <p>
+     * Try autoload as early as possible to trigger forceReloadOnMobile action as early as possible
+     * (don't load web page content for too long if we can abort early). This
+     * function must be called from the last shared desktop + extender bundle JS file.
+     * So if you have mobilize.js + mobilize.wordpress.js, mobilize.autoload() call
+     * must be placed at the end of mobilize.wordpress.js.
+     * 
+     */
     autoload : function()
     {
         function doAutoload()
@@ -436,14 +460,8 @@ var mobilize = {
             mobilize.init();
             mobilize.bootstrap();
         }
-        
-        if(window.mobilizeAutoload === undefined || window.mobilizeAutoload) 
-        {
-            if ( document.addEventListener ) {
-                document.addEventListener( "DOMContentLoaded", doAutoload, false );
-            }
-            window.addEventListener( "load", doAutoload, false );
-        }
+        		
+		doAutoload();
     },
     
     /**
@@ -721,19 +739,19 @@ var mobilize = {
         
         return f(name);
     },
-    /** Check if browser is running on mobile platform or is forced mobile and update cookie
-     * 
+    /** Check if browser is running on mobile platform or is forced mobile and update cookie.
+     * <p>
      * @param userAgent   = userAgent name. Uses browser's userAgent by default
-     *  
+     * <p>
      * @param forceMobilize = Force detection to mobile to true or false regardless of real type
-     * 
+     * <p>
      * URL parameter mobilize=<true,1> can also be used to force mobile.
-     * 
+     * <p>
      * The state is also stored to 'mobilize-mobile' cookie this
      * information is passed to server for the following requests. 
      * URL and options.force paremeters 
      * override cookie and detection.
-     * 
+     * <p>
      * @return: true if browser is considered as mobile browser.
      */ 
     checkMobileBrowser : function (opts)
@@ -765,13 +783,14 @@ var mobilize = {
         else {
             result = mobilize.isMobile(name);
         }
-        
-        // Update cookie
-        var cookie = result ? "1" : "0";
-        mobilize.createCookie("mobilize-mobile", cookie);
-        
+		
+		
+		mobilize.createCookie("mobilize-mobile", result ? "1" : "0");
+                
         return result;
     },
+	
+	
     
     /**
      * Clear conflicting jQuery objects
@@ -828,7 +847,7 @@ var mobilize = {
         } else {
 			//console.log(mobilize.cdnOptions);
 			if(mobilize.cdnOptions.baseURL === null) {
-				throw "mobilize.cdnOptions.baseURL must be defined or set cloud=true";
+				throw "mobilize.cdnOptions.baseURL must be defined or set cloud=true to try to auto-resolve files";
 			}
             return mobilize.cdnOptions.baseURL + "/" + uri;
         }
@@ -896,7 +915,7 @@ var mobilize = {
 				var entry = scriptsToLoad.pop();
 				var bundle = entry[0];
 				var url = entry[1];
-				mobilize.log("Loading script " + script);				
+				mobilize.log("Loading script " + url);				
 				mobilize.loadScript(bundle, url, loadNextScript);				
 			}
 		}
@@ -926,7 +945,10 @@ var mobilize = {
      * @param callback(payload)
      */
     getAJAX : function(url, callback) {
-        var req = new XMLHttpRequest();
+        		
+		mobilize.log("AJAX loading:" + url);
+		
+		var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.onreadystatechange = function (aEvt) {
            if(req.readyState == 4) {
@@ -1001,6 +1023,46 @@ var mobilize = {
         }
     },
     
+    /**
+     * Magical dynamic Javascript file loader.
+     * <p>
+     * Load a JS script from 
+     * <p>
+     * <ul>
+     * <li>Local cache if available
+     * <li>Using <script> inject if supported by platform
+     * <li>Using AJAX and eval()
+     * </ul>
+     * <p>
+     * @param {String} bundle: Name of the bundle, used to store to localStorage.
+     * @param {String} url
+     * @param {Object} callbacl
+     */
+    loadScript : function(bundle, url, callback) {
+        
+		// Check if we can use a cached version
+        if(mobilize.cdnOptions.localCacheVersion !== null) {
+            mobilize.loadBundleFromLocalStorage(mobilize.BUNDLE_TYPE_JS, bundle,url,callback);
+            return;
+        }
+		
+        // Injecting script tag doesn't work with android webkit
+        //if(navigator.userAgent.toLowerCase().indexOf("android") >= 0 )
+		if(false) {
+            mobilize.loadScriptWithAjax(url, callback);            
+        } else {
+			mobilize.loadScriptWithTag(bundle, url, callback);
+		}
+	},
+
+    /**
+     * Load JS script using AJAX + eval().
+     * <p>
+     * http://blog.client9.com/2008/11/javascript-eval-in-global-scope.html
+     * <p>
+     * @param {Object} aUrl
+     * @param {Object} aCallback
+     */
     loadScriptWithAjax : function(aUrl, aCallback){
         mobilize.log("Loading script for evaluation:" + aUrl);
         function loaded(aJavascript) 
@@ -1012,32 +1074,16 @@ var mobilize = {
         mobilize.getAJAX(aUrl, mobilize.trappedInternal(loaded));
         return;
     },
+
+		
     /**
-     * Magical script loader.
+     * Load a script file by injecting new <script> in <head> 
      * 
-     * Use AJAX to load Javascript code, then eval() it.
-     * This ensures that code is executed (not just loaded)
-     * when triggering the callback.
-     * 
-     * http://blog.client9.com/2008/11/javascript-eval-in-global-scope.html
-     * 
-     * @param {String} bundle: Name of the bundle, used to store to localStorage.
-     * @param {String} url
-     * 
-     * @param {Object} callbacl
+     * @param {Object} bundle
+     * @param {Object} url
+     * @param {Object} callback
      */
-    loadScript : function(bundle, url, callback) {
-        
-        if(mobilize.cdnOptions.localCacheVersion !== null) {
-            mobilize.loadBundleFromLocalStorage(mobilize.BUNDLE_TYPE_JS, bundle,url,callback);
-            return;
-        }
-        // Injecting script tag doesn't work with android webkit
-        if(navigator.userAgent.toLowerCase().indexOf("android") >= 0 ) 
-        {
-            mobilize.loadScriptWithAjax(url, callback);
-            return;
-        }
+	loadScriptWithTag : function(bundle, url, callback) {
         
         // Using script tag injection to have JS debugger show the source
         mobilize.log("injecting script tag to load:" + url);
@@ -1168,6 +1214,7 @@ var mobilize = {
             if(!mobilize.checkResourceWhitelist(src, mobilize.options.whitelistCSSLinks)) {
                 var parent = script.parentNode;
                 parent.removeChild(script);
+				mobilize.log("Removing stylesheet:" + src);
             }
         }
     },
@@ -1818,6 +1865,8 @@ mobilize.trappedInternal = function(func, options)
     }
     options.onerror = function(e){
         
+		mobilize.log("trappedInternal onerror");
+		
         var msg = String(func) + "\n";
         if( !e.stack){
             msg += e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message;
@@ -1840,6 +1889,3 @@ if(typeof(exports) !== "undefined") {
     exports.mobilize = mobilize;
 }
 
-// Execute mobilization automatically.
-// To prevent autoloading, set window.mobilizeAutoload = false;
-mobilize.autoload();

@@ -17,10 +17,19 @@
 
 <body class="home blog">
 
+<script type="text/javascript">
+        window.mobilizeAutoload = false;
+</script>
+
 <script class="mobilize-js-source" 
         type="text/javascript" 
 	src="/js/mobilize.wordpress.min.js"></script>
+	
 <script type="text/javascript">
+
+    mobilize.init();
+
+    mobilize.cdnOptions.errorReportingURL = null;
 
     mobilize.onCompleted = function(){
 	    var img = $('<img src="/media/logo_238.png">');
@@ -29,10 +38,10 @@
         
        $("div [data-role=content]").prepend(img)
     }
-
-    mobilize.options.haveRemoteDebugLogging = true;
-    mobilize.options.forceMobilize = true
-    mobilize.cdnOptions.localCacheVersion = "0.2"
+	
+	
+	mobilize.bootstrap();
+    
 </script>
 
 

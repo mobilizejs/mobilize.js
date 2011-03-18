@@ -45,3 +45,9 @@ releases
 docs/apidocs/*
 
 
+*.min.js
+*.debug.js
+*.min.css
+*.debug.css
+
+

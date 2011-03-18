@@ -4,6 +4,32 @@
 
 .. contents :: :local:
 
+Smoke testing
+======================================
+
+Generate local bundle files from JS and CSS by preprocessing them and merging final targets::
+
+    ./release.py --local=true
+
+You can open static test HTML files through testserver.py
+
+.. code-block:: console
+
+    python testserver.py
+    
+    ...
+    
+    
+    serving at port 8080
+    Open test page http://localhost:8080/tests/localstorage-testing.html?mobilize=true
+    Open test page http://localhost:8080/tests/sphinx-front-page.html?mobilize=true
+    Open test page http://localhost:8080/tests/wordpress-post-page.html?mobilize=true
+    ...
+    
+Then just open the test URL in a browser of your choice.
+
+Depending on the test case, the HTML file may use bundles or load scripts directly
+without bundling.    
 
 Unit testing
 ============
@@ -46,7 +72,6 @@ Go to tests folder and execute:
 .. code-block:: sh
 
 	node <testname>.js
-
 
 
 Code analysis
