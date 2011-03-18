@@ -11,7 +11,7 @@ Contents:
    
    installation
    usage
-   extenders/index
+   integrations/index
    tutorial
    development
    hosting
