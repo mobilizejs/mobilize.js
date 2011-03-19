@@ -14,8 +14,8 @@ still need to consider :doc:`mobilize-mobile cookie </serverside>`.
 Integration
 =============
 
-Below is a snippet example how to use mobilize-mobile cookie in
-Apache configuration file::
+Below is some example how to use mobilize-mobile cookie and
+query parameters in Apache configuration file::
 
     # Get mobilize-mobile cookie value to environment
     # so that we can use env variable in Apache control flow
@@ -35,6 +35,15 @@ Apache configuration file::
     # cookies and the situation when the response was served
     Header set X-XSLT-theming %{xslt-theming}e
     Header set X-Mobilize %{mobilize}e
+    
+    # Since SetEnvIf does not support query string matching
+    # for matching this test parameter we need to resort
+    # to evil rewrite magic
+    # http://objectmix.com/apache/669056-setenvif%5Bnocase%5D-url-get-attributes.html
+    RewriteEngine On
+    RewriteCond %{QUERY_STRING} mobilize-test-wordpress
+    RewriteRule .* - [E=xslt-theming:0]
+
 
 Then you can use these variables, for example, in
 choosing if the transform filter should be applied::

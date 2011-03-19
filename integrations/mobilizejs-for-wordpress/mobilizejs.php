@@ -202,7 +202,7 @@ function mobilizejs_include_debug() {
  * @return unknown_type
  */
 function mobilizejs_template($template) {
-	if(is_mobile() || is_test_page_load()) {
+	if(is_mobile() || is_test_page_load()) {
 		return MOBILE_THEME_BASE;
 	}
 	
@@ -218,7 +218,7 @@ function mobilizejs_template($template) {
  */
 function mobilizejs_stylesheet($css) {
     
-    if(is_mobile() || is_test_page_load()) {
+    if(is_mobile() || is_test_page_load()) {
         return MOBILE_THEME_BASE;
     }    
     return $css;
