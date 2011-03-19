@@ -58,6 +58,23 @@ function is_mobile() {
     return false;
 }
 
+/**
+ * Allow testing loading of WP theme which is used as a base for mobile.
+ * 
+ * Use HTTP GET mobilize-test-wordpress query parameter to load mobile template base.
+ * 
+ * http://localhost?mobilize-test-wordpress=true
+ * 
+ * @return true if You should switch CSS and template even though it's not a mobile browser 
+ */
+function is_test_page_load() {
+	if(array_key_exists('mobilize-test-wordpress', $_GET)) {
+		return true;
+	}
+	
+	return false;
+}
+
 
 /**
  * Include mobilize.js in <head> and clean up unwanted Javascript
@@ -185,9 +202,11 @@ function mobilizejs_include_debug() {
  * @return unknown_type
  */
 function mobilizejs_template($template) {
-	if(is_mobile()) {
+	if(is_mobile() || is_test_page_load()) {
 		return MOBILE_THEME_BASE;
 	}
+	
+	
 	return $template;
 }
 
@@ -199,7 +218,7 @@ function mobilizejs_template($template) {
  */
 function mobilizejs_stylesheet($css) {
     
-    if(is_mobile()) {
+    if(is_mobile() || is_test_page_load()) {
         return MOBILE_THEME_BASE;
     }    
     return $css;

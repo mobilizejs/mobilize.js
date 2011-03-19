@@ -105,3 +105,15 @@ You can override mobilize.wordpress Javascript functions one by one if needed.
 In this case, you need to disable the auto-run mode of mobilize.js.
 
 XXX: Add example.
+
+Testing
+=========
+
+You can load the mobile wordpress template without actually running through it jQuery for testing purposes.
+This allows you to see HTML/DOM elements before they are run through any kind transformations.
+
+* Use desktop browser
+
+* Use HTTP GET ``mobilize-test-wordpress` query parameter to load mobile template base::
+ 
+    http://localhost?mobilize-test-wordpress=true
