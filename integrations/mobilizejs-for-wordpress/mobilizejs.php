@@ -90,6 +90,10 @@ function mobilizejs_init() {
 	if(is_mobile()) {
         // Unregister all known unwanted Javascripts by default
 		wp_deregister_script( 'jquery' );	
+		
+		// No Flash for teh phones...!
+        wp_deregister_script( 'swfobject' );   
+		wp_deregister_script( 'swfupload-swfobject' );          		
 	}
 	
     // Go for mobilize.js

@@ -2,6 +2,11 @@
  * Wordpres theming layer on the top of standard jQuery Mobile
  */
 
+/* Make blog roll list long headings to be wrapper */
+.blogroll h3 {
+	white-space: normal;
+}
+
 /* Fix required field asterisk to be on the same line as the field */
 #respond label {
 	display: inline-block;	

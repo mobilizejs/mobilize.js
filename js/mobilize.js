@@ -244,7 +244,7 @@ var mobilize = {
         if(!cdnOptions) {
             cdnOptions = {};
         }
-        
+		        
         // Extend global options with subclass supplied ones
         mobilize.initPlugins();
     
@@ -336,7 +336,7 @@ var mobilize = {
         }
 		
 		// Do not let errors fall through
-        //startProcess = mobilize.trappedInternal(startProcess);
+        startProcess = mobilize.trappedInternal(startProcess);
         
         // TODO: Execute events which we can do before DOM model must be ready	
 		document.addEventListener("DOMContentLoaded", startProcess, false);
@@ -432,7 +432,8 @@ var mobilize = {
     
     /** Execute mobilization automatically.
      * <p>
-     * To prevent this, set window.mobilizeAutoload = false;
+     * To prevent this, set window.mobilizeAutoload = false; in script tag before
+     * including any mobilize.js files.
      * <p> 
      * And initialize mobilize manually:
      *  mobilize.init();
@@ -446,7 +447,12 @@ var mobilize = {
      * 
      */
     autoload : function()
-    {
+    {		
+        if(window.mobilizeAutoload === false) {
+            // Autload has been disabled
+            return;
+        }
+		
         function doAutoload()
         {
             // Don't do twice.
@@ -460,7 +466,7 @@ var mobilize = {
             mobilize.init();
             mobilize.bootstrap();
         }
-        		
+        				
 		doAutoload();
     },
     
@@ -1451,11 +1457,11 @@ var mobilize = {
     
     
     /**
-     * Create jQuery Mobile navigation links out of arbitary link list.
-     * 
+     * Create a simple jQuery Mobile navigation links out of arbitary link list.
+     * <p>
      * Creates navigation or news box from existing jQuery content selection.
      * The selection can be list or arbitary elements or list of a a hrefs.
-     * 
+     * <p>
      * @param {Object} selection jQuery selection which to transform
      * 
      * @param title If present add a link box with a title using ui-list

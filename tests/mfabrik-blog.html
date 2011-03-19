@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Test mobilize.js against another blog with lots of content -->
 <html dir="ltr" lang="en-US">
 <head>
 <meta charset="UTF-8" />
@@ -8,12 +9,13 @@
 <link rel="pingback" href="http://blog.mfabrik.com/xmlrpc.php" />
 <link rel="alternate" type="application/rss+xml" title="mFabrik - mobile sites, apps, HTML5 and CMS software development &raquo; Feed" href="http://blog.mfabrik.com/feed/" />
 <link rel="alternate" type="application/rss+xml" title="mFabrik - mobile sites, apps, HTML5 and CMS software development &raquo; Comments Feed" href="http://blog.mfabrik.com/comments/feed/" />
+
 <link rel='stylesheet' id='shashin_css-css'  href='http://blog.mfabrik.com/wp-content/plugins/shashin/display/shashin.css?ver=2.6.3' type='text/css' media='all' />
+
 <link rel='stylesheet' id='highslide_css-css'  href='http://blog.mfabrik.com/wp-content/plugins/shashin/display/highslide.css?ver=4.1.4' type='text/css' media='all' />
+
 <script type='text/javascript' src='http://blog.mfabrik.com/wp-includes/js/l10n.js?ver=20101110'></script>
-<script type='text/javascript' src='http://cdn.mobilizejs.com/releases/trunk/js/mobilize.wordpress.min.js?ver=3.1'></script>
-<script type='text/javascript' src='http://blog.mfabrik.com/wp-content/plugins/shashin/display/highslide/highslide.js?ver=4.1.4'></script>
-<script type='text/javascript' src='http://blog.mfabrik.com/wp-includes/js/swfobject.js?ver=2.2'></script>
+
 <script type='text/javascript'>
 /* <![CDATA[ */
 var highslide_settings = {
@@ -37,15 +39,66 @@ var highslide_settings = {
 <meta name="keywords" content="all files,cyberduck,doc,download,drag and drop,export,import,mass upload,osx,pdf,photos,plone,webdav,answer,discussion,forum,irc,mailing list,python,question,smart questions,apache,error_log,php,php.ini,tail,xampp,chrome,commit hook,compress,console,firefox,git,github,ie,internet explorer,javascript,jquery,preprocessor,safari,webkit,app engine,data,mirror,remote api,sqlite,upload,always on,appengine,cloud,cloud computing,cron,deadlineexceedederror,dynamic,gaeutilities,google,http requiest,instance,monitoring,new process,response time,zabbix,ironpython,jython,microsoft,net,pypy,python tools for visual studio,adapter,interface,page template,portlet,render,zope,ajax,comments,disqus,lazy load,static,varnish,crawl,find,follow,full text,full text search,pypdf,scrape,scrapy,search,trademark,user policy,violation,web crawler" />
 <link rel="canonical" href="http://blog.mfabrik.com/" />
 <!-- /all in one seo pack -->
-		
-		  <style type="text/css">
-		      body { display: none; }
-		  </style>	    
-		
+				
 	<link type="text/css" rel="stylesheet" href="http://blog.mfabrik.com/wp-content/plugins/syntax/Styles/SyntaxHighlighter.css" />
 </head>
 
 <body class="home blog logged-in">
+	
+    <body>
+
+        <script type="text/javascript">
+         // Don't start executing mobilize whilst loaading JS file, but wait
+         // for our manual (development commands)
+         window.mobilizeAutoload = false;
+        </script>
+  
+        <script class="mobilize-js-source" 
+                type="text/javascript" 
+                src="http://localhost:8080/js/mobilize.js"
+                >
+        </script>
+
+        <script type="text/javascript" 
+                src="http://localhost:8080/js/mobilize.wordpress.js"
+                >
+        </script>
+
+        <script type="text/javascript">        
+
+             // Setup mobilize.js to load our additional mobilize.mfabrik-blog.js layer
+             function setupCustomBlog(){
+
+                 mobilize.init({
+                 }, {
+                     // Don't do cloud error reporting
+                     // (it would useful for production deployment only)
+                     errorReportingURL: false,
+                     
+                     baseURL: "http://localhost:8080", // Test server
+
+                     // Load JS files locally, unbundled
+                     javascriptBundles : ["js/jquery.js", 
+                                         "js/mobilize.onjq.js", 
+                                         "js/jquery.mobile.js",
+										 'http://localhost:8080/js/mobilize.mfabrik-blog.js'],
+
+                     // Load CSS files locally, unbundled
+                     cssBundles: ["css/jquery.mobile.css", 
+                                 "css/wordpress.css"],
+
+                                          
+                 });
+				                  
+                 // Since we are not in auto-run mode,
+                 // we start doing the stuff after we have set-up
+                 // our options for development correctly
+                 mobilize.bootstrap();
+                 
+             }        
+             setupCustomBlog();              
+        </script>
+
 <div id="wrapper" class="hfeed">
 	<div id="header">
 		<div id="masthead">

@@ -42,15 +42,21 @@ var mobilizeWordpress = {
         mobilize.log("Wordpress constructBody()");
 						
         var body = $(document.body);
+
+        // Get the content element
+        var content = $("#mobile-body div[data-role=content]");
+        if (content.size() === 0) {
+            throw "No template content section to fill in";
+        }
 		
         if (body.hasClass("single-post")) {
             // Post type page
-            this.constructPost();
+            this.constructPost(content);
         } else if(body.hasClass('page')) {
-            this.constructPage();			
+            this.constructPage(content);			
         } else if(body.hasClass('home')){
             // Assume front page
-            this.constructFrontPage();
+            this.constructFrontPage(content);
         } else {
 			throw "Unknown Wordpress page class:" + body.attr("class");
 		}
@@ -95,29 +101,32 @@ var mobilizeWordpress = {
             header.prepend("<a data-icon=home href='/'>Home</a>");
         }
     },
+	
 
     /**
-     * Transform Wordpress info page
+     * Transform Wordpress info page to a mobiel format.
+     * <p>
+     * Simply copy over all content HTML.
+     * <p>
+     * @param content: Target content element
+     * 
      */
-    constructPage : function () {
-        var content = $("#mobile-body div[data-role=content]");
+    constructPage : function (content) {
         var entry_content = $(".entry-content");
         content.append(entry_content);		
 	},
 
     /**
      * Transform wordpress blog post page
+     * <p>
+     * @param content: Target content element
      */
-    constructPost: function () {
+    constructPost: function (content) {
 
         // The header is defined in to template.html(core.html)
         var header;
         //header = $("#mobile-body div[data-role=header]");
-
-        var content = $("#mobile-body div[data-role=content]");
-        var entry_content = $(".entry-content");
-        content.append(entry_content);
-
+		
         // Add comment area which can be hidden.
         // jQuery element which controls the collapsiple section
         var collapsible = $('<div id="comment-collapsible" data-role="collapsible" data-collapsed="true">');
@@ -133,85 +142,111 @@ var mobilizeWordpress = {
         comments.appendTo(collapsible);
 
     },
-
-    /**
-     * This is a nasty one
-     */
-    constructFrontPage: function () {
-
-        var baseurl = mobilize.baseurl(window.location.href);
-
-        // Move box on the left hand to body first
-        var content = $("#mobile-body div[data-role=content]");
-        if (content.size() === 0) {
-            throw "No template content section to fill in";
-        }
-
-        content.append($("#current"));
-
-        var entries = $(".post");
-
-        function outputter(list, input, a) {
-
+	
+	/**
+	 * Create a title + description link list for posts.
+	 * <p>
+	 * Do not show post bodies as they might take little too much
+	 * space on mobile devices.
+	 * <p>
+	 * We are not using inset lists here, as we want to maximize
+	 * available horizontal space for headlines.
+	 * <p>
+	 * @param content  jQuery element which will receive the navigation
+	 * 
+	 * @param title: Blog roll box title
+	 */
+	constructBlogRollNavigation : function(title) {
+       
+		var list = $("<ul class='blogroll' data-role='listview'>");
+        
+		list.prepend("<li data-role='list-divider'>" + title + "</li>");
+		
+		// Iterate through every visible post on the page 
+		// and add its title + link to the navigation box
+		$(".post").each(function() {
+			
+			var input = $(this);
+			
             var output = $("<li role='option'>");
-            var title = input.find(".entry-title");
+			
+			var heading = input.find(".entry-title");
+			var link = heading.find("a");
+			var href = link.attr("href");
+			// XXX: call mobilize.rewriteLink for link here
+            
+            var text = heading.text();
+			
+            var newHeading = $("<h3 class='ui-li-heading'>");
+            newHeading.text(text);
 
-            var text = title.text();
-            var tmp = $("<h3 class='ui-li-heading'>");
-
-            var link = title.find("a");
-            if (link) {
-                var href = link.attr("href");
-                // Add mobilize=true to get the new page show mobile version
-                // This is mainly for testing on pc as the mobile detection 
-                // should handle this automatically when the page is loaded.
-                if (href && mobilize.getUrlVars().mobilize !== undefined) {
-                    if (href.indexOf("http://") >= 0) {
-                        var newurl = mobilize.addUrlVar(href, "mobilize=" + mobilize.getUrlVars().mobilize);
-                        link.attr("href", newurl);
-                    }
-                }
-                link.text(text);
-                tmp.append(link);
-            }
-            title = $("<div class='ui-btn-text'>");
-
+            button = $("<div class='ui-btn-text'>");
+						
             var date = input.find(".entry-date").text();
-            var info = $('<p class="ui-li-aside">');
+            var info = $('<p class="ui-li-desc">');
             info.text(date);
-            tmp.append(info);
+            button.append(newHeading);
+            button.append(info);
+			
+			
+			link = $("<a href='" + href + "'></a>");
+            link.append(button);
+            output.append(link);
+			
 
-            title.append(tmp);
-            output.append(title);
-
-            var entry_content = input.find(".entry-content");
-            output.append(entry_content);
+            // XXX: Include excerpt here? 		
+            //var entry_content = input.find(".entry-content");
+            //output.append(entry_content);
 
             output.appendTo(list);
-
-        }
-
-        var mainNavigation = mobilize.createNavigationBox(entries, "Recent headlines", outputter);
-        content.append(mainNavigation);
-
+        
+		});
+        
+	   return list;	
+	},
+	
+	/**
+	 * Transform the top horizontal navigation (pages links) to a mobile navigation box.
+	 * <p>
+	 * @return jQuery model for the navigation box 
+	 */
+	consructPageNavigation : function(title) {
+		
         // Pages
         var menu = $(".menu");
         var items = menu.find("li");
-        list = $("<ul data-inset='true' data-role='listview'>");
-        list.prepend("<li data-role='list-divider'>Pages</li>"); // TODO: Localization
+        list = $("<ul data-role='listview'>");
+        list.prepend("<li data-role='list-divider'>" + title + "</li>"); // TODO: Localization
         items.each(function () {
             var output = $("<li role='option'>");
             output.append($(this).find("a"));
             output.appendTo(list);
         });
-        content.append(list);
+        return list;
+	},
 
+    /**
+     * Mobilize Wordpress front page.
+     * <p>
+     * Create recent blog post navigation and pages navigation.
+     * <p>
+     * 
+     */
+    constructFrontPage: function (content) {
+		// First Recent headlines		
+		var headlines = this.constructBlogRollNavigation("Recent headlines");
+        content.append(headlines);
+		
+        // Then pages navigation
+        var pages = this.consructPageNavigation("Pages");
+		content.append(pages);
     },
 
     /**
-     * This is called when jQuery Mobile internal transform is done.
-     * 
+     * This is called by mobilize.js when jQuery Mobile internal transform is done.
+     * <p>
      * We can start binding jQuery Mobile UI elements
+     * <p>
      * @param {Object} event
      * @param {Object} data
      */
@@ -230,9 +265,7 @@ var mobilizeWordpress = {
      * Special handler which will move focus to comments when comment button is pressed
      */
     onCommentsOpen: function (event, data) {
-
         mobilize.log("comments open");
-
         var x = 0;
         var y = event.target.offsetTop;
         window.scrollTo(x, y);

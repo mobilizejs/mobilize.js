@@ -15,10 +15,43 @@ Mobilize.js is available for Wordpress in two ways
 * Direct integration to the theme code with <script> tag. This is for theme authors
   and site managers who want to customize how their mobile site looks and feels.
 
-This chapter deals with the latter use case: how do you customize your mobile output.
+Installing Mobilize.js for Wordpress plug-in
+==============================================
 
-Walkthrough
-===========
+Mobilize for Wordpress plug-in is aimed for people who want
+to make mobile version for their blog easily.
+
+Mobilize.js for Wordpress supports
+
+* Blog roll (front page)
+
+* Posts
+
+* Pages
+
+.. note ::
+
+    This plug-in is not needed if you are using a Wordpress theme provoding
+    required support for mobilize.js as described below. 
+
+Requirements
+------------
+
+* You need Wordpress 3.1 minimum
+
+* Install plug-in through Wordpress add plug-ins
+
+Mobilize.js for Wordpress plug-in will insert mobilize.js script on your Wordpress
+blog. It will also switch to default theme (twentyten) so that custom themes
+don't break 
+
+For further tuning
+
+* Set Options -> Reading -> Blog pages show at most to 4 (default 10), so that the
+  pages will load faster for mobile.
+
+Integrating mobilize.js with your theme
+=========================================
 
 This chapter explains what kind of Wordpress web mark-up sematics (CSS class names).
 you need to have in order to make mobilize.js work with it out of the box.
@@ -36,8 +69,8 @@ This is the same as Wordpress 3.1 default theme (twentyten) class names.
     
     Roadmap exists for a Wordpress plug-in solution which is compatible with all web themes.
 
-Enabling
-========
+Enabling mobilize.js in your theme
+===================================
 
 To enable mobilize.js, add following <script> tag to the page right after <body>.
 
@@ -46,12 +79,15 @@ To enable mobilize.js, add following <script> tag to the page right after <body>
     <body>
         <script class="mobilize-js-source" src="http://cdn.mobilizejs.com/releases/trunk/js/mobilize.wordpress.min.js"></script>
 
-
+If you further want to fine-tune mobilize.js settings,
+see :doc:`tutorial </tutorial>` for more advanced script
+including options.
 
 Semantics
 =====================
 
-To correctly convert the front page it must follow the default theme structure( Wordpress 3.1). 
+To correctly convert the front page it must follow the default theme structure
+(Wordpress 3.1 twentyten theme). 
  
 Posts
 -----
@@ -109,7 +145,7 @@ XXX: Add example.
 Testing
 =========
 
-You can load the mobile wordpress template without actually running through it jQuery for testing purposes.
+You can load the Wordpress template used by plug-in without actually running through it jQuery for testing purposes.
 This allows you to see HTML/DOM elements before they are run through any kind transformations.
 
 * Use desktop browser

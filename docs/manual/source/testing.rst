@@ -7,7 +7,7 @@
 Smoke testing
 ======================================
 
-Generate local bundle files from JS and CSS by preprocessing them and merging final targets::
+Generate local JS and CSS bundles by preprocessing files and merging them::
 
     ./release.py --local=true
 
@@ -111,13 +111,16 @@ Content delivery testing
 
 * Open ``cloud-wordpress-front-page.html``
 
-Device testing
-=================
+Devices and simulators 
+========================
 
 Apple
 -----------
 
 Use iOS simulator.
+
+You can directly open localhost:8080 URLs. 
+No copy-paste from host systems supported, remember to bookmark URLs.
 
 Android
 ------------
