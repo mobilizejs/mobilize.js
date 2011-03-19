@@ -2,9 +2,26 @@
  * Wordpres theming layer on the top of standard jQuery Mobile
  */
 
+/* Tune down aggressive h1 size */
+h1 {
+   
+}
+
 /* Make blog roll list long headings to be wrapper */
 .blogroll h3 {
 	white-space: normal;
+}
+
+/* Hide author info by default */
+#entry-author-info {
+	display: none;
+}
+
+/* Make utilities (permalink, tags) take little less attentation by default */
+.entry-utility,
+.entry-meta {
+	color: #666;
+	font-size: 85%;
 }
 
 /* Fix required field asterisk to be on the same line as the field */
@@ -12,7 +29,7 @@
 	display: inline-block;	
 }
 
-/* Make labels more readable */
+/* Make comment form labels more readable */
 
 #respond label {
 	color: black;

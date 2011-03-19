@@ -57,6 +57,8 @@ var mobilizeWordpress = {
         } else if(body.hasClass('home')){
             // Assume front page
             this.constructFrontPage(content);
+		} else if(body.hasClass("archive")) {
+			this.constructArchive(content);
         } else {
 			throw "Unknown Wordpress page class:" + body.attr("class");
 		}
@@ -123,8 +125,19 @@ var mobilizeWordpress = {
      */
     constructPost: function (content) {
 
+        // Copy post content
+        var postBody = $(".post");
+		
+		if(postBody.size() == 0) {
+			throw new "Did not understand post page mark-up";
+		}
+		
+		content.append(postBody);
+
         // The header is defined in to template.html(core.html)
         var header;
+        header = $('<h3>');
+
         //header = $("#mobile-body div[data-role=header]");
 		
         // Add comment area which can be hidden.
@@ -132,7 +145,6 @@ var mobilizeWordpress = {
         var collapsible = $('<div id="comment-collapsible" data-role="collapsible" data-collapsed="true">');
         collapsible.appendTo(content);
 
-        header = $('<h3>');
         // TODO: Get from page for localization
         header.text("Comments");
         header.appendTo(collapsible);
@@ -240,6 +252,18 @@ var mobilizeWordpress = {
         // Then pages navigation
         var pages = this.consructPageNavigation("Pages");
 		content.append(pages);
+    },
+	
+	
+	/**
+	 * Mobile version of tags, archive, search, etc. listing pages.
+	 * 
+	 */
+	constructArchive : function(content) {		
+		var title = $(".page-title").text();
+        // First Recent headlines       
+        var headlines = this.constructBlogRollNavigation(title);
+        content.append(headlines);	
     },
 
     /**
