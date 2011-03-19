@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: mobilize.js for Wordpress
+Plugin Name: Mobilize.js for Wordpress
 Plugin URI: http://mobilizejs.com
 Description: Mobilize your Wordpress site in an instant
 Version: 0.1
@@ -127,7 +127,7 @@ function mobilizejs_head() {
     $css_file = $url_base.'/'.MOBILIZEJS_NAME."/mobile-custom.css";
         
     ?>
-        <script type="text/javascript">
+        <script type="text/javascript" class="mobilize-init">
             // Called by mobilize.init()
             function mobilizeCustomInit() {
                // Include msite specific Javascript initialization layer
@@ -141,7 +141,7 @@ function mobilizejs_head() {
 	if(is_mobile()) {		
 		// Supress body loading as early as possible
 		?>		
-		  <style type="text/css">
+		  <style type="text/css" class="mobilize-init">
 		      body { display: none; }
 		  </style>	    
 		<?	

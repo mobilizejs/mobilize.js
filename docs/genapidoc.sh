@@ -9,7 +9,11 @@ if [ ! -e $TOOLKIT ] ; then
         unzip jsdoc_toolkit-2.4.0.zip
 fi
 
-java -jar $TOOLKIT/jsrun.jar $TOOLKIT/app/run.js ../js  -x=js,jsx --directory=./apidocs --exclude=jquery* --template=$TOOLKIT/templates/jsdoc
+if [ -e ../js/mobilize.core.min.js ] ; then
+        echo "Could have problems generate API docs from locally deployed bundles"
+fi        
+
+java -jar $TOOLKIT/jsrun.jar $TOOLKIT/app/run.js ../js  -x=js,jsx --directory=./apidocs --exclude=jquery* --exclude=*.min.js  --exclude=*.debug.js --template=$TOOLKIT/templates/jsdoc
 
 
 # for sphinx

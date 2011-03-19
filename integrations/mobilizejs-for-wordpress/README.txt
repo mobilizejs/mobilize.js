@@ -1,3 +1,16 @@
+README
+------
+
+This file contains tips to set-up development environment
+for Mobilize.js for Wordpress.
+
+For end user documentation please go to
+
+* http://mobilizejs.com
+
+Tips
+----
+
 Symlink this folder to wp-plugins for development.
 
 Pointers how to get bootstrapped development on OSX

@@ -10,8 +10,6 @@ if [ "$1" == "" ] ; then
         exit 1
 fi
 
-S
-
 TARGET=$1
 
 LOCAL_APPCFG=$HOME/google_appengine/appcfg.py
@@ -23,7 +21,7 @@ else
 fi
 
 cd docs
-sh genapidocs.sh
+sh genapidoc.sh
 cd manual
 make html
 cd ../..
