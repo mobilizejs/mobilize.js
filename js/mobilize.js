@@ -280,6 +280,10 @@ var mobilize = {
 
         mobilize.initCloud();
 
+        // Check if we have site specific custom init hook available and call it
+        if(mobilizeCustomInit) {
+			mobilizeCustomInit();
+		}
     },
     
     /**

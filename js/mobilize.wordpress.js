@@ -192,7 +192,7 @@ var mobilizeWordpress = {
             var newHeading = $("<h3 class='ui-li-heading'>");
             newHeading.text(text);
 
-            button = $("<div class='ui-btn-text'>");
+            button = $("<div>");
 						
             var date = input.find(".entry-date").text();
             var info = $('<p class="ui-li-desc">');
@@ -227,7 +227,7 @@ var mobilizeWordpress = {
         // Pages
         var menu = $(".menu");
         var items = menu.find("li");
-        list = $("<ul data-role='listview'>");
+        list = $("<ul class='page-list' data-role='listview'>");
         list.prepend("<li data-role='list-divider'>" + title + "</li>"); // TODO: Localization
         items.each(function () {
             var output = $("<li role='option'>");

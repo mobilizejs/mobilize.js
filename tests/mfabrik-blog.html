@@ -48,9 +48,14 @@ var highslide_settings = {
     <body>
 
         <script type="text/javascript">
-         // Don't start executing mobilize whilst loaading JS file, but wait
-         // for our manual (development commands)
-         window.mobilizeAutoload = false;
+	         // Don't start executing mobilize whilst loaading JS file, but wait
+	         // for our manual (development commands)
+	         window.mobilizeAutoload = false;
+			 
+			 function mobilizeCustomInit() {
+			 	// Include mFabrik specific Javascript initialization layer
+			 	mobilize.cdnOptions.javascriptBundles.push("http://localhost:8080/js/mobilize.mfabrik-blog.js");
+			 }
         </script>
   
         <script class="mobilize-js-source" 
@@ -81,7 +86,7 @@ var highslide_settings = {
                      javascriptBundles : ["js/jquery.js", 
                                          "js/mobilize.onjq.js", 
                                          "js/jquery.mobile.js",
-										 'http://localhost:8080/js/mobilize.mfabrik-blog.js'],
+										 ],
 
                      // Load CSS files locally, unbundled
                      cssBundles: ["css/jquery.mobile.css", 

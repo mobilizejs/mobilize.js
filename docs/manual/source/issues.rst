@@ -14,3 +14,17 @@ it starts execution (jQuery not found).
 Just hit refresh until the page loads correctly.
 
 This problem does not happen with production bundles.
+
+
+Javascript: mobilize is not defined
+--------------------------------------
+
+On line::
+    
+    mobilize.init({ 
+    
+mobilize.js files are not loaded in the desktop mode.
+Usually this is because you are developing against local files
+and your test server is not running.
+
+    

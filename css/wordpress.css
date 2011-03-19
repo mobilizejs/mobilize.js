@@ -12,6 +12,11 @@ h1 {
 	white-space: normal;
 }
 
+/* Do not let first entry in page list eat bottom of blog roll item */
+.ui-content .page-list {
+	margin-top: 15px;
+}
+
 /* Hide author info by default */
 #entry-author-info {
 	display: none;

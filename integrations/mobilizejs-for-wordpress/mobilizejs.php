@@ -8,6 +8,9 @@ Author: Mikko Ohtamaa
 Author URI: http://mobilizejs.com
 */
 
+// What's our name in Wordpress plug-ins folder
+DEFINE('MOBILIZEJS_NAME', 'mobilizejs-for-wordpress');
+
 // Which Wordpress theme we serve for jQuery Mobile transformation base
 DEFINE('MOBILE_THEME_BASE', 'twentyten');
 
@@ -22,7 +25,9 @@ add_filter('template', 'mobilizejs_template');
 add_filter('show_admin_bar', 'hide_admin_bar' ); // Mobile version do not need admin bar HTML
 
 add_action('init', 'mobilizejs_init');
-add_action('wp_head', 'mobilizejs_head');
+
+// Make sure mobilize.js <head> is as early as possible
+add_action('wp_head', 'mobilizejs_head', 2);
 add_action('wp_footer', 'mobilizejs_include_debug');
 
 
@@ -108,15 +113,38 @@ function mobilizejs_init() {
 
 /**
  * Add our rendering supressing stylesheet to prevent
- * the page flashing before jQuery mobile styles are loaded
+ * the page flashing with web styles before Javascript supression kicks in. 
+ * 
  */
 function mobilizejs_head() {
-	if(is_mobile()) {
+
+    // The following mus be added to both web + mobile sites
+    // Make sure our custom CSS and JS is loaded
+        
+    // http://codex.wordpress.org/Function_Reference/plugin_basename
+    $url_base = plugins_url();
+    $js_file = $url_base.'/'.MOBILIZEJS_NAME."/mobile-custom.js";
+    $css_file = $url_base.'/'.MOBILIZEJS_NAME."/mobile-custom.css";
+        
+    ?>
+        <script type="text/javascript">
+            // Called by mobilize.init()
+            function mobilizeCustomInit() {
+               // Include msite specific Javascript initialization layer
+               mobilize.cdnOptions.javascriptBundles.push("<?= $js_file ?>");
+               mobilize.cdnOptions.cssBundles.push("<?= $css_file ?>");
+            }
+        </script>
+    <?    
+	
+	// The folowing is added only if mobile mode is on
+	if(is_mobile()) {		
+		// Supress body loading as early as possible
 		?>		
 		  <style type="text/css">
 		      body { display: none; }
 		  </style>	    
-		<?
+		<?	
 	}
 }
 
