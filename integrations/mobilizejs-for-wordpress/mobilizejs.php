@@ -283,7 +283,7 @@ function mobilizejs_stylesheet($css) {
 function mobilizejs_http_headers($wp_object) {
 	
     // We are concerned only about the public HTML interface
-    if(is_admin() ||Êis_feed()) {
+    if(is_admin() || is_feed()) {
         return false;
     }
     
