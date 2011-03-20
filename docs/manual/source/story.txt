@@ -1,0 +1,46 @@
+What are you doing Uncle Coder?
+
+Mobilizing my websites.
+
+Oh... isn't that very difficult task? You need to care about 
+thousand of different devices,  screen sizes, formats,
+standards and everything.
+
+Not anymore. Mobilize.js is a new open source
+project which allows you to mobilize any web system
+with Javascript, optionally some server-side code.
+
+Mobilize.js is what HTML was orignally meant to be.
+It leaves the representation content to the client.
+Since it transforms the content on the client side,
+you don't need any kind of device detection, but
+the device itself knowns what it is doing.
+Modern phones are smart, after all.
+
+Oooh.. sounds interesting. Does it 
+work with my Wordpress site?
+
+Yes. It has Wordpress plug-in available out of the box.
+
+Does it work with my custom web site?
+
+Yes. It works any site where you can put script tags.
+
+Does it work with Microsoft Sharepoint?
+
+Yes.
+
+Does it...
+
+Yes.
+
+This is awesome. I'll start following mobilize.js
+in Twitter right away and subscribe to 
+their RSS feed. I'll also go to the forum
+to see if they can answer my questions.
+
+It's time to chew bubble gum and
+mobilize web sites. And I am all 
+out of gum.
+
+ 
