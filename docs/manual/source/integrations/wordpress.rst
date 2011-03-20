@@ -65,11 +65,13 @@ For further tuning
     If you want to use mobilize.js with page caching, integrate mobilize.js to your
     existing theme using instructions below.
     
-To disable Apache HTML page caching add the following Expires directive::
+To disable Apache HTML page caching add the following directive::
 
-     ExpiresByType text/html 0
-        
-
+     ExpiresByType text/html A0
+     header add Vary "User-Agent"
+   
+This should ensure that mobile optimized page is not served
+to a web browser and vice versa.
   
 Customizing mobile theme
 ---------------------------
