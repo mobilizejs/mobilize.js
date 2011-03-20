@@ -17,7 +17,9 @@ DEFINE('MOBILE_THEME_BASE', 'twentyten');
 // Use for localhost development of mobilize.wordpress.js itself
 DEFINE('DEBUG', true);
 
-// Output to PHP error_log() service what's going on
+// Output to PHP error_log() service what's going on.
+// Note that PHP logging must be enabled.
+// This is useful to pindown problems with mobilize.js and your log.
 DEFINE('LOGGING', DEBUG);
 
 // Version of mobilize.js to use
@@ -37,7 +39,7 @@ add_action('wp_footer', 'mobilizejs_include_debug');
 
 // Internal debug purposes only
 function xlog($msg) {
-	if(DEBUG) {
+	if(LOGGING) {
 		error_log($msg);		
 	}
 }
