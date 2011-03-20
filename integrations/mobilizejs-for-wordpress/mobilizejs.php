@@ -15,12 +15,12 @@ DEFINE('MOBILIZEJS_NAME', 'mobilizejs-for-wordpress');
 DEFINE('MOBILE_THEME_BASE', 'twentyten');
 
 // Use for localhost development of mobilize.wordpress.js itself
-DEFINE('DEBUG', true);
+DEFINE('DEBUG', false);
 
 // Output to PHP error_log() service what's going on.
 // Note that PHP logging must be enabled.
 // This is useful to pindown problems with mobilize.js and your log.
-DEFINE('LOGGING', DEBUG);
+DEFINE('LOGGING', true);
 
 // Version of mobilize.js to use
 $mobilizejs_version = 'trunk';
