@@ -31,8 +31,8 @@ Mobilize.js for Wordpress supports
 
 .. note ::
 
-    This plug-in is not needed if you are using a Wordpress theme provoding
-    required support for mobilize.js as described below. 
+    This plug-in is not needed if you are using a Wordpress theme having
+    direct support for mobilize.js as described below. 
 
 
 Requirements
@@ -46,8 +46,8 @@ Installation
 * Install plug-in through Wordpress add plug-ins
 
 Mobilize.js for Wordpress plug-in will insert mobilize.js script on your Wordpress
-blog. It will also switch to default theme (twentyten) so that custom themes
-don't break 
+blog. It will also use the default theme (twentyten) for mobile clients,
+as old custom themes might not be compatible with mobilize.js.
 
 Settings and optimizations
 -----------------------------
@@ -58,6 +58,18 @@ For further tuning
 
 * Set Options -> Reading -> Blog pages show at most to 4 (default 10), so that the
   pages will load faster for mobile.
+  
+.. note ::
+  
+    You must disable HTML page caching if you are using this theme switcher plug-in.
+    If you want to use mobilize.js with page caching, integrate mobilize.js to your
+    existing theme using instructions below.
+    
+To disable Apache HTML page caching add the following Expires directive::
+
+     ExpiresByType text/html 0
+        
+
   
 Customizing mobile theme
 ---------------------------

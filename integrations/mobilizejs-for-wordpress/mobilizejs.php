@@ -243,11 +243,14 @@ function mobilizejs_include_debug() {
  * @return unknown_type
  */
 function mobilizejs_template($template) {
+
 	if(is_mobile() || is_test_page_load()) {
+        xlog("Serving mobile template");
 		return MOBILE_THEME_BASE;
 	}
 	
-	
+	xlog("Serving default template");
+		
 	return $template;
 }
 
