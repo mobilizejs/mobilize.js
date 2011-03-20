@@ -276,12 +276,14 @@ function mobilizejs_stylesheet($css) {
  * 
  * http://codex.wordpress.org/Plugin_API/Action_Reference
  * 
+ * http://codex.wordpress.org/Function_Reference
+ * 
  * @return unknown_type
  */
 function mobilizejs_http_headers($wp_object) {
 	
-   // We are concerned only about the public interface
-    if(is_admin()) {
+    // We are concerned only about the public HTML interface
+    if(is_admin() ||Êis_feed()) {
         return false;
     }
     
