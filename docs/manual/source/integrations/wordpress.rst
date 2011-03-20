@@ -64,11 +64,21 @@ For further tuning
     You must disable HTML page caching if you are using this theme switcher plug-in.
     If you want to use mobilize.js with page caching, integrate mobilize.js to your
     existing theme using instructions below.
-    
-To disable Apache HTML page caching add the following directive::
+
+Caching issues
+===============
+
+Mobilize.js for Wordpress sets ``Vary: User-Agent`` 
+header for public facing HTML pages. 
+This should enforce caches to have separate
+pages for web and mobile browsers.
+
+
+But the world is full of broken caches,
+proxies and operator services.
+Your might want to  disable Apache HTML page caching by add the following directive::
 
      ExpiresByType text/html A0
-     header add Vary "User-Agent"
    
 This should ensure that mobile optimized page is not served
 to a web browser and vice versa.

@@ -62,4 +62,36 @@ Both web and mobile pages have the same URL. If mobile page HTML gets loaded fir
 in the cache. Next time web user agent loads the page, it gets mobile page from cache, instead of 
 web content it wishes.
 
+Suppressing <body> rendering
+===============================
+
+By default, browsers try to render the page very greedily.
+Unless you do the mobile transform on the server-side 
+there ought to be elements which flicker on the mobile screen
+before the web page has been completely transformed to the mobile page.
+
+mobilize.js can optimize this by supressing body rendering 
+using CSS directly on the server-side when mobile browser is detected.
+
+Example::
+
+    /**
+     * Add our rendering supressing stylesheet to prevent
+     * the page flashing before jQuery mobile styles are loaded
+     */
+    function mobilizejs_head() {
+        if(is_mobile()) {
+            ?>      
+              <style type="text/css">
+                  body { display: none; }
+              </style>      
+            <?
+        }
+    }
+ 
+.. note ::
+
+    Support for placeholder animation is on its way, so you do not 
+    need to show completely white page. 
+
 

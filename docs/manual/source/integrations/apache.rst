@@ -14,6 +14,31 @@ still need to consider :doc:`mobilize-mobile cookie </serverside>`.
 Integration
 =============
 
+Simple integration
+-------------------
+
+.. note ::
+
+    This concerns only if server-side optimization are being used
+    (different HTML for web and mobile browsers).    
+
+Since HTML output may vary depending on the user agent,
+your might want to  disable Apache HTML page caching by add the following directive::
+
+     ExpiresByType text/html A0
+              
+Apache cannot do this, but you must set ``Vary: User-Agent`` on the server-side for 
+all HTML page responses which may have different output for web and mobile devices.
+Below is an example from Wordpress plug-in::
+
+ 
+                 
+This should ensure that mobile optimized page is not served
+to a web browser and vice versa.
+
+Advanced integration
+-----------------------
+
 Below is some example how to use mobilize-mobile cookie and
 query parameters in Apache configuration file::
 
@@ -75,13 +100,16 @@ choosing if the transform filter should be applied::
     </LocationMatch>
 
 Testing
---------
+==============
 
 Use wget to test headers and content served by Apache::
 
     wget -S http://blog.mfabrik.com
     
     wget -S --header "Cookie: mobilize-mobile=1" http://blog.mfabrik.com
+
+    wget -S --header "Cookie: mobilize-mobile=0" http://blog.mfabrik.com
+
 
 Caching
 =============

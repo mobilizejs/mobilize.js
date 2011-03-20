@@ -31,7 +31,7 @@ add_filter('template', 'mobilizejs_template');
 add_filter('show_admin_bar', 'hide_admin_bar' ); // Mobile version do not need admin bar HTML
 
 add_action('init', 'mobilizejs_init');
-
+add_action("send_headers", "mobilizejs_http_headers");
 // Make sure mobilize.js <head> is as early as possible
 add_action('wp_head', 'mobilizejs_head', 2);
 add_action('wp_footer', 'mobilizejs_include_debug');
@@ -266,6 +266,27 @@ function mobilizejs_stylesheet($css) {
         return MOBILE_THEME_BASE;
     }    
     return $css;
+}
+
+/**
+ * Make sure that public pages vary caching by user agent.
+ * 
+ * Because otherwise cache may deliver web output for mobile,
+ * or mobile output for web, because cached HTML is not mobile aware.
+ * 
+ * http://codex.wordpress.org/Plugin_API/Action_Reference
+ * 
+ * @return unknown_type
+ */
+function mobilizejs_http_headers($wp_object) {
+	
+   // We are concerned only about the public interface
+    if(is_admin()) {
+        return false;
+    }
+    
+    // Instruct caches to have different version for different user agents
+    header('Vary: User-Agent');
 }
 
 
