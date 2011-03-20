@@ -17,7 +17,16 @@ XDV itself is not concerned about mobilize.js. Just make sure that if you are se
 <script> tag for mobilize.js in your content, not theme, you'll copy this
 script tag along the way.
 
+The following example shows how mobilize.js scripts are correctly copied
+to the very beginning of <head>.
+
 .. code-block:: xml
 
-    <!-- Copy Wordpress <script> tags - mobilize.js -->
-    <append content="/html/head/script[contains(@src, 'mobilize')]" css:theme="head" />
+    <!-- Copy Wordpress <script> tags - mobilize.js.
+    
+         Note: prepend preserves order (illogical).
+           
+     -->
+    <prepend css:content="script.mobilize-init" css:theme="head" />
+    <prepend css:content="style.mobilize-init" css:theme="head" />
+    <prepend content="/html/head/script[contains(@src, 'mobilize')]" css:theme="head" />

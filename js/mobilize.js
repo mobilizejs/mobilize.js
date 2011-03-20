@@ -281,7 +281,11 @@ var mobilize = {
         mobilize.initCloud();
 
         // Check if we have site specific custom init hook available and call it
-        if(mobilizeCustomInit) {
+        if(!window.mobilizeCustomInit) {
+			mobilize.log("No custom init hook available");
+			// XXX: should we report something here
+		} else {
+			mobilize.log("Calling custom init hook");
 			mobilizeCustomInit();
 		}
     },
@@ -935,8 +939,9 @@ var mobilize = {
 
         for(i=0; i<cdn.cssBundles.length; i++) {
             bundle = cdn.cssBundles[i];
-            mobilize.log("Loading CSS:" + bundle);
-            mobilize.loadCSS(bundle, mobilize.toFullCDNURL(bundle));
+			var url = mobilize.toFullCDNURL(bundle);
+            mobilize.log("Starting CSS load:" + url);
+            mobilize.loadCSS(bundle, url);
         }
          
         if(cacheVer !== null) {
@@ -963,7 +968,7 @@ var mobilize = {
         req.onreadystatechange = function (aEvt) {
            if(req.readyState == 4) {
                if (req.status == 200) {
-                   callback(req.responseText);
+                   callback(req.responseText, req.status, req);
                }  else {
                    mobilize.log("Could not AJAX url:" + url + " got status:" + req.status);
                }
@@ -1074,7 +1079,7 @@ var mobilize = {
      * @param {Object} aCallback
      */
     loadScriptWithAjax : function(aUrl, aCallback){
-        mobilize.log("Loading script for evaluation:" + aUrl);
+        mobilize.log("Loading script using AJAX for evaluation:" + aUrl);
         function loaded(aJavascript) 
         {
             mobilize.log("Loaded payload for " + aUrl + ", now evaling() it ");
@@ -1195,7 +1200,7 @@ var mobilize = {
             }
             
             if(!mobilize.checkResourceWhitelist(src, mobilize.options.whitelistScriptSrc)) {
-                mobilize.log_d("Cleaning script tag", src);
+                mobilize.log("Cleaning script tag:" + src);
                 var parent = script.parentNode;
                 parent.removeChild(script);
             }
@@ -1345,13 +1350,45 @@ var mobilize = {
         // Create the element which will hold the mobile template
         // + transformation result
         $("body").append("<div id='mobile-template-holder'>");
-                
-        
+		
+		var target = $("#mobile-template-holder");
+        if(target.size() == 0) {
+            throw "Mobile template loader container missing";
+        } 
+		              
         var url = mobilize.toFullCDNURL(mobilize.cdnOptions.template);
-        
+        console.log("Loading mobile template from URL:" + url);
+		
+		function onTemplateLoaded(text, status, req) {
+			mobilize.log("Text status:" + status);
+	        mobilize.log("Template load AJAX complete, status:" + req.status);   
+			
+			if(req.status == 0) {
+				mobilize.log("Oh crap. Not this again.");
+				mobilize.log(text);				
+			} 
+
+            // Place template to its container
+            target.html(text);
+
+			mobilize.transform();
+		}
+		
+		// XXX: We had some serious problems here to make jQuery.get
+		// AJAX requests to complete on Android properly.
+		// Now we use plain-javascript to get more low
+		// level control on different devices.	
+		
+		function startAJAX() {
+			console.log("Trapped AJAX call");
+					
+            mobilize.getAJAX(url, onTemplateLoaded);
+			console.log("done");
+		}
+		        
         // Don't report this as internal error as it's most likely user error
-        var onload = mobilize.trapped(mobilize.transform, { scope : mobilize } );
-        $("#mobile-template-holder").load(url, onload);
+        var startAJAX = mobilize.trapped(startAJAX, { scope : mobilize } );
+		startAJAX();
     },
     
     /**
@@ -1385,6 +1422,7 @@ var mobilize = {
      * be called to allow async handlers to proceed. 
      */
     transform : function() {
+		mobilize.log("Begin mobile transform");
         mobilize.constructHead();            
         mobilize.constructBody();
         mobilize.completeTransform();

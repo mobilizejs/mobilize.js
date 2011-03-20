@@ -25,5 +25,12 @@ Javascript console error: to.data("page") is undefined
 
 All scripts are not loading in the order or not ready when they should be.
 
+Android: AJAX status code 0
+=============================
+
+Example error message::
+
+    03-19 23:48:49.187: WARN/browser(239): Console: Could not AJAX url:http://cdn.mobilizejs.com/releases/trunk/js/mobilize.wordpress.mobile.min.js got status:0 http://cdn.mobilizejs.com/releases/trunk/js/mobilize.wordpress.min.js?ver=3.1:1
+
 
 

@@ -9,6 +9,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
+   introduction
    installation
    usage
    integrations/index

@@ -44,6 +44,7 @@ var mobilizeWordpress = {
         var body = $(document.body);
 
         // Get the content element
+		// If we don't get it here it means that template injection is not done yet
         var content = $("#mobile-body div[data-role=content]");
         if (content.size() === 0) {
             throw "No template content section to fill in";

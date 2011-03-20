@@ -127,6 +127,11 @@ Android
 
 Use Android emulator.
 
+Android emulator runs in its own guest operating system,
+so it has different IP address. You need to use
+your computer LAN IP to access the test server
+from Android emulator.   
+
 Nokia devices:
 -----------------
 

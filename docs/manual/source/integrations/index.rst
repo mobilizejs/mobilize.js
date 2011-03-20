@@ -17,3 +17,6 @@ you might need to be aware of.
    wordpress
    sphinx
    xdv
+   php
+   apache
+   

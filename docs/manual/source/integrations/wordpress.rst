@@ -34,10 +34,14 @@ Mobilize.js for Wordpress supports
     This plug-in is not needed if you are using a Wordpress theme provoding
     required support for mobilize.js as described below. 
 
+
 Requirements
 ------------
 
 * You need Wordpress 3.1 minimum
+
+Installation
+-------------
 
 * Install plug-in through Wordpress add plug-ins
 
@@ -45,10 +49,29 @@ Mobilize.js for Wordpress plug-in will insert mobilize.js script on your Wordpre
 blog. It will also switch to default theme (twentyten) so that custom themes
 don't break 
 
+Settings and optimizations
+-----------------------------
+
+There are no settings whatsoever in Wordpress user interface.
+
 For further tuning
 
 * Set Options -> Reading -> Blog pages show at most to 4 (default 10), so that the
   pages will load faster for mobile.
+  
+Customizing mobile theme
+---------------------------
+
+If you want to edit mobile theme for your site.
+
+* Go to plug-in editor
+
+* Choose Mobilize.js for Wordpress
+
+* Edit ``mobile-custom.js`` (functionality) and ``mobile-custom.css`` (style overrides)
+
+for more information about customizing 
+mobilize.js please see :doc:`tutorial </tutorial>`.   
 
 Integrating mobilize.js with your theme
 =========================================
@@ -82,6 +105,8 @@ To enable mobilize.js, add following <script> tag to the page right after <body>
 If you further want to fine-tune mobilize.js settings,
 see :doc:`tutorial </tutorial>` for more advanced script
 including options.
+
+
 
 Semantics
 =====================
@@ -150,6 +175,6 @@ This allows you to see HTML/DOM elements before they are run through any kind tr
 
 * Use desktop browser
 
-* Use HTTP GET ``mobilize-test-wordpress` query parameter to load mobile template base::
+* Use HTTP GET ``mobilize-test-wordpress`` query parameter to load mobile template base::
  
     http://localhost?mobilize-test-wordpress=true
