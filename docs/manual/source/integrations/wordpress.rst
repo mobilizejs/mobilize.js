@@ -64,7 +64,7 @@ Customizing mobile theme
 
 If you want to edit mobile theme for your site.
 
-* Go to plug-in editor
+* Go to Wordpress dashboard -> Plug-ins -> Editor.
 
 * Choose Mobilize.js for Wordpress
 

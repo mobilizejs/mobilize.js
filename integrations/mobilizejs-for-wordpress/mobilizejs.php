@@ -14,7 +14,11 @@ DEFINE('MOBILIZEJS_NAME', 'mobilizejs-for-wordpress');
 // Which Wordpress theme we serve for jQuery Mobile transformation base
 DEFINE('MOBILE_THEME_BASE', 'twentyten');
 
+// Use for localhost development of mobilize.wordpress.js itself
 DEFINE('DEBUG', true);
+
+// Output to PHP error_log() service what's going on
+DEFINE('LOGGING', DEBUG);
 
 // Version of mobilize.js to use
 $mobilizejs_version = 'trunk';
@@ -93,7 +97,9 @@ function mobilizejs_init() {
 	xlog("Loading mobilize.js plug-in");
 	
 	if(is_mobile()) {
-        // Unregister all known unwanted Javascripts by default
+        xlog("Unregistering unwanted WP scripts");
+    
+		// Unregister all known unwanted Javascripts by default
 		wp_deregister_script( 'jquery' );	
 		
 		// No Flash for teh phones...!
@@ -166,6 +172,7 @@ function hide_admin_bar() {
  */
 function mobilizejs_include_debug() {
 	if(DEBUG) {
+		xlog("Including unbundled debug scripts for mobilize.wordpress.js");
 		?>
         <script type="text/javascript">
 	     // Don't start executing mobilize whilst loaading JS file, but wait

@@ -2,12 +2,18 @@
 # 
 # Simple script to make dev releases
 #
-# Usage. ./release-trunk.sh ~/path/to/cdn/application
+# Usage. ./release-trunk.sh ~/path/to/cdn/application [google account name]
 #
 
 if [ "$1" == "" ] ; then
         echo "Need target folder"
         exit 1
+fi
+
+if [ "$2" != "" ] ; then
+    ACCOUNT=$2
+else
+    ACCOUNT=""
 fi
 
 TARGET=$1
@@ -27,5 +33,9 @@ make html
 cd ../..
 ./release.py -d $TARGET/releases trunk
 
-$APPCFG update $TARGET
-
+# Use stored App Engine credentials or ask password
+if [ "$ACCOUNT" != "" ]; then
+    $APPCFG -e $ACCOUNT update $TARGET
+else
+    $APPCFG update $TARGET
+fi

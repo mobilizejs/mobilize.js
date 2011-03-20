@@ -971,7 +971,11 @@ var mobilize = {
                    callback(req.responseText, req.status, req);
                }  else {
                    mobilize.log("Could not AJAX url:" + url + " got status:" + req.status);
-               }
+                   mobilize.log("Status text:" + req.statusText);
+				   mobilize.log("Payload:");
+				   mobilize.log(req.responseText);
+				   //callback(req.responseText, req.status, req);           
+		       }
            }
         };
         req.send(null);
@@ -1031,6 +1035,7 @@ var mobilize = {
 
         if(!source) 
         {
+			// XXX: Fix to support error callback
             mobilize.getAJAX(aUrl, applySource);
         }
         else {
@@ -1086,6 +1091,7 @@ var mobilize = {
             eval.call(null, aJavascript);
             aCallback();
         }
+		// XXX: Fix to support error responses
         mobilize.getAJAX(aUrl, mobilize.trappedInternal(loaded));
         return;
     },
@@ -1357,6 +1363,14 @@ var mobilize = {
         } 
 		              
         var url = mobilize.toFullCDNURL(mobilize.cdnOptions.template);
+		
+		if(navigator.userAgent.toLowerCase().indexOf("android") >= 0) {
+			mobilize.log("Avoiding Android cache control problem for AJAX");
+			// Android AJAX + cache is busted
+			// http://mobilizejs.com/2011/03/20/android-webkit-xhr-status-code-0-and-expires-headers/
+			url += "?android-buster=" + Math.random();
+		}
+		
         console.log("Loading mobile template from URL:" + url);
 		
 		function onTemplateLoaded(text, status, req) {
@@ -1367,6 +1381,10 @@ var mobilize = {
 				mobilize.log("Oh crap. Not this again.");
 				mobilize.log(text);				
 			} 
+			
+			if(req.status != 200) {
+				return;
+			}
 
             // Place template to its container
             target.html(text);
