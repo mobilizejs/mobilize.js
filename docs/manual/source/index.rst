@@ -11,9 +11,8 @@ Contents:
    
    introduction
    installation
-   usage
-   integrations/index
    tutorial
+   integrations/index
    development
    support
    serverside
@@ -21,7 +20,7 @@ Contents:
    testing
    documentation
    troubleshooting
-   issues
+   
 
 Indices and tables
 ==================

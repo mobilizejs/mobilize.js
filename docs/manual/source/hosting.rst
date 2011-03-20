@@ -4,6 +4,22 @@
 
 .. contents :: :local:
 
+Introduction
+--------------
+
+The official location of mobilize.js files is::
+
+    http://cdn.mobilizejs.com
+
+This is a cloud enabled service and you should use
+files on this server.
+This server also collects mobile browser statistics
+and has automatic error handling support for problematic mobile devices. 
+    
+.. note ::
+
+    It is discouraged to try to host mobilize.js on your own server.        
+
 URL resolving
 --------------
 

@@ -74,30 +74,6 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.end_headers()
             return
         
-        # Bundle to single file
-        if "mobile" not in self.path \
-        and "mobilize" in self.path \
-        and "js" in self.path \
-        and "min" in self.path:
-            parts = self.path.split("/")
-            filename = parts[-1]
-            without_min = filename.replace(".min", "")
-            f = open("js/mobilize.js"); data = f.read(); f.close()
-            f = open("js/" + without_min); data += f.read(); f.close()
-            
-            ctype = self.guess_type("js/mobilize.js")
-            self.send_response(200)
-            self.send_header("Content-type", ctype)
-            # Allow AJAXy from directly opened test files
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-                    
-            #f = self.send_head()
-            
-            self.wfile.write(data)
-            
-            f.close()
-            return
             
         
         return self.base.do_GET(self)

@@ -4,6 +4,18 @@
 
 Please refer to the corresponding manual
 
-* :doc:`developing with mobilize.js to your own CMS </development>`
+Wordpress
+---------
 
-* :doc:`Integrating with Wordpress </wordpress>`
+* :doc:`Mobilize.js for Wordpress </integrations/wordpress>`
+
+Sphinx
+--------
+
+* :doc:`Mobilize.js for Sphinx  </integrations/sphinx>`
+
+Custom web sites
+-----------------
+
+* :doc:`Read tutorial </tutorial>`
+

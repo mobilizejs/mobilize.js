@@ -104,14 +104,6 @@ var mobilize = {
      */
     cdnOptions : {
 
-        /**
-         * Use mobilize.js clouad service for scripts sources.
-         * <p>
-         * If you need to host all files yourself, set this to false.
-         * 
-         * @default  true
-         */
-        cloud : true,
         
         /**
          * You need to set this value in order to 
@@ -155,14 +147,15 @@ var mobilize = {
          * <p>
          * Template variable <code>$bundleName</code> can be used in the strings.
          * <p>
-         * Must be set by the extender
+         *
          * <p>
+         * Can be absolute URL, relative to CDN or relative to HTML file.
+         * </p>
+         * @see mobilize.toFullCDNURL
          * 
-         * @see mobilize.bootstrap
-         * 
-         * @default null
+         * @default ["mobilize.core.mobile.min.js"]
          */
-        javascriptBundles : null,
+        javascriptBundles : ["js/mobilize.core.mobile.min.js"],
         
         /** Url to send critical internal errors */
         //errorReportingURL : "http://cdn.mobilizejs.com/logerror/",
@@ -171,12 +164,18 @@ var mobilize = {
         /**
          * Filenames of CSS files to load after bootstrap.
          * <p>
-         * 
+         * This is usually a bundle file from mobilize.js CDN.
          * </p>
          * 
+         * <p>
+         * Can be absolute URL, relative to CDN or relative to HTML file.
+         * </p>
          * 
+         * @see mobilize.toFullCDNURL
+         * 
+         * @default ["mobilize.core.mobile.min.css"]
          */
-        cssBundles : ["css/jquerymobile+$bundleName.css"],
+        cssBundles : ["css/mobilize.core.mobile.min.css"],
         
         /** 
          * Which HTML template to use for the mobile page 
@@ -184,7 +183,6 @@ var mobilize = {
          * Extenders usually override this.
          */
         template : "templates/core.html",
-
         
         /**
          * mobilize.js version. 
@@ -562,10 +560,9 @@ var mobilize = {
      * */
     logInternalError : function(version, msg){
         
-		console.log(version);
-		console.log(msg);
-		console.log(mobilize.log_e);
-		console.error("test");
+		mobilize.log(version);
+		mobilize.log(msg);
+		mobilize.log(mobilize.log_e);
 		try {
 			mobilize.log_e("version:" + version + "\n" + msg);
 		} catch(e) {
@@ -848,23 +845,44 @@ var mobilize = {
     
     /**
      * Convert relative paths to full CDN URLs if they are relative
+     * <p>
+     * URIs can be
+     * </p>
+     * <ul>
+     * <li>Absolute: must start with http
+     * <li>Relative to HTML file. Must start with dot and be like ./myserver/file.js
+     * <li>Relative to CDN base URL (default).
+     * </ul>
      * 
-     * @param uri Relative URI or full URL
+     * @param uri Relative URI or full URL.
      * 
-     * @returns Full URL
+     * @returns Full URL to the resolved file.
      * 
-     * @private
      */
     toFullCDNURL : function(uri) {
-        if(uri.indexOf("http") >= 0) {
+      
+	    if(uri.length < 2) {
+			throw "Empty URI";
+		}
+
+         // Absolute URL	  
+	    if(uri.indexOf("http") >= 0) {
             return uri;
-        } else {
-			//console.log(mobilize.cdnOptions);
-			if(mobilize.cdnOptions.baseURL === null) {
-				throw "mobilize.cdnOptions.baseURL must be defined or set cloud=true to try to auto-resolve files";
-			}
-            return mobilize.cdnOptions.baseURL + "/" + uri;
-        }
+        } 
+		
+	    // Relative to HTML file
+	    if(uri[0] == "." && uri[1] == "/") { // Ghetto startsWith()
+	        var base = mobilize.baseurl(window.location.href);
+		    var url = base + uri.substring(2, uri.length);
+	        return url;
+		}
+		
+		// Relative to CDN root
+		if(mobilize.cdnOptions.baseURL === null) {
+			throw "mobilize.cdnOptions.baseURL must be defined or auto-detected";
+		}
+        return mobilize.cdnOptions.baseURL + "/" + uri;
+
     },
     
     /**

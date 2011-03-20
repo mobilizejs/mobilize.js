@@ -31,7 +31,7 @@ import tempfile
 BUNDLES = [
     {
         "name" : "core",
-        "bootstrap_js" : ["mobilize.js"],
+        "bootstrap_js" : ["mobilize.js", "mobilize.auto.js"],
         "mobile_js" : ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js"],
         "mobile_css" : ["jquery.mobile.css"],        
         "templates" : ["core.html"],
@@ -39,7 +39,7 @@ BUNDLES = [
 
     {
         "name" : "wordpress",
-        "bootstrap_js" : ["mobilize.js", "mobilize.wordpress.js"],
+        "bootstrap_js" : ["mobilize.js", "mobilize.wordpress.js", "mobilize.auto.js"],
         "mobile_js" : ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js"],
         "mobile_css" : ["jquery.mobile.css", "wordpress.css"],        
         "templates" : ["wordpress.html"]
@@ -47,7 +47,7 @@ BUNDLES = [
     
     {
         "name" : "sphinx",
-        "bootstrap_js" : ["mobilize.js", "mobilize.sphinx.js"],
+        "bootstrap_js" : ["mobilize.js", "mobilize.sphinx.js", "mobilize.auto.js"],
         "mobile_js" : ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js"],
         "mobile_css" : ["jquery.mobile.css", "sphinx.css"],        
         "templates" : ["sphinx.html"]

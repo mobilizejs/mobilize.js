@@ -32,5 +32,16 @@ Example error message::
 
     03-19 23:48:49.187: WARN/browser(239): Console: Could not AJAX url:http://cdn.mobilizejs.com/releases/trunk/js/mobilize.wordpress.mobile.min.js got status:0 http://cdn.mobilizejs.com/releases/trunk/js/mobilize.wordpress.min.js?ver=3.1:1
 
+Javascript: mobilize is not defined
+======================================
+
+On line::
+    
+    mobilize.init({ 
+    
+mobilize.js files are not loaded in the desktop mode.
+Usually this is because you are developing against local files
+and your test server is not running.
+
 
 

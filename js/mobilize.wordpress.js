@@ -300,6 +300,3 @@ var mobilizeWordpress = {
 
 mobilize.extend(mobilize, mobilizeWordpress);
 
-// Execute mobilization automatically.
-// To prevent autoloading, set window.mobilizeAutoload = false;
-mobilize.autoload();
