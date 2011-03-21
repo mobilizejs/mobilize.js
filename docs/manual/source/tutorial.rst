@@ -21,7 +21,7 @@ The target audience of this tutorial are
 Prerequirements
 -------------------
 
-In order to understand this tutorial you should understand
+In order to understand this tutorial you should know bare minimum of
 
 * `Javascript <http://www.w3cschool.org>`_
 
@@ -32,14 +32,12 @@ In order to understand this tutorial you should understand
 If you manage to read through :doc:`walkthrough how mobilize.js works </development>`
 and you are not *totally* lost you should be ok.
 
-If you struggle community supports is available for you
+Remember that the `community discussion forums are open for questions <http://groups.google.com/group/mobilizejs-users>`_.
 
-* http://docs.for.ou 
+Architecture
+---------------
 
-Extenders
------------------------
-
-`mobilize` Javascript object is a singleton Javascript object.
+`mobilize` Javascript object is a Javascript module.
 It will detect a mobile browser, perform mobile site transformation 
 using jQuery and output the site using jQuery Mobile UI elements.
 
@@ -47,14 +45,37 @@ using jQuery and output the site using jQuery Mobile UI elements.
 
     There is no hard dependency to jQuery Mobile. You
     could as well use Sencha Touch, custom templates,
-    etc. for the output.
+    etc. 
+
+.. note ::
+
+	In the future there will be sub-namespaces.
     
 `mobilize.js` itself does nothing. It needs to be tailored
 for each site or content management system HTML output.
 That's saying which elements on the web pages go to mobile pages
 also.
 
-This is achieved by using ``extender``. An extender overrides
+Extenders and customizations
+-----------------------------
+
+mobilize.js can be adopted for your system
+
+* Using single customization hook: site-specific customization
+
+* Extenders: generic solution for certain systen and mark-up (CMS wide solution)
+
+Customizations
+================
+
+mobilize.js calls ``mobilizeCustomInit()`` global
+function after loading which allows you to set up 
+your site specific mobile Javascripts and CSS.
+
+Extenders
+===========
+
+An extender overrides
 mobilize.js abstract functions with its own system specific
 versions which tell what elements go to where and such.
 
@@ -66,22 +87,30 @@ Server-side optimizations
 ----------------------------
 
 mobilize.js can run with and without servers-support.
+
 Optimally you could procude 
 HTML so that it finely satisfies both web and mobile browsers.
 However, in real-life compromises may need to be made.
 
-Server-side optimizations are changes to HTML files produced by the server.
+Server-side optimizations are changes to HTML templates run on the server.
 You may remove unnecessary CSS files or HTML mark-up to make your 
-pages have less cruft.
-
-.. note ::
-
-    Mobile resources do not tax desktop browsers. mobilize.js
-    loads mobile specific JS, CSS and image files only after
-    the mobile browser has been detected.
+pages have less cruft. This makes pages load faster,
+but needs expertise in cache configuration and other potential
+hardcode pitfalls.
 
 In this tutorial we do not yet focus on any server-side 
 changes.
+
+.. note ::
+
+    Mobile.js mobile resources do not tax desktop browsers. mobilize.js
+    loads mobile specific JS, CSS and image files only after
+    the mobile browser has been detected.
+
+
+Below is listed what you should consider
+when you pondering whether you'd like to use
+server-side optimizations or not.
 
 Clean Javascript install
 =========================
@@ -127,22 +156,26 @@ Cons
 See :doc:`server-side tips and tricks </serverside>`
 for more info.
 
+.. note ::
+
+	Add core plug-ins, like Mobilize.js for Wordpress, come
+	with some server-side optimizations.
+
 Simple mobilize.js integration
 --------------------------------
 
-mobilize.js usuall contains the following parts
+mobilize.js usually contains the following parts
 
 * <script> tag to load mobilize.js or mobilize.js bundle to some specific system (e.g. mobilize.wordpress.css)
 
 * <script> tag which tells what site specific resources (your own custom CSS to load)
-
 
 Here is an example how to perform a simpe custom mobilize.js initialization,
 in production mode.
 
 .. code-block:: html
 
-    <head>
+    <body>
     
         <!-- Your custom extender goes here -->
         <script type="text/javascript">
@@ -157,7 +190,10 @@ in production mode.
         
         <script type="text/javascript" src="http://cdn.mobilizejs.com/releases/0.1/js/mobilize.core.min.js"></script>
         
-    
+.. note:: 
+
+	Version number goes ot mobilize.js Javascript URL. In the example above, it is 0.1.
+
 .. note ::
 
     mobilize.js is designed to be executed early in <head> or right after <body> tag.
@@ -183,8 +219,26 @@ Then ``mobilize.mysite.js`` would contain
         }
 
     });
+    
+Templates
+==========    
 
-These should map elements to jQuery Mobile template which looks like
+Your mobilize.js customization script
+should map elements to jQuery Mobile template which is automatically
+loaded from CDN delivery for mobile browsers only.  You usually
+don't care about the template, as jQuery Mobile page skeleton
+is very simple and you are executing transformations with Javascript in any case.
+
+The template does not include <html>, <head> or <body> elements
+because it is loaded directly to DOM of the current web page -
+otherwise browsers would go little crazy.
+
+* <div id="mobile-body"> contains mobile web site <body>
+
+* <div id="mobile-head"> can include additional elements
+  for <head>
+
+The default template looks very simple:
 
 .. code-block:: html
 
@@ -195,95 +249,30 @@ These should map elements to jQuery Mobile template which looks like
             <div data-role="header"></div> 
             <div data-role="content"></div> 
             <div data-role="footer"></div> 
-        </div> 
-    
+        </div>     
     </div>
+    
+You can find it `here <http://cdn.mobilizejs.com/releases/trunk/templates/core.html>`_.    
+    
+.. note ::
+
+	You can use our own templates also. See mobilize.cdnOptions.template option.
+
+Transform code
+================
 
 What actually goes to ``constructBody()`` and others
 is jQuery transformation code which extracts a bit from the web page
 and places it to jQuery Mobile elements.
 
-You could, for example, move everything in your #content div to mobile
+You could, for example, move everything in your website #content div to mobile site
+content area
 
 .. code-block:: javascript
 
         // Move box on the left hand to body first
         this.content.append($(".content"));
      
-Debug integration
--------------------     
-
-Alternatively if you are developing mobilize.js itself and you want to use the trunk
-version of the Javascript files you can bootstrap the framework locally. See *tests* folder
-for more examples.
-
-In this case, you manually link Javascript files and CSS files
-as and mobilize.js will load each file individually.
-This way line number debug info stays intact and
-files are reread when you simply hit refresh in your web browser.
-
-The order of <scripts> tags and more detailed arguments are shown in the example below.
-
-.. code-block:: html
-
-    <body>
-
-        <script type="text/javascript">
-         // Don't start executing mobilize whilst loaading JS file, but wait
-         // for our manual (development commands)
-         window.mobilizeAutoload = false;
-        </script>
-  
-        <script class="mobilize-js-source" 
-                type="text/javascript" 
-                src="http://localhost:8080/js/mobilize.js"
-                >
-        </script>
-
-        <script type="text/javascript" 
-                src="http://localhost:8080/js/mobilize.wordpress.js"
-                >
-        </script>
-
-        <script type="text/javascript">        
-
-             // Setup mobilize.js to load files from local development server
-             function setupMobilizeForWordpressDevelopment(){
-        
-                 mobilize.init({
-                     // Make the page load as mobile always
-                     forceMobilize: undefined // true: always mobile  
-                 }, {
-                     // Don't do cloud error reporting
-                     // (it would useful for production deployment only)
-                     errorReportingURL: false,
-                     
-                     // Load JS files locally
-                     javascriptBundles: ["js/jquery.js", 
-                                         "js/mobilize.onjq.js", 
-                                         "js/jquery.mobile.js"],
-                     
-                     // Load CSS files locally
-                     cssBundles: ["css/jquery.mobile.css", 
-                                 "css/wordpress.css"],
-                     
-                     template: "../templates/wordpress.html"
-                 });
-                 
-                 // Since we are not in auto-run mode,
-                 // we start doing the stuff after we have set-up
-                 // our options for development correctly
-                 mobilize.bootstrap();
-                 
-             }
-        
-             setupMobilizeForWordpressDevelopment();
-              
-        </script>
-        
-        ...
-        
-See ``mobilizejs.php`` from ``mobilizejs-for-wordpress`` for further examples.      
               
 mobilize.js and loading of various files 
 ------------------------------------------
@@ -309,28 +298,6 @@ More info
 
 * `mobilize.options <http://cdn.mobilizejs.com/docs/apidocs/symbols/mobilize.options.html>`_
 
-Setting file locations
-==================================
-
-As you are developing your own solution, you need to host a Javascript file on a server.
-
-.. note ::
-
-    It is recommended to prefix your mobile site JS and CSS files with ``mobilize.`` pattern.
-    This is currently used by some internal code when cleaning web page styles and scripts.
-
-There are three kind of relativity rules with mobilize.js internal loading
-
-* Relative to the current page
-
-* Relative to the bundle location (<script> tag source>)
-
-* Absolute http:// referring
-
-More info
-
-* `mobilize.cdnOptions <http://cdn.mobilizejs.com/docs/apidocs/symbols/mobilize.options.html>`_
-
 Writing your first mobilization
 ----------------------------------
 
@@ -344,7 +311,7 @@ We start with a sample site which consists only of
 
 * One CSS file
 
-This is our site.
+`The sample files can be best seen on Github <https://github.com/mobilizejs/mobilize.js/tree/master/integrations/example>`_.
 
 .. image :: images/screenshots/website.png
 
@@ -481,7 +448,7 @@ when you open the page in "mobile" browser.
 Integrating skeleton script
 ------------------------------
 
-We'll now integrate this file to the site.
+We'll now integrate this file to the web site.
 
 First we create a <script> tag which informs what additional CSS and JS files
 must be loaded for mobile devices, besides standard jQuery and jQuery Mobile.
@@ -507,13 +474,13 @@ must be loaded for mobile devices, besides standard jQuery and jQuery Mobile.
         </script>
         
         
-Now we can test open the page in :doc:`mobile simulators </testing>` or
-simply in Firefox + Firebug + `User Agent Switcher <http://www.chrispederick.com/work/user-agent-switcher/>`_ 
-combo (recommended).        
+Now we can test the page.  Open it in :doc:`a mobile simulator </testing>` or
+in Firefox + Firebug + `User Agent Switcher <http://www.chrispederick.com/work/user-agent-switcher/>`_ 
+combo (recommended). You can simply open the page as a file from your hard disk.        
 
 * Install User Agent Switcher
 
-* From menu Tools -> Default user agent -> Choose iPhone 3.0. Now your 
+* From Firefox menu Tools -> Default user agent -> Choose iPhone 3.0. Now your 
   Firefox presents itself as "iPhone 3.0" to the servers and Javascript files.
   
 Reload the page.
