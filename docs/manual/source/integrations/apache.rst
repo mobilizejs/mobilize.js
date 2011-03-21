@@ -68,6 +68,12 @@ query parameters in Apache configuration file::
     RewriteEngine On
     RewriteCond %{QUERY_STRING} mobilize-test-wordpress
     RewriteRule .* - [E=xslt-theming:0]
+    
+    # Do not touch RSS feeds.
+    # XXX: What is this magical THE_REQUEST variable?? REQUEST_URI and QUERY_STRING didn't work
+    RewriteCond %{THE_REQUEST} (feed)
+    RewriteRule .* - [E=xslt-theming:0]
+    
 
 
 Then you can use these variables, for example, in
