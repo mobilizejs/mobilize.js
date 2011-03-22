@@ -1,5 +1,5 @@
 ====================================
- Writing mobilization for your site
+ Tutorial
 ====================================
 
 .. contents :local:
@@ -18,16 +18,24 @@ The target audience of this tutorial are
 
 * Mobile extension authors who want to use mobilize.js as a mobilization backend
 
+.. note ::
+
+	If you just want to use existing Mobilize.js plug-in on your blog
+	and CMS system, please see Integratations chapter for installation 
+	instructions.
+	
+* :doc:`Ready integration plug-ins for different systems </integrations/index>`
+
 Prerequirements
 -------------------
 
-In order to understand this tutorial you should know bare minimum of
+In order to understand this tutorial you should know the bare minimum of
 
 * `Javascript <http://www.w3cschool.org>`_
 
 * `jQuery DOM manipulation <http://docs.jquery.org>`_
 
-* `jQuery Mobile mark-up basics <http://jquerymobile.com/test/>`_
+* `jQuery Mobile widget basics <http://jquerymobile.com/test/>`_
 
 If you manage to read through :doc:`walkthrough how mobilize.js works </development>`
 and you are not *totally* lost you should be ok.
@@ -61,9 +69,9 @@ Extenders and customizations
 
 mobilize.js can be adopted for your system
 
-* Using single customization hook: site-specific customization
+* Using a single customization hook ``mobilizeCustomInit()``: site-specific customization
 
-* Extenders: generic solution for certain systen and mark-up (CMS wide solution)
+* Extenders: generic solution for creating plug-ins for different systems (Wordpress, Sphinx, etc.)
 
 Customizations
 ================
