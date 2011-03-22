@@ -31,7 +31,29 @@ Apache cannot do this, but you must set ``Vary: User-Agent`` on the server-side 
 all HTML page responses which may have different output for web and mobile devices.
 Below is an example from Wordpress plug-in::
 
- 
+ 	/**
+	 * Make sure that public pages vary caching by user agent.
+	 * 
+	 * Because otherwise cache may deliver web output for mobile,
+	 * or mobile output for web, because cached HTML is not mobile aware.
+	 * 
+	 * http://codex.wordpress.org/Plugin_API/Action_Reference
+	 * 
+	 * http://codex.wordpress.org/Function_Reference
+	 * 
+	 * @return unknown_type
+	 */
+	function mobilizejs_http_headers($wp_object) {
+		
+	    // We are concerned only about the public HTML interface
+	    if(is_admin() || is_feed()) {
+	        return false;
+	    }
+	    
+	    // Instruct caches to have different version for different user agents
+	    header('Vary: User-Agent');
+	}
+	 	
                  
 This should ensure that mobile optimized page is not served
 to a web browser and vice versa.

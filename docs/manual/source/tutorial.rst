@@ -455,6 +455,8 @@ must be loaded for mobile devices, besides standard jQuery and jQuery Mobile.
 ``mobilizeCustomInit()`` is a Javascript global which is called by 
 ``mobilize.init()`` when it is ready for setting some options.
 
+.. code-block:: html
+
     <body>
 
         <script type="text/javascript">

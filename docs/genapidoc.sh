@@ -13,7 +13,7 @@ if [ -e ../js/mobilize.core.min.js ] ; then
         echo "Could have problems generate API docs from locally deployed bundles"
 fi        
 
-java -jar $TOOLKIT/jsrun.jar $TOOLKIT/app/run.js ../js  -x=js,jsx --directory=./apidocs --exclude=jquery* --exclude=*.min.js  --exclude=*.debug.js --template=$TOOLKIT/templates/jsdoc
+java -jar $TOOLKIT/jsrun.jar $TOOLKIT/app/run.js ../../js  -x=js,jsx --directory=./apidocs --exclude="jquery" -E="min.js" -E="debug.js" --template=$TOOLKIT/templates/jsdoc
 
 
 # for sphinx
