@@ -58,16 +58,25 @@ BUNDLES = [
 OPTIONS = None
 VERSION = None
 
-global TARGET_PATH
+# releases folder on CDN
+TARGET_PATH = None
+
+# docs folder on CDN
+DOCS_PATH = None
 
 WORKDIR = os.getcwd()
 
 def create_paths( ):
 
     global TARGET_PATH
-    
+    global DOCS_PATH
+        
     TARGET_PATH = os.path.join(OPTIONS.targetdir, VERSION)
     TARGET_PATH = os.path.abspath(TARGET_PATH)
+    
+    DOCS_PATH = os.path.join(OPTIONS.targetdir, "..", "docs", VERSION)
+    DOCS_PATH = os.path.abspath(DOCS_PATH)
+    
     
     if not os.path.exists(TARGET_PATH):
         os.makedirs(TARGET_PATH)
@@ -156,7 +165,7 @@ def prepare_images():
     # Image files are shared
     
     if OPTIONS.localdeploy:
-        print "Dont' process images locally"
+        print "Not processing images locally"
         return
         
     images_target = os.path.join(TARGET_PATH, "css", "images")
@@ -170,6 +179,24 @@ def prepare_images():
         shutil.rmtree(images_target)
                     
     shutil.copytree(source, images_target)
+       
+def copy_docs():
+    """ Copy documentation to CDN hosting under a specific version.
+   
+    """       
+    if OPTIONS.localdeploy:
+        print "Not releasing docs locally"
+        return
+        
+    if os.path.exists(os.path.join(DOCS_PATH)):
+        shutil.rmtree(DOCS_PATH)
+    
+    print "Releasing docs to " + DOCS_PATH
+    
+    source = os.path.join(WORKDIR, "docs")   
+    shutil.copytree(os.path.join(source, "apidocs"), os.path.join(DOCS_PATH, "apidocs"))    
+    shutil.copytree(os.path.join(source, "manual", "build", "html"), os.path.join(DOCS_PATH, "manual")) 
+    
        
 def main():
     
@@ -213,6 +240,7 @@ def main():
     
     prepare_images()
 
+    copy_docs()
 
 if __name__ == "__main__":
     main()

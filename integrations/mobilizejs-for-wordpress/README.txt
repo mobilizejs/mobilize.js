@@ -1,5 +1,5 @@
-README
-------
+Mobilize.js for Wordpress plug-in README
+-----------------------------------------
 
 This file contains tips to set-up development environment
 for Mobilize.js for Wordpress.
@@ -30,7 +30,7 @@ For development
 
 * Set DEBUG true in mobilizejs.php    
 
-* Make sure <head> generation is up-to-date in mobilizejs_init()
+* Make sure DEBUG <head> code is up-to-date in mobilizejs_init()
 
 Then go to Apache server Wordpress front page, mobilization forced
 

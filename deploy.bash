@@ -1,8 +1,9 @@
 #!/bin/bash
 # 
-# Simple script to make dev releases
+# Simple script to make App Engine releases (trunk, tagged)
+# Packs JS, makes documentation, uploads to the cloud.
 #
-# Usage. ./release-trunk.sh ~/path/to/cdn/application [google account name]
+# Usage. ./release-trunk.sh ~/path/to/cdn/application [google account name] [version]
 #
 
 if [ "$1" == "" ] ; then
@@ -14,6 +15,12 @@ if [ "$2" != "" ] ; then
     ACCOUNT=$2
 else
     ACCOUNT=""
+fi
+
+if [ "$3" != "" ] ; then
+    VERSION=$3
+else
+    VERSION=""
 fi
 
 TARGET=$1
@@ -31,7 +38,7 @@ sh genapidoc.sh
 cd manual
 make html
 cd ../..
-./release.py -d $TARGET/releases trunk
+./release.py -d $TARGET/releases $VERSION
 
 # Use stored App Engine credentials or ask password
 if [ "$ACCOUNT" != "" ]; then

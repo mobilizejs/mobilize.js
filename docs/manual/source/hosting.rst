@@ -18,7 +18,8 @@ and has automatic error handling support for problematic mobile devices.
     
 .. note ::
 
-    It is discouraged to try to host mobilize.js on your own server.        
+    It is discouraged to try to host mobilize.js on your own server, unless
+    you are planning to spend your Friday evening with HTTP Expires header.
 
 URL resolving
 --------------
@@ -54,6 +55,22 @@ E.g::
 	js/mobilize.wordpress.debug.js
 	css/mobilize.wordpress.mobile.min.js
 	
+Setting file locations
+==================================
+
+There are three kind of relativity rules with mobilize.js internal loading
+
+* Absolute http:// referring, starts with http protocol
+
+* Relative to the bundle location (<script> tag source>). This is the default.
+
+* Relative to the current page using slashdot (./) at the beginning of the URI.
+
+
+More info
+
+* `mobilize.cdnOptions <http://cdn.mobilizejs.com/docs/apidocs/symbols/mobilize.options.html>`_	
+	
 URI layout
 ----------
 
@@ -83,19 +100,79 @@ Would load files::
         http://cdn.mobilizejs.com/releases/0.1/css/mobilize.wordpress.mobile.min.css
         http://cdn.mobilizejs.com/releases/0.1/templates/wordpress.min.html
 
-Manual loading (for development)
-----------------------------------
+Manual Javascript loading for development)
+---------------------------------------------
 
-You can also access the raw files by setting ``mobilize.cdnOptions.bundle = false``.
-In this you need to load scripts and CSS separately::
+If you are developing mobilize.js itself and you want to use the trunk
+version of the Javascript files you can bootstrap the framework locally. See *tests* folder
+for more examples.
 
-        <script class="mobilize-js-source" type="text/javascript" src="http://localhost:8080/js/mobilize.js"></script>
-        <script type="text/javascript" src="http://localhost:8080/js/mobilize.wordpress.js"></script>  
+In this case, you manually link Javascript files and CSS files
+as and mobilize.js will load each file individually.
+This way line number debug info stays intact and
+files are reread when you simply hit refresh in your web browser.
+
+The order of <scripts> tags and more detailed arguments are shown in the example below.
+
+.. code-block:: html
+
+    <body>
+
         <script type="text/javascript">
-            mobilize.init({});
-            mobilize.bootstrap();
+         // Don't start executing mobilize whilst loaading JS file, but wait
+         // for our manual (development commands)
+         window.mobilizeAutoload = false;
+        </script>
+  
+        <script class="mobilize-js-source" 
+                type="text/javascript" 
+                src="http://localhost:8080/js/mobilize.js"
+                >
         </script>
 
+        <script type="text/javascript" 
+                src="http://localhost:8080/js/mobilize.wordpress.js"
+                >
+        </script>
+
+        <script type="text/javascript">        
+
+             // Setup mobilize.js to load files from local development server
+             function setupMobilizeForWordpressDevelopment(){
+        
+                 mobilize.init({
+                     // Make the page load as mobile always
+                     forceMobilize: undefined // true: always mobile  
+                 }, {
+                     // Don't do cloud error reporting
+                     // (it would useful for production deployment only)
+                     errorReportingURL: false,
+                     
+                     // Load JS files locally
+                     javascriptBundles: ["js/jquery.js", 
+                                         "js/mobilize.onjq.js", 
+                                         "js/jquery.mobile.js"],
+                     
+                     // Load CSS files locally
+                     cssBundles: ["css/jquery.mobile.css", 
+                                 "css/wordpress.css"],
+                     
+                     template: "../templates/wordpress.html"
+                 });
+                 
+                 // Since we are not in auto-run mode,
+                 // we start doing the stuff after we have set-up
+                 // our options for development correctly
+                 mobilize.bootstrap();
+                 
+             }
+        
+             setupMobilizeForWordpressDevelopment();
+              
+        </script>
+        
+        ...
+        
 Hosting mobilize.js
 --------------------
 

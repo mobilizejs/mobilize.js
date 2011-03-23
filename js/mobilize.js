@@ -265,17 +265,6 @@ var mobilize = {
             mobilize.options.localCacheVersion = null;
         }
         
-        // Enable Firebug/Webkit logging output if available
-        if(console.log) {
-			
-			// This will keep line numbers intact for
-			// Javascript debug messages
-			
-			// XXX: Looks like this trick does not work on iOS logging
-			
-			// mobilize.log = console.log; 			
-		}
-
         mobilize.initCloud();
 
         // Check if we have site specific custom init hook available and call it
@@ -1389,7 +1378,7 @@ var mobilize = {
 			url += "?android-buster=" + Math.random();
 		}
 		
-        console.log("Loading mobile template from URL:" + url);
+        mobilize.log("Loading mobile template from URL:" + url);
 		
 		function onTemplateLoaded(text, status, req) {
 			mobilize.log("Text status:" + status);
@@ -1416,10 +1405,10 @@ var mobilize = {
 		// level control on different devices.	
 		
 		function startAJAX() {
-			console.log("Trapped AJAX call");
+			mobilize.log("Trapped AJAX call");
 					
             mobilize.getAJAX(url, onTemplateLoaded);
-			console.log("done");
+			mobilize.log("done");
 		}
 		        
         // Don't report this as internal error as it's most likely user error
