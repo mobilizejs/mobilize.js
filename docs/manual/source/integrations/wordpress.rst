@@ -150,6 +150,7 @@ Posts
       </div>
     </div>
 
+
 Pages
 -----
 
@@ -161,24 +162,25 @@ Pages
       </ul>
     </div>
 
-Posts
-----------
+Comments
+---------
 
-For content there should be element with class="entry-content".
-For the post content there should be element with id="comments".
-
-The content inside those tags are used as-is.
 
 .. code-block:: html
 
-    <div class="entry-content">
+	<li id="li-comment-4502" class="comment even thread-even depth-1">
+		<div id="comment-4502">
+		<div class="comment-author vcard">
+			<img class="avatar avatar-40 photo" width="40" height="40" src="mfabrik-comments_files/3e9dc491607f52141897a765eaab25e4.jpg" alt="">
+		<cite class="fn">
+		<span class="says">says:</span>
+		</div>
+		<div class="comment-meta commentmetadata">
+		<div class="comment-body">
+		<div class="reply"> </div>
+		</div>
+	</li>
 
-Pages
------------
-
-.. code-block:: html
-
-    <div id="comments>
 
 Advanced overrides
 --------------------

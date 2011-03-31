@@ -27,6 +27,41 @@ h1 {
 .entry-meta {
 	color: #666;
 	font-size: 85%;
+	line-height: 200%;
+}
+
+/* Comment list style fixes */
+
+/* Go from edge to edge */
+#comment-collapsible .ui-collapsible-content {
+	padding: 5px 0;
+}
+
+/* Float image and date on the same row */
+.commentlist li > div {	
+	padding-top: 5px;
+}
+
+.commentlist .ui-li-desc {
+	font-size: 14px;
+	white-space: normal;
+	margin: 0 0 1em 0;
+}
+
+.commentlist .timestamp {
+	font-size: 12px;
+	color: #aaa;
+}
+
+.commentlist li h3 {
+}
+
+.commentlist .ui-li-thumb {
+	position: relative;
+}
+
+#respond {
+	padding-top: 20px;
 }
 
 /* Fix required field asterisk to be on the same line as the field */
@@ -50,4 +85,10 @@ h1 {
 	padding: 10px 0;
 	text-align: center;
 	font-weight: lighter;
+}
+
+/* If the content itself has ul lists with links, make them little more touch friendly */
+
+.entry-content li {
+	line-height: 150%;
 }

@@ -134,26 +134,10 @@ var mobilizeWordpress = {
 		}
 		
 		content.append(postBody);
-
-        // The header is defined in to template.html(core.html)
-        var header;
-        header = $('<h3>');
-
-        //header = $("#mobile-body div[data-role=header]");
 		
-        // Add comment area which can be hidden.
-        // jQuery element which controls the collapsiple section
-        var collapsible = $('<div id="comment-collapsible" data-role="collapsible" data-collapsed="true">');
-        collapsible.appendTo(content);
-
-        // TODO: Get from page for localization
-        header.text("Comments");
-        header.appendTo(collapsible);
-
-        var comments = $("<p>");
-        comments.append($("#comments"));
-        comments.appendTo(collapsible);
-
+        
+        this.constructComments(content);
+        
     },
 	
 	/**
@@ -266,6 +250,113 @@ var mobilizeWordpress = {
         var headlines = this.constructBlogRollNavigation(title);
         content.append(headlines);	
     },
+    
+    
+    
+    /**
+     * Create mobilized version for comments
+     */
+    constructComments : function(content) {    	    	
+    	this.constructCommentCollapsible(content);    	
+    	this.styleComments(content);     	    	
+    },
+    
+    /**
+     * Make comments appear as touchable list.
+     */
+    styleComments : function(content) {
+    	
+    	var comments = $(".commentlist");
+  
+    	// Use touch list for comments
+    	comments.attr("data-role", "listview");
+  
+    	var comment = $(".comment");
+    	//comment.attr("role", "option");
+    	    	    	
+    	// Format comment content more suitable for touch devices
+    	comment.each(function() {
+    		    	    		        		
+    		var self = $(this);
+    		
+    		self.children("div")
+    		
+    		// Move images to be the first element
+    		var thumb = self.find("img.avatar");
+    		self.prepend(thumb);    		
+    		mobilize.log("Got thumbs:" + thumb.size());
+    		//thumb.remove();
+    		
+    		    		
+    		// Convert <cite> to touch friendly <h3>
+    		// XXX: Also remove <a> so that this list item doesn't
+    		// appear as a page opener. Later figure out what to do for 
+    		// author links.
+    		var author = self.find(".comment-author cite");
+    		
+    		var h3 = $("<h3>" + author.text() + "</h3>");
+    		thumb.after(h3);
+    		author.remove();    		
+    		
+    		// Make dates and times not clickable
+    		// Time on right hand, float
+    		var meta = self.find(".comment-meta");    		
+    		var side = $("<p>");
+    		
+    		// XXX: does not fit to screen side-by-side, cuts the author name
+    		side.addClass("timestamp");
+    		side.text(meta.text());    		
+    		meta.remove();        		
+    		h3.after(side);    		
+
+
+    	});
+    	
+    	// XXX: Currently cannot have embedded links in list content formatting (jQuery Mobile limitation)
+    	// Convert <a> to <span>
+    	$(".comment-body a").each(function() {
+    			var self = $(this);
+    			var text = self.text();
+    			self.after("<span>" + text + "</span>");
+    			self.remove();
+    	});
+    	
+    	
+        // This is not needed on mobile
+    	var title = $("#comments-title");
+    	comments.prepend("<li data-role='list-divider'>" + title.text() + "</li>");
+        title.remove();
+    	
+        // This is not needed on mobile
+        $(".says").remove();
+    	
+    },
+    
+    /**
+     * Put comments behind a collapsile element.
+     */
+    constructCommentCollapsible: function(content) {
+        // Add comment area which can be hidden.
+        // jQuery element which controls the collapsiple section
+        var collapsible = $('<div id="comment-collapsible" data-role="collapsible" data-collapsed="true">');
+        collapsible.appendTo(content);
+
+        // TODO: Get from page for localization
+        
+        // XXX: Does WP handle comments pagination? 
+        var count = $("li.comment").size();
+                      
+        // The header is defined in to template.html(core.html)
+        var header;
+        header = $('<h3>');              
+        header.text("Comments (" + count + ")");
+        header.appendTo(collapsible);
+
+        var comments = $("<p>");
+        comments.append($("#comments"));
+        comments.appendTo(collapsible);
+
+    },    
 
     /**
      * This is called by mobilize.js when jQuery Mobile internal transform is done.

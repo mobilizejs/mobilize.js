@@ -938,7 +938,6 @@ var mobilize = {
         
         mobilize.log("Constructing mobile <head>");
         
-		
 		var scriptsToLoad = [];		
                 
         var bundle, scriptURL;
@@ -1512,9 +1511,17 @@ var mobilize = {
      */
     transform : function() {
 		mobilize.log("Begin mobile transform");
-        mobilize.constructHead();            
-        mobilize.constructBody();
-        mobilize.completeTransform();
+		try {
+	        mobilize.constructHead();            
+	        mobilize.constructBody();
+	        mobilize.completeTransform();
+		} catch(e) {
+			mobilize.log("Exception during transform");
+			// In the case of our perfect transformation code fails, make sure that body should
+			// be visible
+			mobilize.restoreBody();			
+			throw e;
+		}
     },
     
     /**
