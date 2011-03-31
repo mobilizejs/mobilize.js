@@ -296,31 +296,21 @@ var mobilize = {
 		mobilize._bootstrap_called = true;
 		
 		var existingCookie = mobilize.readCookie("mobilize-mobile"); 
-
-                        
+                      
         if(!mobilize.isBrowserSupported() && !mobilize.options.forceMobilize) {
             mobilize.log("mobilize.js: browser is not supported");
             return;
         }			
 
+        // XXX: Clear this code
         // checkMobileBrowser() will set the cookie
-		
-        // If reloadOnMobile set, set cookie and reload to allow server do its magic
-        if( mobilize.options.reloadOnMobile && mobilize.checkMobileBrowser(mobilize.options)) {
-							
-		    var cookie = mobilize.readCookie("mobilize-mobile");
-			mobilize.log("reload on mobile check, got new cookie value:" + cookie + "  got old cookiea value:" + existingCookie);
-			
-            if (existingCookie != "1" && cookie == "1") {						
-				mobilize.log("Mobile cookie has changed. Server has asked us to reload in this situation (reloadOnMobile).");
-				mobilize.log("Refreshing page");                
-                window.location.reload();
-                return;
-            } 
-			
-			mobilize.log("Cookie already exists - continue with normal mobile flow");
-        }		
         
+        if(mobilize.checkReloadPage(existingCookie)) {
+        	// Page refresh toggled
+        	return;
+        }
+	
+      
         function startProcess() {
 			mobilize.log("startProcess")
             if(mobilize.checkMobileBrowser(mobilize.options)) {
@@ -335,7 +325,7 @@ var mobilize = {
         
         // TODO: Execute events which we can do before DOM model must be ready	
 		document.addEventListener("DOMContentLoaded", startProcess, false);
-		//startProcess();				
+			
     },
     
     /**
@@ -404,6 +394,46 @@ var mobilize = {
             mobilize.log_d("Found script source URL " + opts.baseURL);
         }
         
+    },
+    
+    /**
+     * Check if this client has not a mobile cookie set before.
+     * <p>
+     * Trigger page refresh if needed, now with cookie set.
+     * <p>
+     * @returns true if page refresh was triggered
+     */
+    checkReloadPage : function(existingCookie) {
+
+    	var isMobile = mobilize.checkMobileBrowser(mobilize.options);
+
+    	// true, false or null if not set
+	    var cookie = mobilize.readCookie("mobilize-mobile");
+
+		mobilize.log("reload on mobile check, got new cookie value:" + cookie + "  got old cookiea value:" + existingCookie);
+    	
+		if(!isMobile && cookie == null) {
+			// Desktop browser, first time arrival to the site
+			// Do not hit refresh unneededly
+			return false;
+		}
+				
+        // If reloadOnMobile set, set cookie and reload to allow server do its magic
+        if(mobilize.options.reloadOnMobile) {
+							
+        	// XXX: Make function to return cookie value for us directly from the check
+        	
+            if (existingCookie != cookie) {						
+				mobilize.log("Mobile cookie has changed. Server has asked us to reload in this situation (reloadOnMobile).");
+				mobilize.log("Refreshing page");                
+                window.location.reload();
+                return true;
+            } 
+			
+			mobilize.log("Cookie already exists - continue with normal mobile flow");
+        }		    	
+        
+        return false;    	    	
     },
     
     /** Parse domain url */
