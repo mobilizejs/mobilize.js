@@ -180,9 +180,15 @@ var mobilize = {
         /** 
          * Which HTML template to use for the mobile page 
          * <p>
-         * Extenders usually override this.
+         * Extenders may override this.
          */
         template : "templates/core.html",
+        
+        
+        /**
+         * In-line template used for jQuery Mobile page skeleton.
+         */
+        templateSource : '<div id="mobile-body"><div data-role="page"><div data-role="header"></div><div data-role="content"></div><div data-role="footer"></div></div></div>',
         
         /**
          * mobilize.js version. 
@@ -858,6 +864,9 @@ var mobilize = {
         
         mobilize.cleanHead();
         
+        // XXX: Makes page flicked. Need to come up something smarter
+        mobilize.restoreBody();
+        
         mobilize.loadMobileResources();
 
     },
@@ -929,18 +938,6 @@ var mobilize = {
         
         mobilize.log("Constructing mobile <head>");
         
-        function onJSComplete() {
-            jsCompleteCount++;
-            
-            if(jsCompleteCount == 1) {
-                // Assume jQuery loaded
-            }
-            
-            // Proceed to tempalte transform
-            if(jsCompleteCount >= cdn.javascriptBundles.length) {                            
-
-            }                        
-        }
 		
 		var scriptsToLoad = [];		
                 
@@ -959,8 +956,9 @@ var mobilize = {
 		function loadNextScript() {
 			if(scriptsToLoad.length == 0) {
 				mobilize.log("All scripts loaded");
-				// All done -> Foooorwaaaard
-                self.loadMobileTemplate();				
+				// All done -> Start processing the page
+				// when we have all Javascript code we want to have
+                self.prepareMobileTemplate();				
 			} else {
 				
 				var entry = scriptsToLoad.pop();
@@ -1382,9 +1380,51 @@ var mobilize = {
     
     
     /**
+     * Make body visible again after unnecessary styles have been cleared up.
+     * <p>
+     * This in the case the loading fails we don't show a blank white page.
+     */
+    restoreBody : function() {
+    	try {
+    		document.body.style.display = "block";
+    	} catch(e) {
+    	}
+    },
+    
+    
+    /**
+     * Construct UI framework specific 
+     * <p>
+     * This can be achieved by
+     * <p>
+     * <ul>
+     * <li>Dynamically loading a new template from the server using AJAX
+     * <li>Using mobile template embedded in mark-up
+     * <li>Construct template in-fly using jQuery
+     * </ul>
+     * XXX: Hard-coded for the last option for now after having issues with Android and template loading (see blow).
+     */
+    prepareMobileTemplate : function() {
+    
+    	mobilize.loadInternalTemplate();
+    	
+    	// Now we have template in ready, follow to page transform
+    	mobilize.transform();
+    },
+    
+    /**
+     * Use a template supplied with Javascript source.
+     */
+    loadInternalTemplate : function() {
+    	 $("body").append("<div id='mobile-template-holder'>" + mobilize.cdnOptions.templateSource + "</div>");     	
+    },
+   
+    /**
      * Start loading mobile template to DOM tree.
-     * 
+     * <p>
      * Check possible mobile template cache places.
+     * <p>
+     * XXX: Currently unused. See above.
      */
     loadMobileTemplate : function() {
         
@@ -1446,12 +1486,6 @@ var mobilize = {
 		startAJAX();
     },
     
-    /**
-     * Put mobile template to DOM tree
-     */
-    prepareMobileTemplate : function() {
-        
-    },
     
     /**
      * Get rid of mobile template
