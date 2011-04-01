@@ -92,3 +92,23 @@ h1 {
 .entry-content li {
 	line-height: 150%;
 }
+
+/* Code example scroll magic */
+.entry-content pre {
+}
+
+.entry-content .pre-scroll-wrapper {
+	background: #eee;	
+	color: black;
+	bordeR: 1px inset #888;
+	padding: 5px;
+	margin: 0px;
+	overflow: visible;
+	
+}
+
+.entry-content .pre-scroll-wrapper pre {
+	overflow: visible;
+	margin: 0;
+	padding: 5px;
+}

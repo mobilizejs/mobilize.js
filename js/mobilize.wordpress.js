@@ -67,6 +67,8 @@ var mobilizeWordpress = {
 		// These elements are shared between different page types
         this.constructHeader();
         this.constructFooter();
+        
+        this.makePreScrollable();
 
     },
 
@@ -284,7 +286,6 @@ var mobilizeWordpress = {
     		// Move images to be the first element
     		var thumb = self.find("img.avatar");
     		self.prepend(thumb);    		
-    		mobilize.log("Got thumbs:" + thumb.size());
     		//thumb.remove();
     		
     		    		
@@ -386,7 +387,24 @@ var mobilizeWordpress = {
         var y = event.target.offsetTop;
         window.scrollTo(x, y);
         mobilize.log(event);
+    },
+    
+    
+    /**
+     * Make pre elements to have horizontal scroll.
+     * <p>
+     * Do this only if we have mobile.scrollview widget installed.
+     */
+    makePreScrollable : function() {
+    	if(!$.mobile.scrollview) {
+    		mobilize.log("No scrollview widget loaded - no horizontal support installed");
+    	}
+    	
+    	mobilize.log("Creating horizontal elements");
+    
+    	mobilize.makeHorizontalScroll($(".entry-content pre"))
     }
+           
 };
 
 mobilize.extend(mobilize, mobilizeWordpress);

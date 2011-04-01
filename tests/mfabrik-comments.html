@@ -52,11 +52,22 @@ var highslide_settings = {
 
 <body class="single single-post postid-1149 single-format-standard logged-in admin-bar">
 	
-	        <script type="text/javascript">
+	    <script type="text/javascript">
          // Don't start executing mobilize whilst loaading JS file, but wait
          // for our manual (development commands)
          window.mobilizeAutoload = false;
-        </script>
+		 
+		 // Make sure sidescroll function is there
+         function mobilizeCustomInit() {
+                // Add your own Javascript layer to load list
+                // in mobile mode. 
+                // push() is array append function in JS.
+                // NOTE: Relative paths may have not luck here.
+                mobilize.cdnOptions.javascriptBundles.push("js/jquery.easing.js");
+				mobilize.cdnOptions.javascriptBundles.push("js/jquery.mobile.scrollview.js");
+				mobilize.cdnOptions.cssBundles.push("css/jquery.mobile.scrollview.css");
+          }        
+		</script>
   
         <script class="mobilize-js-source" 
                 type="text/javascript" 

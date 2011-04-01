@@ -1731,6 +1731,8 @@ var mobilize = {
         {
             mobilize.onCompleted();
         }
+        
+        
     },
     
     /**
@@ -1798,12 +1800,13 @@ var mobilize = {
     },
     
     /** Utility for defloating images.
+     * <p>
      * Also adds default onclick handler to show the image.
-     * 
+     * <p>
      * usage:
      *     mobilize.defloat(document.getElementById("img-id"))
      *     mobilize.defloat($("#img-id")[0])
-     * 
+     * <p>
      * @param image: Image element
      */
     defloat : function(image)
@@ -1823,7 +1826,32 @@ var mobilize = {
                 window.open(image.src);
             };
         }
+    },
+    
+    /**
+     * Make selected jQuery elements to have horizontal scroll.
+     * <p>
+     * Good for code examples e.g. nowrap elements which do not 
+     * fit to mobile screen. jQuery Mobile does not allow 
+     * hscroll by default.
+     */
+    makeHorizontalScroll : function(selection) {
+    	var opts = {
+    			direction : "x",
+    			showScrollBars: true
+    	};
+    	
+    	selection.each(function() {
+    		var inner = $(this).wrap("<div class='pre-scroll-wrapper' />");
+    		var wrapper = inner.parent();
+    		wrapper.scrollview(opts);
+
+    		// We need to override styles set by scrollview() here, because 
+    		// <pre> width is handled little bit specially
+    		inner.css({"overflow-x" : "visible", "overflow-y" : "visible" });
+    	});
     }
+    
 };
 
 // ================== Hand picked utilies from Ion project
