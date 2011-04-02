@@ -1841,15 +1841,132 @@ var mobilize = {
     			showScrollBars: true
     	};
     	
+    	var widgets = [];
+    	
+    	var timeoutHandle = null;
+    	
+    	function hideScrollArrows() {
+    		timeoutHandle = null;
+    		$(".scroll-arrow").fadeOut(1000);
+    	}
+    	    	
+    	
+    	/**
+    	 * Make scroll hints visible for all touch-scroll areas
+    	 * <p>
+    	 * Manually calculate if the area can be scrolled left or right.
+    	 * Then calculate hint arrow position there and make it visible.
+    	 */
+    	function showScrollArrows() {
+    		
+    		//console.log("Show scroll arrows");
+    		
+    		
+    		widgets.forEach(function(w) {
+    		
+    			// Calculate arrow positions
+        		var attrs = {
+        				"z-index" : 100,
+        				position : "absolute",
+        				opacity : 0.8,
+        				display : "block"
+        		};
+
+    			var elem = w._$clip;
+        		var pos = w.getScrollPosition();
+        		
+        		var arrowHeight = 20;
+        		var midY = elem.offset().top + elem.height()/2 - arrowHeight/2;
+        		var clipWidth = w._$clip.width();
+        		
+        		//console.log(elem.offset());
+        		// console.log(pos.x + " " + midY);
+        		
+        		// Show left handle
+        		if(pos.x > 0) {
+        			var arrow = elem.find(".left-arrow");
+        			
+        			if(arrow.size() == 0) {
+        				mobilize.log("Scroll-area hint left arrow gone missing :(");
+        			}
+        			       
+        			arrow.offset({top:midY, left:16}); // XXX: Something inserts -16 here
+        			arrow.stop(true, true); // Clear pending fade out anims
+        			arrow.css(attrs);
+        		}
+        		
+        		// How many pixels of grey area we have at the right end before displaying the errors
+        		var tolerance = 10;
+        		// XXX: patch jquery.mobile.scrollview to expose this info
+        		var maxPos = w._$view.get(0).scrollWidth;
+        		
+        		//console.log(w._hTracker.pos + " " + clipWidth + " " + maxPos);
+        		if(w._hTracker.pos + tolerance + clipWidth < maxPos) {
+        			var arrow = elem.find(".right-arrow");
+        			
+        			if(arrow.size() == 0) {
+        				mobilize.log("Scroll-area hint right arrow gone missing :(");
+        			}
+        			
+        			
+        			var rightMargin = 16;
+        			
+        			var offset = {top:midY, left:elem.offset().left + elem.width() - rightMargin };
+        			arrow.offset(offset);
+        			arrow.stop(true, true); // Clear pending fade out anims
+        			arrow.css(attrs);
+        		}
+    			
+    		});
+    		
+    		if(timeoutHandle != null) {
+    			clearTimeout(timeoutHandle);
+    		}
+    		    		
+    		// Make sure we have something removing the arrows 
+    		timeoutHandle = setTimeout(hideScrollArrows, 1500);
+    	}
+    	
+    	
+    	// Install wrapper divs and handlers
     	selection.each(function() {
     		var inner = $(this).wrap("<div class='pre-scroll-wrapper' />");
     		var wrapper = inner.parent();
     		wrapper.scrollview(opts);
 
+    		var widget = wrapper.data("scrollview"); 
+    		widgets.push(widget);
+    		
     		// We need to override styles set by scrollview() here, because 
     		// <pre> width is handled little bit specially
     		inner.css({"overflow-x" : "visible", "overflow-y" : "visible" });
+    		
+    	    		
+    		var leftArrow = $("<div class='scroll-arrow left-arrow'>&#x25C0;</div>");
+    		
+    		// YES, I KNOW THESE TRIANGLES ARE DIFFERENT SIZE FOR SOME FSCKING REASON
+    		// var leftArrow = $("<div class='scroll-arrow left-arrow'> &#x25C0;&#x25B6;</div>");
+    		leftArrow.hide();
+    		wrapper.append(leftArrow);
+
+    		var rightArrow = $("<div class='scroll-arrow right-arrow'>&#x25B6;</div>");
+    		//var rightArrow = $("<div class='scroll-arrow right-arrow'>cccccccc</div>");
+    		
+    		rightArrow.hide();
+    		wrapper.append(rightArrow);
+    		
+    		
+        	// When user uses the touch scroll bars
+        	wrapper.bind("scrollstart", showScrollArrows);
+        	wrapper.bind("scrollmove", showScrollArrows);
     	});
+    	
+    	
+    	// Handle page scrolling specially 
+    	$(window).scroll(function() {
+    		showScrollArrows();    		
+    	});
+    
     }
     
 };

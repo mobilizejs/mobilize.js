@@ -112,3 +112,15 @@ h1 {
 	margin: 0;
 	padding: 5px;
 }
+
+/* Scroll hinter arrows */
+.scroll-arrow {
+	color: white;
+	font-weight: bold;
+	width: 30px;
+	height: 40px;
+	text-align: center;
+	text-shadow: 0 0 5px black;
+	font-size: 26px;
+	opacity: 0.8;
+}

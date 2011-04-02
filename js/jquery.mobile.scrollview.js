@@ -282,6 +282,7 @@ jQuery.widget( "mobile.scrollview", jQuery.mobile.widget, {
 
 	_handleDragStart: function(e, ex, ey)
 	{
+		
 		// Stop any scrolling of elements in our parent hierarcy.
 		$.each(this._getScrollHierarchy(),function(i,sv){ sv._stopMScroll(); });
 		this._stopMScroll();
@@ -352,6 +353,11 @@ jQuery.widget( "mobile.scrollview", jQuery.mobile.widget, {
 		if (this.options.eventType == "mouse" || this.options.delayedClickEnabled)
 			e.preventDefault();
 		e.stopPropagation();
+		
+		// XXX: Mikko
+		// Inform the clip element that scroll process has started
+		//alert("xxx");
+		this.element.trigger("scrollstart", e);
 	},
 
 	_propagateDragMove: function(sv, e, ex, ey, dir)
@@ -493,6 +499,9 @@ jQuery.widget( "mobile.scrollview", jQuery.mobile.widget, {
 
 		// e.preventDefault();
 		
+		// XXX: Mikko
+		this.element.trigger("scrollmove", e);
+		
 		return false;
 	},
 
@@ -532,9 +541,14 @@ jQuery.widget( "mobile.scrollview", jQuery.mobile.widget, {
 				.trigger("click");
 		}
 
+		// XXX: Mikko
+		// Inform the clip element that scroll process has started
+		this._$clip.trigger("scrollend", e);
+		
 		// If a view scrolled, then we need to absorb
 		// the event so that links etc, underneath our
 		// cursor/finger don't fire.
+				
 
 		return this._didDrag ? false : undefined;
 	},
