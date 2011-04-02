@@ -963,7 +963,7 @@ var mobilize = {
 				var entry = scriptsToLoad.pop();
 				var bundle = entry[0];
 				var url = entry[1];
-				mobilize.log("Loading script " + url);				
+				mobilize.log("Loading next script " + url);				
 				mobilize.loadScript(bundle, url, loadNextScript);				
 			}
 		}
@@ -1141,20 +1141,25 @@ var mobilize = {
 	loadScriptWithTag : function(bundle, url, callback) {
         
         // Using script tag injection to have JS debugger show the source
-        mobilize.log("injecting script tag to load:" + url);
+        mobilize.log("Injecting <script> tag to load:" + url);
         var script = document.createElement("script");
         script.type = "text/javascript";
         script.setAttribute("src", url);
         script.src = url;
-        script.onerror = function(e){
-            mobilize.log( String(e) );
+        
+        script.onerror = function(e, a, b, c){
+        	mobilize.log("Script contained errors");
+        	mobilize.log(e);
+        	mobilize.log(a);
+        	mobilize.log(b);
+        	mobilize.log(c);
         };
         
         // From jQuery
         //var done = false;
         script.onload = script.onreadystatechange = function(){
             
-            mobilize.log("script onload for " + url);
+            mobilize.log("Script onload handler for " + url);
             
             if ( !this.done && (!this.readyState ||
                     this.readyState === "loaded" || this.readyState === "complete") ) {
@@ -1168,7 +1173,10 @@ var mobilize = {
                 if ( document.head && script.parentNode ) {
                     document.head.removeChild( script );
                 }*/
+            } else {
+            	mobilize.log("Interesting script state:" + this.readyState);
             }
+            
         };
         
         var head = document.getElementsByTagName("head")[0];

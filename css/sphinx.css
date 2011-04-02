@@ -39,8 +39,35 @@
 
 /* Try be smart with fixed with code examples */
 
-.highlight {
-	overflow-x: auto;
-	overflow-y: visible;
+.content pre {
 }
+
+.content .pre-scroll-wrapper {
+	background: #eee;	
+	color: black;
+	bordeR: 1px inset #888;
+	padding: 5px;
+	margin: 0px;
+	overflow: visible;
+	
+}
+
+.content .pre-scroll-wrapper pre {
+	overflow: visible;
+	margin: 0;
+	padding: 5px;
+}
+
+/* Scroll hinter arrows */
+.scroll-arrow {
+	color: white;
+	font-weight: bold;
+	width: 30px;
+	height: 40px;
+	text-align: center;
+	text-shadow: 0 0 5px black;
+	font-size: 26px;
+	opacity: 0.8;
+}
+
  

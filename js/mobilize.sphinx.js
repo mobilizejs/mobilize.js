@@ -53,6 +53,8 @@ var mobilizeSphinx= {
 		
 		// Just remove this for now
 		$("#indices-and-tables").remove();
+		
+		this.makePreScrollable();
         
     },
 	
@@ -194,7 +196,23 @@ var mobilizeSphinx= {
 		// remove old bottomnav
 		
 		$(".bottomnav").remove();
-	 }
+	 },
+	 
+    /**
+     * Make pre elements to have horizontal scroll.
+     * <p>
+     * Do this only if we have mobile.scrollview widget installed.
+     */
+    makePreScrollable : function() {
+    	if(!$.mobile.scrollview) {
+    		mobilize.log("No scrollview widget loaded - no horizontal support installed");
+    	}
+    	
+    	mobilize.log("Creating horizontal elements");
+    
+    	mobilize.makeHorizontalScroll($(".content pre"))
+    }
+         	 
 };
 
 mobilize.extend(mobilize, mobilizeSphinx);
