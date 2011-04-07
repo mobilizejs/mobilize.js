@@ -4080,7 +4080,16 @@ $.widget( "mobile.listview", $.mobile.widget, {
 		// tapping the whole LI triggers click on the first link
 		$list.delegate( "li", "click", function(event) {
 			if ( !$( event.target ).closest( "a" ).length ) {
-				$( this ).find( "a" ).first().trigger( "click" );
+				
+				var a = $( this ).find( "a" );				
+			    var href = a.attr("href");
+				
+				if(href && href[0] == '#') {
+				    window.location.hash = href;	
+					return true;
+				} else {
+				    a.first().trigger( "click" );	
+				}				
 				return false;
 			}
 		});

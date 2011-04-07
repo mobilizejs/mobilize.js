@@ -51,6 +51,7 @@ mobilize.extend(mobilize,
         mobilize.log("Disabling jQuery Mobile autoInitialize, was:" + $.mobile.autoInitialize);
         $.mobile.autoInitialize = false;
         $.mobile.ajaxEnabled = false;
+		$.mobile.hashListeningEnabled = false; // Don't try to load page on internal link click
 
         mobilize.jQueryMobileLoaded = true;
         mobilize.prepareFinish();

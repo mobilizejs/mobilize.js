@@ -37,6 +37,15 @@
     line-height: 2em;	
 }
 
+/* Don't make anchor headings look stupid with jQ mobile */
+
+.content h1 a.ui-link,
+.content h2 a.ui-link,
+.content h3 a.ui-link {
+	  text-decoration: none;
+	  color: black;
+}
+
 /* Try be smart with fixed with code examples */
 
 .content pre {
