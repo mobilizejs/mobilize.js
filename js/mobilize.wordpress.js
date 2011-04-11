@@ -272,8 +272,9 @@ var mobilizeWordpress = {
   
     	// Use touch list for comments
     	comments.attr("data-role", "listview");
-  
-    	var comment = $(".comment");
+        //comments.attr("data-theme", "b");
+    	
+		var comment = $(".comment");
     	//comment.attr("role", "option");
     	    	    	
     	// Format comment content more suitable for touch devices
