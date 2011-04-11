@@ -3,7 +3,7 @@
 # Simple script to make App Engine releases (trunk, tagged)
 # Packs JS, makes documentation, uploads to the cloud.
 #
-# Usage. ./release-trunk.sh ~/path/to/cdn/application [google account name] [version]
+# Usage. ./deploy.bash ~/path/to/cdn/application [google account name] [version]
 #
 
 if [ "$1" == "" ] ; then
