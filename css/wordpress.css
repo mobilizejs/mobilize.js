@@ -28,6 +28,12 @@ h1 {
 	color: #666;
 	font-size: 85%;
 	line-height: 200%;
+	text-shadow: none;
+}
+
+.entry-meta a {
+	text-shadow: none;
+	font-weight: normal;
 }
 
 /* Comment list style fixes */
@@ -78,6 +84,11 @@ h1 {
 
 #commentform .required {
 	color: red;
+}
+
+/* Notify comments via email...  checkbox. By default the text is too wide and jQ mob cannot make two row buttons  */
+#commentform .ui-checkbox {
+	font-size: 9px;
 }
 
 /* Make footer to look little bit more sane */

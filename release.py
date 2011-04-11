@@ -27,6 +27,7 @@ import shutil
 import sys
 import tempfile
 
+# What our "whole package" includes
 CORE_MOBILE_JS = ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js", "jquery.easing.js", "jquery.mobile.scrollview.js"]
 
 # Define different user usabble clouad service bundles
@@ -43,7 +44,7 @@ BUNDLES = [
         "name" : "wordpress",
         "bootstrap_js" : ["mobilize.js", "mobilize.wordpress.js", "mobilize.auto.js"],
         "mobile_js" : CORE_MOBILE_JS,
-        "mobile_css" : ["jquery.mobile.css", "wordpress.css"],        
+        "mobile_css" : ["jquery.mobile.css", "jquery.mobile.scrollview.css", "wordpress.css"],        
         "templates" : ["wordpress.html"]
     },
     
@@ -51,7 +52,7 @@ BUNDLES = [
         "name" : "sphinx",
         "bootstrap_js" : ["mobilize.js", "mobilize.sphinx.js", "mobilize.auto.js"],
         "mobile_js" : CORE_MOBILE_JS,
-        "mobile_css" : ["jquery.mobile.css", "sphinx.css"],        
+        "mobile_css" : ["jquery.mobile.css", "jquery.mobile.scrollview.css", "sphinx.css"],        
         "templates" : ["sphinx.html"]
     },
 
