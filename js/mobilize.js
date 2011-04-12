@@ -1823,6 +1823,9 @@ var mobilize = {
      * @param image: Image element
      */
     defloat : function(image) {
+		
+		mobilize.log("Defloating img:" + image);
+		
         // jslint complains: ['float'] is better written in dot notation, but required for YUI Compressor to work
         image.style["float"] = "none"; // jslint:ignore
         
@@ -1839,6 +1842,17 @@ var mobilize = {
             };
         }
     },
+	
+	/**
+	 * Make content images mobile friendly.
+	 * <p>
+	 * @param selection: jQuery selection of content images
+	 */
+	processContentImages : function(selection) {
+		$(selection).each(function() {
+			mobilize.defloat(this);
+		});
+	},
     
     /**
      * Make selected jQuery elements to have horizontal scroll.

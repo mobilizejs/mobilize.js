@@ -137,9 +137,13 @@ var mobilizeSphinx= {
      */
     constructText : function() {
     
+	    var origContent = $(".content");
+	
         // Move box on the left hand to body first
-        this.content.append($(".content"));
+        this.content.append(origContent);
 		         
+	    // Defloat images, install clickers
+        mobilize.processContentImages(origContent.find("img"));
     },
     
     /**
