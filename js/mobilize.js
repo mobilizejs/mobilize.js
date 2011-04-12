@@ -201,6 +201,8 @@ var mobilize = {
          * @private
          */
         version : "XXX" // $$VERSION_LINE
+        
+		
     },
 
     /** Async flag indicating that jQuery Mobile has been loaded */
@@ -1730,16 +1732,19 @@ var mobilize = {
         
         // Execute handlers which can be run
         // after jQuery Mobile has completed its internal transforms
-        mobilize.log("Triggering mobilizefinish");
-        //$(document).trigger("mobilizefinish");
+        mobilize.log("Finalizing page mobilization");
 
         mobilize.bindEventHandlers();
         
+		// Call event handlers
+				
         if(mobilize.onCompleted) 
         {
             mobilize.onCompleted();
         }
         
+		mobilize.log("Calling mobilizefinish event handlers");
+        $(window).trigger("mobilizefinish");
         
     },
     
@@ -1817,8 +1822,7 @@ var mobilize = {
      * <p>
      * @param image: Image element
      */
-    defloat : function(image)
-    {
+    defloat : function(image) {
         // jslint complains: ['float'] is better written in dot notation, but required for YUI Compressor to work
         image.style["float"] = "none"; // jslint:ignore
         
@@ -1844,89 +1848,114 @@ var mobilize = {
      * hscroll by default.
      */
     makeHorizontalScroll : function(selection) {
-    	var opts = {
+    	
+		var opts = {
     			direction : "x",
     			showScrollBars: true
     	};
     	
     	var widgets = [];
-    	
+    			
     	var timeoutHandle = null;
-    	
-    	function hideScrollArrows() {
-    		timeoutHandle = null;
-    		$(".scroll-arrow").fadeOut(1000);
-    	}
+    			
+		// Place arrow images on the top of their respective scrollable elements 
+		function calculateArrorPositions() {
+
+            widgets.forEach(function(w) {
+            
+			    console.log("Calculating hint arrow positions for scroll widget:" + w);
+			    
+                // Calculate arrow positions
+                var attrs = {
+                    "z-index" : 100,
+                    position : "absolute",
+                    opacity : 0.8,
+                };
+
+                var elem = w._$clip;
+                
+                var arrowHeight = 20;
+                var midY = elem.height()/2 - arrowHeight/2;
+                
+                var arrow = elem.find(".left-arrow");   
+				
+			    if(arrow.size() == 0) {
+                    mobilize.log("Scroll-area hint left arrow gone missing :(");
+                }                           
+				             
+                arrow.offset({top:midY, left:16}); // XXX: Something inserts -16 here
+                arrow.css(attrs);
+				
+				w.leftArrow = arrow;
+
+                var arrow = elem.find(".right-arrow");
+
+                if(arrow.size() == 0) {
+                    mobilize.log("Scroll-area hint right arrow gone missing :(");
+                }                           
+
+				var rightMargin = 40;                    
+                var offset = {top:midY, left:elem.offset().left + elem.width() - rightMargin };
+                arrow.offset(offset);
+                arrow.css(attrs);
+                w.rightArrow = arrow;
+                
+                //console.log(w._hTracker.pos + " " + clipWidth + " " + maxPos);
+			});	
+		}
+
+        function hideScrollArrows() {
+            timeoutHandle = null;
+            $(".scroll-arrow").fadeOut(1000);
+        }
     	    	
     	
     	/**
     	 * Make scroll hints visible for all touch-scroll areas
     	 * <p>
     	 * Manually calculate if the area can be scrolled left or right.
-    	 * Then calculate hint arrow position there and make it visible.
+    	 * Make arrow image visible accordingly.
     	 */
     	function showScrollArrows() {
     		
-    		//console.log("Show scroll arrows");
-    		
-    		
-    		widgets.forEach(function(w) {
-    		
-    			// Calculate arrow positions
-        		var attrs = {
-        				"z-index" : 100,
-        				position : "absolute",
-        				opacity : 0.8,
-        				display : "block"
-        		};
+			var arrows = $(".scroll-arrow");						
+    		arrows.stop(true, true); // Clear pending fade out anims
+    					
+			widgets.forEach(function(w) {
+								
+                var elem = w._$clip;
+                var pos = w.getScrollPosition();
+				
+				console.log("Checking visibility for scroll elem in:" + elem.offset().top);
+				console.log("Scroll pos" + pos.x);
+							
+ 	            // Set left handle position
+                if(pos.x > 0) {
+                    var arrow = w.leftArrow;   					                 					
+					arrow.show()
+                }
+				
+				// How many pixels of grey area we have at the right end before displaying the errors
+                var tolerance = 10;
+                // XXX: patch jquery.mobile.scrollview to expose this info
+                var maxPos = w._$view.get(0).scrollWidth;
 
-    			var elem = w._$clip;
-        		var pos = w.getScrollPosition();
-        		
-        		var arrowHeight = 20;
-        		var midY = elem.offset().top + elem.height()/2 - arrowHeight/2;
-        		var clipWidth = w._$clip.width();
-        		
-        		//console.log(elem.offset());
-        		// console.log(pos.x + " " + midY);
-        		
-        		// Show left handle
-        		if(pos.x > 0) {
-        			var arrow = elem.find(".left-arrow");
-        			
-        			if(arrow.size() == 0) {
-        				mobilize.log("Scroll-area hint left arrow gone missing :(");
-        			}
-        			       
-        			arrow.offset({top:midY, left:16}); // XXX: Something inserts -16 here
-        			arrow.stop(true, true); // Clear pending fade out anims
-        			arrow.css(attrs);
-        		}
-        		
-        		// How many pixels of grey area we have at the right end before displaying the errors
-        		var tolerance = 10;
-        		// XXX: patch jquery.mobile.scrollview to expose this info
-        		var maxPos = w._$view.get(0).scrollWidth;
-        		
-        		//console.log(w._hTracker.pos + " " + clipWidth + " " + maxPos);
-        		if(w._hTracker.pos + tolerance + clipWidth < maxPos) {
-        			var arrow = elem.find(".right-arrow");
-        			
-        			if(arrow.size() == 0) {
-        				mobilize.log("Scroll-area hint right arrow gone missing :(");
-        			}
-        			
-        			
-        			var rightMargin = 16;
-        			
-        			var offset = {top:midY, left:elem.offset().left + elem.width() - rightMargin };
-        			arrow.offset(offset);
-        			arrow.stop(true, true); // Clear pending fade out anims
-        			arrow.css(attrs);
-        		}
-    			
-    		});
-    		
+                var clipWidth = w._$clip.width();
+
+                console.log("pos:" + w._hTracker.pos);
+				console.log("clipWidth:" + clipWidth);   
+
+                console.log("x:" + (w._hTracker.pos + tolerance + clipWidth));   
+                console.log("Maxpos:" + maxPos);
+				
+                if(w._hTracker.pos + tolerance + clipWidth < maxPos) {
+                    var arrow = w.rightArrow;  
+                    console.log("Right visible");
+                    arrow.show();
+                }
+
+            });
+						
     		if(timeoutHandle != null) {
     			clearTimeout(timeoutHandle);
     		}
@@ -1934,21 +1963,37 @@ var mobilize = {
     		// Make sure we have something removing the arrows 
     		timeoutHandle = setTimeout(hideScrollArrows, 1500);
     	}
+
+	    var lastShowRefresh = new Date().getTime();
+	    
+		// Scroll functions have very high frequence call rate
+		// JS functions should not spend too much time there
+		// or UI becomes unresponsive. Limit the rate
+		// of our calculation calls so that UI remains
+		// responsive.
+	    function rateLimit() {
+	        // Limit rate of calls
+	        var now = new Date().getTime();
+	        if(now - lastShowRefresh > 250) {
+	            showScrollArrows();
+				lastShowRefresh = now;
+	        }               
+	    }
     	
     	
-    	// Install wrapper divs and handlers
+    	// Install wrapper divs and arrow elements
     	selection.each(function() {
     		var inner = $(this).wrap("<div class='pre-scroll-wrapper' />");
     		var wrapper = inner.parent();
     		wrapper.scrollview(opts);
 
+            // Add jQuery Mobile widget to our global page list of managed scroll widgets
     		var widget = wrapper.data("scrollview"); 
     		widgets.push(widget);
     		
     		// We need to override styles set by scrollview() here, because 
     		// <pre> width is handled little bit specially
-    		inner.css({"overflow-x" : "visible", "overflow-y" : "visible" });
-    		
+    		inner.css({"overflow-x" : "visible", "overflow-y" : "visible" });    		
     	    		
     		var leftArrow = $("<div class='scroll-arrow left-arrow'>&#x25C0;</div>");
     		
@@ -1965,15 +2010,23 @@ var mobilize = {
     		
     		
         	// When user uses the touch scroll bars
-        	wrapper.bind("scrollstart", showScrollArrows);
-        	wrapper.bind("scrollmove", showScrollArrows);
+        	wrapper.bind("scrollstart", rateLimit);        	
+			wrapper.bind("scrollmove", rateLimit);
     	});
-    	
-    	
+		
+    	    	
     	// Handle page scrolling specially 
     	$(window).scroll(function() {
-    		showScrollArrows();    		
+    		rateLimit();    		
     	});
+		
+		// Do not calculate positions until jQuery Mobile magic is done
+		// and we have final element positions
+		$(window).bind("mobilizefinish", function() {
+			mobilize.log("Setting up scrollview hint arrow positions");
+			// Need to defer this call to have layout
+			setTimeout(calculateArrorPositions, 5);
+		});
     
     }
     
