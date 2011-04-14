@@ -1862,17 +1862,18 @@ var mobilize = {
 			// TODO: Use stylesheet?
 			image.setAttribute("width", "100%");
 			
-			// Set image click handler if 
-			// image is not inside a link
 			var $image = $(image);
-			var a = $image.parents("a");
 			
-			if (a.size() == 0) {
-				// Create zoomed image opener				
-				$image.click(function(){
-					window.open(image.src);
-				});
-			}
+			$image.click(function(){
+			     var a = $image.parents("a");
+                // Set image click handler if 
+                // image is not inside a link           
+			     if (a.size() == 0) {
+				 	alert("xxx");
+				 	window.open(image.src);
+				 }
+			});
+			
 		}
 		
 		// Image is loaded
@@ -1993,8 +1994,8 @@ var mobilize = {
                 var elem = w._$clip;
                 var pos = w.getScrollPosition();
 				
-				console.log("Checking visibility for scroll elem in:" + elem.offset().top);
-				console.log("Scroll pos" + pos.x);
+				//console.log("Checking visibility for scroll elem in:" + elem.offset().top);
+				//console.log("Scroll pos" + pos.x);
 							
  	            // Set left handle position
                 if(pos.x > 0) {
@@ -2009,15 +2010,14 @@ var mobilize = {
 
                 var clipWidth = w._$clip.width();
 
-                console.log("pos:" + w._hTracker.pos);
-				console.log("clipWidth:" + clipWidth);   
-
-                console.log("x:" + (w._hTracker.pos + tolerance + clipWidth));   
-                console.log("Maxpos:" + maxPos);
+                //console.log("pos:" + w._hTracker.pos);
+				//console.log("clipWidth:" + clipWidth);   
+                //console.log("x:" + (w._hTracker.pos + tolerance + clipWidth));   
+                //console.log("Maxpos:" + maxPos);
 				
                 if(w._hTracker.pos + tolerance + clipWidth < maxPos) {
                     var arrow = w.rightArrow;  
-                    console.log("Right visible");
+                    //console.log("Right visible");
                     arrow.show();
                 }
 
