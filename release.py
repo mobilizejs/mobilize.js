@@ -28,7 +28,7 @@ import sys
 import tempfile
 
 # What our "whole package" includes
-CORE_MOBILE_JS = ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js", "jquery.easing.js", "jquery.mobile.scrollview.js"]
+CORE_MOBILE_JS = ["jquery.js", "mobilize.onjq.js", "jquery.mobile.js", "jquery.easing.js", "jquery.mobile.scrollview.js", "mobitube.js"]
 
 # Define different user usabble clouad service bundles
 BUNDLES = [

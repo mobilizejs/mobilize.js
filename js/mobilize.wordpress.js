@@ -69,6 +69,10 @@ var mobilizeWordpress = {
         this.constructFooter();
         
         this.makePreScrollable();
+		
+		var preparedContent = $("#mobile-body div[data-role=content]");
+		this.processContentImages(preparedContent);
+		this.processContentVideos(preparedContent);
 
     },
 

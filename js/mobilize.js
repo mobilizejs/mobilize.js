@@ -1853,6 +1853,16 @@ var mobilize = {
 			mobilize.defloat(this);
 		});
 	},
+	
+	/**
+	 * Convert videos to mobile format.
+	 * <p> 
+	 * @param {Object} selection jQuery selection
+	 */
+	processContentVideos : function(selection) {
+		var tuber = mobitube(jQuery);		
+		tuber.process(selection);
+	},
     
     /**
      * Make selected jQuery elements to have horizontal scroll.
