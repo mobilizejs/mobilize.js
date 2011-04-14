@@ -92,8 +92,14 @@ var mobilize = {
          * 1. Sets cookie
          * 2. Reloads page
          */
-        reloadOnMobile : false
+        reloadOnMobile : false,
+		
+		/**
+		 * Min. width in pixels before content image processing algos are appliad.
+		 */
+		minImageProcessingWidth : 100,
         
+		
     },
     
     /**
@@ -1823,24 +1829,61 @@ var mobilize = {
      * @param image: Image element
      */
     defloat : function(image) {
+				
+		if(!image.width) {
+			width = null;;
+		} else {
+			width = image.width;
+		}
+		mobilize.log("Defloating img:" + image + " width:" + image.width);
 		
-		mobilize.log("Defloating img:" + image);
+		// Available only images with width and height data
+		function defloatCore(image) {
+			
+            // Looks like an icon
+            if(image.width < mobilize.options.minImageProcessingWidth) {
+				return;
+			}
 		
-        // jslint complains: ['float'] is better written in dot notation, but required for YUI Compressor to work
-        image.style["float"] = "none"; // jslint:ignore
-        
-        var klass = image.getAttribute("class");
-        klass = ["mobilize-resized", klass].join(" ");
-        image.setAttribute("class", klass);
-        
-        // TODO: Use stylesheet?
-        image.setAttribute("width", "100%");
-        
-        if(!image.onclick) {
-            image.onclick = function(){
-                window.open(image.src);
-            };
-        }
+			if (!image.tagName) {
+				throw "Was not a DOM element:" + image;
+			};
+			
+			if (image.tagName.toLowerCase() != "img") {
+				throw "Was not a <img> element:" + image;
+			};
+			
+			// jslint complains: ['float'] is better written in dot notation, but required for YUI Compressor to work
+			image.style["float"] = "none"; // jslint:ignore
+			var klass = image.getAttribute("class");
+			klass = ["mobilize-resized", klass].join(" ");
+			image.setAttribute("class", klass);
+			
+			// TODO: Use stylesheet?
+			image.setAttribute("width", "100%");
+			
+			// Set image click handler if 
+			// image is not inside a link
+			var $image = $(image);
+			var a = $image.parents("a");
+			
+			if (a.size() == 0) {
+				// Create zoomed image opener				
+				$image.click(function(){
+					window.open(image.src);
+				});
+			}
+		}
+		
+		// Image is loaded
+		if (image.width) {
+			defloatCore(image);
+		} else {
+			image.onload = function(){
+				defloatCore(image);
+			}
+		}
+		
     },
 	
 	/**
@@ -1849,7 +1892,7 @@ var mobilize = {
 	 * @param selection: jQuery selection of content images
 	 */
 	processContentImages : function(selection) {
-		$(selection).each(function() {
+		$(selection).find("img").each(function() {
 			mobilize.defloat(this);
 		});
 	},

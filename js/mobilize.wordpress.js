@@ -71,8 +71,12 @@ var mobilizeWordpress = {
         this.makePreScrollable();
 		
 		var preparedContent = $("#mobile-body div[data-role=content]");
+
+        // The order here is important,
+		// because we don't want to install image click handler
+		// on video thumbnails
+        this.processContentVideos(preparedContent);
 		this.processContentImages(preparedContent);
-		this.processContentVideos(preparedContent);
 
     },
 

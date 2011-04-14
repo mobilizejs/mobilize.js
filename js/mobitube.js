@@ -18,7 +18,7 @@ function mobitube($) {
 			
 		options : {
 		
-		  youTubeTemplate : '<div class="mobile-youtube"> <a class="image-link" href="http://m.youtube.com/watch?v=VIDEOID"><img src="http://i.ytimg.com/vi/VIDEOID/default.jpg" > </a> <p><a href="http://m.youtube.com/watch?v=VIDEOID" class="text-link">LABEL</a></p></div>', 
+		  youTubeTemplate : '<div class="mobile-youtube"> <a class="image-link" href="http://m.youtube.com/watch?v=VIDEOID"><img src="http://i.ytimg.com/vi/VIDEOID/0.jpg" > </a> <p><a href="http://m.youtube.com/watch?v=VIDEOID" class="text-link">LABEL</a></p></div>', 
 	
     	  youTubeLabel : "Watch on YouTube",
 		

@@ -2218,6 +2218,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 			//deliberately redirect, in case click was triggered
 			if( hasTarget ){
+				//alert("xxx");
 				window.open( url );
 			}
 			else if( hasAjaxDisabled ){

@@ -143,7 +143,7 @@ var mobilizeSphinx= {
         this.content.append(origContent);
 		         
 	    // Defloat images, install clickers
-        mobilize.processContentImages(origContent.find("img"));
+        mobilize.processContentImages(origContent);
     },
     
     /**
