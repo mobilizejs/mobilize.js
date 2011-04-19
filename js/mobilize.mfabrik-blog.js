@@ -49,7 +49,7 @@ mobilize.extend(mobilize, {
 	 * XXX: Use jQuery to pick content instead of hardcoded here
 	 */
 	constructAboutBox : function(content) {
-		content.append("<img src='http://mfabrik.com/++resource++plonetheme.mfabrik/logo.png' />");
+		content.append("<img class='mobilize-no-resize' src='http://mfabrik.com/++resource++plonetheme.mfabrik/logo.png' />");
 		content.append("<p>mFabrik Blog is about mobile and web software development, open source and Linux. We tell exciting tales where business, technology, web and mobile convergence.</p>");
 	},
 

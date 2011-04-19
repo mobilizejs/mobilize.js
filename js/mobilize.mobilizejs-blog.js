@@ -44,7 +44,7 @@ mobilize.extend(mobilize, {
 	 * </p>
 	 */
 	constructAboutBox : function(content) {
-		content.append("<img src='http://mobilizejs.com/wp-content/themes/love-the-orange/images/logo_60.png' />");
+		content.append("<img class='mobilize-no-resize' src='http://mobilizejs.com/wp-content/themes/love-the-orange/images/logo_60.png' />");
 	},
 
     /**

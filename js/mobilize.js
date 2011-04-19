@@ -1535,7 +1535,13 @@ var mobilize = {
 			mobilize.log("Exception during transform");
 			// In the case of our perfect transformation code fails, make sure that body should
 			// be visible
-			mobilize.restoreBody();			
+			mobilize.restoreBody();	
+			
+			// Salvage whatever we have on the page
+			try {
+                mobilize.completeTransform();				
+			} catch(e2) {				
+			}
 			throw e;
 		}
     },
@@ -1835,7 +1841,7 @@ var mobilize = {
 		} else {
 			width = image.width;
 		}
-		mobilize.log("Defloating img:" + image + " width:" + image.width);
+		mobilize.log("Processing content <img>:" + image + " width:" + image.width);
 		
 		// Available only images with width and height data
 		function defloatCore(image) {
@@ -1853,23 +1859,26 @@ var mobilize = {
 				throw "Was not a <img> element:" + image;
 			};
 			
-			// jslint complains: ['float'] is better written in dot notation, but required for YUI Compressor to work
-			image.style["float"] = "none"; // jslint:ignore
-			var klass = image.getAttribute("class");
-			klass = ["mobilize-resized", klass].join(" ");
-			image.setAttribute("class", klass);
+			var $image = $(image);
+
+            if($image.hasClass("mobilize-no-resize")) {
+				// Specially marked not to go through resize
+				return;
+			}
+					
+		    $image.addClass("mobilize-resized");
 			
 			// TODO: Use stylesheet?
-			image.setAttribute("width", "100%");
-			
-			var $image = $(image);
-			
+			$image.css({"width" : "100%", "max-width" : "512px"});
+
+            // jslint complains: ['float'] is better written in dot notation, but required for YUI Compressor to work
+            image.style["float"] = "none"; // jslint:ignore						
+
 			$image.click(function(){
 			     var a = $image.parents("a");
                 // Set image click handler if 
                 // image is not inside a link           
 			     if (a.size() == 0) {
-				 	alert("xxx");
 				 	window.open(image.src);
 				 }
 			});

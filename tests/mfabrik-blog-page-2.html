@@ -8,15 +8,7 @@
 <link rel="pingback" href="http://blog.mfabrik.com/xmlrpc.php" />
 <link rel="alternate" type="application/rss+xml" title="mFabrik - mobile sites, apps, HTML5 and CMS software development &raquo; Feed" href="http://blog.mfabrik.com/feed/" />
 <link rel="alternate" type="application/rss+xml" title="mFabrik - mobile sites, apps, HTML5 and CMS software development &raquo; Comments Feed" href="http://blog.mfabrik.com/comments/feed/" />
-        <script type="text/javascript" class="mobilize-init">
-            // Called by mobilize.init()
-            function mobilizeCustomInit() {
-               // Include msite specific Javascript initialization layer
-               mobilize.cdnOptions.javascriptBundles.push("http://blog.mfabrik.com/wp-content/plugins/mobilizejs-for-wordpress/mobile-custom.js");
-               mobilize.cdnOptions.cssBundles.push("http://blog.mfabrik.com/wp-content/plugins/mobilizejs-for-wordpress/mobile-custom.css");
-            }
-        </script>
-    <link rel='stylesheet' id='admin-bar-css'  href='http://blog.mfabrik.com/wp-includes/css/admin-bar.css?ver=20110122' type='text/css' media='all' />
+<link rel='stylesheet' id='admin-bar-css'  href='http://blog.mfabrik.com/wp-includes/css/admin-bar.css?ver=20110122' type='text/css' media='all' />
 <link rel='stylesheet' id='shashin_css-css'  href='http://blog.mfabrik.com/wp-content/plugins/shashin/display/shashin.css?ver=2.6.3' type='text/css' media='all' />
 <link rel='stylesheet' id='highslide_css-css'  href='http://blog.mfabrik.com/wp-content/plugins/shashin/display/highslide.css?ver=4.1.4' type='text/css' media='all' />
 <script type='text/javascript' src='http://blog.mfabrik.com/wp-includes/js/l10n.js?ver=20101110'></script>
@@ -35,6 +27,7 @@ var highslide_settings = {
 };
 /* ]]> */
 </script>
+
 <script type='text/javascript' src='http://blog.mfabrik.com/wp-content/plugins/shashin/display/highslide_settings.js?ver=2.6.3'></script>
 <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.mfabrik.com/xmlrpc.php?rsd" />
 <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.mfabrik.com/wp-includes/wlwmanifest.xml" /> 
@@ -68,6 +61,8 @@ var highslide_settings = {
                 mobilize.cdnOptions.javascriptBundles.push("js/mobitube.js");
                 mobilize.cdnOptions.javascriptBundles.push("js/mobilize.wordpress.js");
                 mobilize.cdnOptions.cssBundles.push("css/jquery.mobile.scrollview.css");
+			    mobilize.cdnOptions.javascriptBundles.push("js/mobilize.mfabrik-blog.js");
+        
           }        
         </script>
   
@@ -98,7 +93,8 @@ var highslide_settings = {
                      // Load JS files locally, unbundled
                      javascriptBundles : ["js/jquery.js", 
                                          "js/mobilize.onjq.js", 
-                                         "js/jquery.mobile.js"],
+                                         "js/jquery.mobile.js"
+										 ],
 
                      // Load CSS files locally, unbundled
                      cssBundles: ["css/jquery.mobile.css", 
