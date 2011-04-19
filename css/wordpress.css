@@ -36,6 +36,12 @@ h1 {
 	font-weight: normal;
 }
 
+/* Next prev navigation fine tuning */
+
+.mobile-next-prev {
+	margin-top: 2em;
+}
+
 /* Comment list style fixes */
 
 /* Go from edge to edge */

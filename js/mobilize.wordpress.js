@@ -67,7 +67,11 @@ var mobilizeWordpress = {
 		// These elements are shared between different page types
         this.constructHeader();
         this.constructFooter();
-        
+				
+		// Add archive navigation
+		this.constructNextPrevNavigation(content);
+
+        // Install horizontal scroll for code examples        
         this.makePreScrollable();
 		
 		var preparedContent = $("#mobile-body div[data-role=content]");
@@ -261,7 +265,19 @@ var mobilizeWordpress = {
         content.append(headlines);	
     },
     
-    
+	/**
+	 * Older posts, newer posts buttons.
+	 * 
+	 * @param {Object} content
+	 */
+    constructNextPrevNavigation : function(content) {
+		
+		// Remove WP theme arrows - they are as HTML text
+		$(".meta-nav").remove();
+		
+		var buttonGroup = this.makeNextPrevNavigation($(".nav-next a:first"), $(".nav-previous a:first"));
+		content.append(buttonGroup);
+	},
     
     /**
      * Create mobilized version for comments

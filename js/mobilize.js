@@ -1931,7 +1931,7 @@ var mobilize = {
 
             widgets.forEach(function(w) {
             
-			    console.log("Calculating hint arrow positions for scroll widget:" + w);
+			    // mobilize.log("Calculating hint arrow positions for scroll widget:" + w);
 			    
                 // Calculate arrow positions
                 var attrs = {
@@ -2095,8 +2095,41 @@ var mobilize = {
 			setTimeout(calculateArrorPositions, 5);
 		});
     
-    }
-    
+    },
+	
+	
+     /** 
+      * Create next and previous chapter quick links
+      * <p>
+      * 
+      * @param next: jQuery selection for the link being next button
+      * 
+      * @param prev: jQuery selection for the link being prev button
+      * 
+      * @returns jQuery element for the button group
+      * 
+      */
+     makeNextPrevNavigation : function(prev, next) {
+//      <div data-role="controlgroup" data-type="horizontal" >
+//            <a href="index.html" data-role="button" data-icon="arrow-u" data-iconpos="notext">Up</a>
+//            <a href="index.html" data-role="button" data-icon="arrow-d" data-iconpos="notext">Down</a>
+//            <a href="index.html" data-role="button" data-icon="delete" data-iconpos="notext">Delete</a>
+//        </div>
+        
+        var group = $("<div class=mobile-next-prev data-role=controlgroup data-type=vertical>");
+        
+		prev.attr("data-icon", "arrow-l");
+        prev.attr("data-role", "button");
+		
+        next.attr("data-icon", "arrow-r");
+        next.attr("data-role", "button");
+        next.attr("data-iconpos", "right");
+
+        group.append(prev);
+        group.append(next);
+		        
+        return group;        
+     }    
 };
 
 // ================== Hand picked utilies from Ion project
