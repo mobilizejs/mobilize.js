@@ -165,7 +165,7 @@ var mobilize = {
         
         /** Url to send critical internal errors */
         //errorReportingURL : "http://cdn.mobilizejs.com/logerror/",
-		errorReportingURL : null,
+		errorReportingURL : null, // $$ERROR_REPORTING_LINE
         
         /**
          * Filenames of CSS files to load after bootstrap.
@@ -194,7 +194,7 @@ var mobilize = {
         /**
          * In-line template used for jQuery Mobile page skeleton.
          */
-        templateSource : '<div id="mobile-body"><div data-role="page"><div data-role="header"></div><div data-role="content"></div><div data-role="footer"></div></div></div>',
+        templateSource : '<div id="mobile-body"><div data-role="page"><div data-role="header"></div><div id="mobile-content" data-role="content"></div><div data-role="footer"></div></div></div>',
         
         /**
          * mobilize.js version. 
@@ -324,19 +324,22 @@ var mobilize = {
         	return;
         }
 	
-      
         function startProcess() {
-			mobilize.log("startProcess")
-            if(mobilize.checkMobileBrowser(mobilize.options)) {
-                mobilize.renderAsMobile();
-            } else {
-                mobilize.log("Web mode wanted");
-            }
+			mobilize.log("startProcess");
+			
+			try {
+	            if(mobilize.checkMobileBrowser(mobilize.options)) {
+	                mobilize.renderAsMobile();
+	            } else {
+	                mobilize.log("Web mode wanted");
+	            }
+			} catch(e) {
+				// We fail
+				mobilize.sendExceptionToCloudService("bootsrap", e);
+                throw e;
+			}
         }
-		
-		// Do not let errors fall through
-        startProcess = mobilize.trappedInternal(startProcess);
-        
+		        
         // TODO: Execute events which we can do before DOM model must be ready	
 		document.addEventListener("DOMContentLoaded", startProcess, false);
 			
@@ -395,7 +398,7 @@ var mobilize = {
             if(!src) {
                 var msg;
                 msg = "Could not found <script> with class='mobilize-js-source' or src with 'mobilize.' text in HTML to resolve mobilize.js hosting location";
-                mobilize.log_e(msg);
+                mobilize.logError(msg);
                 throw msg;
             }
 			
@@ -583,37 +586,48 @@ var mobilize = {
         mobilize.log(msg);
     },
     /** Log error message */
-    log_e : function(msg){
+    logError : function(msg){
         if(console.error) {
 			console.error(msg);
 		}
     },
-    /** Log critical errors. These are also sent to cdn server. 
-     * Used to log critical errors of mobilize.js to central location.
-     * */
-    logInternalError : function(version, msg){
-        
-		mobilize.log(version);
-		mobilize.log(msg);
-		mobilize.log(mobilize.log_e);
-		try {
-			mobilize.log_e("version:" + version + "\n" + msg);
-		} catch(e) {
-			// IOS madness
-			throw "Logging failure";
-		}
-		
+
+    /**
+     * Report client errors to the cloud error service.
+     * <p>
+     * Allow monitoring the global status of mobilize.js deployments
+     * for possible problems with new devices.
+     * <p>
+     * @param {Object} task Task name which failed
+     * @param {Object} exception Exception object
+     */
+	sendExceptionToCloudService : function(task, exception) {
+
+        mobilize.log("Cloud error reporting activated");
+
+        // Don't proceed if error reporting is not on
         if(mobilize.cdnOptions.errorReportingURL) {
-            var req = new XMLHttpRequest();
-            var url;
-            url = mobilize.cdnOptions.errorReportingURL;
-            url += "?version=" + version;
-            url += "&msg="+msg;
             
+			mobilize.log("Reporting to home");
+			
+			var req = new XMLHttpRequest();
+						
+			// Convert exception to string
+			var msg = "" + exception;
+			
+            var url;			
+            url = mobilize.cdnOptions.errorReportingURL;
+            url += "?version=" + encodeURIComponent(mobilize.cdnOptions.version);
+            url += "&msg="+ encodeURIComponent(msg);
+            url += "&task="+ encodeURIComponent(task);
+            url += "&bundle="+ encodeURIComponent(mobilize.cdnOptions.bundleName);
+            url += "&random="+ Math.random();
+    	      
             req.open('GET', url, false);
             req.send(null);
         }
-    },
+		
+	},
     
     /** 
      * <p>Get baseurl from url by ignoring file and url parameters</p> 
@@ -1039,6 +1053,10 @@ var mobilize = {
      */
     loadBundleFromLocalStorage : function(aBundleType, aBundle, aUrl, aCallback){
         
+		// XXX: Remove or fix this method
+		
+		throw "Currently unsupported";
+		
         if( !(aBundleType & (mobilize.BUNDLE_TYPE_CSS | mobilize.BUNDLE_TYPE_JS) ) )
         {
             mobilize.log("ERROR: Invalid bundle type " + aBundleType);
@@ -1129,12 +1147,16 @@ var mobilize = {
         mobilize.log("Loading script using AJAX for evaluation:" + aUrl);
         function loaded(aJavascript) 
         {
-            mobilize.log("Loaded payload for " + aUrl + ", now evaling() it ");
-            eval.call(null, aJavascript);
-            aCallback();
+			try {
+	            mobilize.log("Loaded payload for " + aUrl + ", now evaling() it ");
+	            eval.call(null, aJavascript);
+	            aCallback();				
+			} catch(e) {
+				mobilize.sendExceptionToCloudService("AJAX script load for:" + aURL, e);
+			}
         }
 		// XXX: Fix to support error responses
-        mobilize.getAJAX(aUrl, mobilize.trappedInternal(loaded));
+        mobilize.getAJAX(aUrl, loaded);
         return;
     },
 
@@ -1156,16 +1178,14 @@ var mobilize = {
         script.src = url;
         
         script.onerror = function(e, a, b, c){
-        	mobilize.log("Script contained errors");
-        	mobilize.log(e);
-        	mobilize.log(a);
-        	mobilize.log(b);
-        	mobilize.log(c);
+        	mobilize.log("Script contained errors:" + url);
+        	mobilize.logError(e);			
+			mobilize.sendExceptionToCloudService("Load script for " + url, "");
         };
         
         // From jQuery
         //var done = false;
-        script.onload = script.onreadystatechange = function(){
+        script.onload = script.onreadystatechange = function() {
             
             mobilize.log("Script onload handler for " + url);
             
@@ -1390,6 +1410,7 @@ var mobilize = {
             throw "Could not find body while loading?";
         }
         
+		// XXX: Do the supressing using the same method as jQuery Mobile uses
         document.body.style.display = "none";
     },
     
@@ -1533,15 +1554,30 @@ var mobilize = {
 	        mobilize.completeTransform();
 		} catch(e) {
 			mobilize.log("Exception during transform");
-			// In the case of our perfect transformation code fails, make sure that body should
-			// be visible
-			mobilize.restoreBody();	
 			
-			// Salvage whatever we have on the page
+			// Try recover hard.
+			// Salvage whatever we have on the page.
 			try {
-                mobilize.completeTransform();				
-			} catch(e2) {				
+                if($("#mobile-template-holder div[data-role=content] > *").size() == 0) {
+					// We did not yet get any content on the page, do 
+					// it roughly.
+					// Put everything on the page to the mobile content area
+					$("#mobile-content").append($("body > div[id != mobile-template-holder]"));
+				}
+				
+				mobilize.completeTransform();   
+			
+			} catch(e2) {			
+			     mobilize.log("Not good");
+				 mobilize.log(e2);	
 			}
+
+            // In the case of our perfect transformation code fails, make sure that body should
+            // be visible
+            mobilize.restoreBody(); 
+    
+	        mobilize.sendExceptionToCloudService("transform", e);
+
 			throw e;
 		}
     },
@@ -2312,35 +2348,6 @@ mobilize.trapped = function trapped(func, options ){
         }
         return mobilize.trap( func, options );
     };
-};
-
-/** Used to trap critical internal mobilizejs errors and
- * log them to server.
- * */ 
-mobilize.trappedInternal = function(func, options)
-{
-    if( !options ){
-        options = {};
-    }
-    options.onerror = function(e){
-        
-		mobilize.log("trappedInternal onerror");
-		
-        var msg = String(func) + "\n";
-        if( !e.stack){
-            msg += e.sourceURL + ":"+e.line + "\n" + e.name + ":" + e.message;
-        }
-        else{
-            msg += String( e.stack);
-        }
-        
-        mobilize.logInternalError(mobilize.cdnOptions.version, msg);
-        
-        // Pass the error on
-        throw e;
-    };
-    
-    return mobilize.trapped(func, options);
 };
 
 

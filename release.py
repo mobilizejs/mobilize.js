@@ -94,6 +94,25 @@ def add_extra_extension(filepath, extra_ext):
     ext = ext[1:] # .js -> js   
     return ".".join([root, extra_ext, ext])
 
+def process_vars(line):
+    """
+    Update version etc. template line in the release data.
+    """
+
+    # Reflect real version to file
+    if "$$VERSION_LINE" in line:
+        i = line.index('"') + 1
+        ie = line.index('"',i)
+        line = line[:i] + VERSION + line[ie:]
+        
+        print "$$VERSION_LINE found. Updated version to '%s'" % VERSION
+    
+    # Make sure release versions use error reporting
+    if "$$ERROR_REPORTING_LINE" in line:
+        line = '\t\terrorReportingURL : "http://cdn.mobilizejs.com/logerror/",'
+        print "$$ERROR_REPORTING_LINE updated"
+        
+    return line
 
 def create_bundle_core(target, sources, type):
     global VERSION
@@ -109,16 +128,7 @@ def create_bundle_core(target, sources, type):
     
     # Update version
     lines = buffer.split("\n")
-    for x in xrange(len(lines)):
-        line = lines[x]
-        if "$$VERSION_LINE" in line:
-            i = line.index('"') + 1
-            ie = line.index('"',i)
-            line = line[:i] + VERSION + line[ie:]
-            lines[x] = line
-            
-            print "$$VERSION_LINE found. Updated version to '%s'" % VERSION
-            break
+    lines = tuple([ process_vars(line) for line in lines ])
     buffer = "\n".join(lines)
     
     for mode in ["debug", "min"]:

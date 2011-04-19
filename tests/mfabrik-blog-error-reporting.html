@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
-<!-- Test next prev links -->
+<!-- Test error reporting (purposely fail) -->
 <head>
 <meta charset="UTF-8" />
 <title>mFabrik - mobile sites, apps, HTML5 and CMS software development - Part 2</title>
@@ -62,7 +62,7 @@ var highslide_settings = {
                 mobilize.cdnOptions.javascriptBundles.push("js/mobitube.js");
                 mobilize.cdnOptions.javascriptBundles.push("js/mobilize.wordpress.js");
                 mobilize.cdnOptions.cssBundles.push("css/jquery.mobile.scrollview.css");
-			    mobilize.cdnOptions.javascriptBundles.push("js/mobilize.mfabrik-blog.js");
+			    mobilize.cdnOptions.javascriptBundles.push("js/mobilize.fail.js");
         
           }        
         </script>
@@ -87,10 +87,8 @@ var highslide_settings = {
                  }, {
                      // Don't do cloud error reporting
                      // (it would useful for production deployment only)
-                     errorReportingURL: false,
+                     errorReportingURL: "http://localhost:8080/dummy",
                      
-                     baseURL: "http://localhost:8080", // Test server
-
                      // Load JS files locally, unbundled
                      javascriptBundles : ["js/jquery.js", 
                                          "js/mobilize.onjq.js", 
