@@ -4,7 +4,7 @@
 
 .. contents :: :local:
 
-Grade A devices
+Known to work
 -----------------
 
 mobilize.js supports `jQuery Mobile grade A <http://jquerymobile.com/gbs/>`_
@@ -18,11 +18,18 @@ This covers
 
 * BlackBerry
 
-Alternative browsers, like Firefox Mobile and Opera Mobile are supported
-within jQuery Mobile constrains.
+Also the following browsers / devices have been tested and proven to load pages
+
+* Nokia Series 60 browser (Webkit)
+
+* Opera Mini
+
+* Firefox Mobile (Fennec)
+
+Please contact the development team about the supported device details.
 
 Fallback to the web page
-============================
+-------------------------
 
 When a non-supported device arrives to the site, the normal web page is rendered.
 
@@ -39,11 +46,7 @@ Low end devices
 
 mobilize.js is based on Javascript transformations, meaning that you need
 to have a Javascript capable browser running it. 
-Low end devices and proxying browsers, like OVI Browser and Opera Mini
-are not on this list.
-
-Client side Javascript is not a hard requirement.
-
+However, client side Javascript support is not a hard requirement.
 mobilize.js can be also executed on server-side, using  
 a theming proxy server. 
 For the details, please contact the development team.

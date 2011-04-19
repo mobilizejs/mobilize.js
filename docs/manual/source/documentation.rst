@@ -9,9 +9,9 @@ Online documentation
 
 Compiled HTML documentation is available on-line.
 
-* `User Manual <http://localhost:8080/docs/manual/index.html>`_
+* `User Manual <http://cdn.mobilizejs.com/docs/manual/index.html>`_
 
-* `API Documentation <http://localhost:8080/docs/apidocs/index.html>`_
+* `API Documentation <http://cdn.mobilizejs.com/docs/apidocs/index.html>`_
 
 API documentation
 ========================

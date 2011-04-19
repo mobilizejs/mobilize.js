@@ -7,42 +7,34 @@
 About
 -----
 
-Mobilize.js transforms websites
-to mobile sites with Javascript: 
-it is easy to integrate with any system,
-looks good and uses technologies familiar for
-web developers. 
+**Mobilize.js is a HTML5 and Javascript
+framework to transform websites
+to mobile sites.** It allows you to create
+a mobile site from your existing web content easily.
 
-The revolutionary idea behind Mobilize.js is that
-it pushes difficult content presentation choices to a web browser
-instead trying to figure them out on a server.
-This is embracing of the original philosophy of HTML mark-up language:
-the browser knows best how the page should look like.
-With Mobilize.js we serve a normal web page 
-and let an embedded Javascript file  
-decide should the page be mobilized.
+Mobilize.js is a solution for
 
-Mobilize.js will do the same for internet mobilization 
-what Google Maps did for map services.
+* Creating a mobile version of an existing web site
+
+* Adding mobile support for CMS, eCommerce or other web platform
+
+* Adding mobile support for your web themes
+
+Mobilize.js is a developer solution: experience with HTML and Javascript needed.
 
 Benefits
---------------------------------------------
+----------
 
-Modern mobile devices
-are smart enough to decide what is the best way to display
-the content for their users.
+Mobilize.js is superior to existing open or proprietary mobile site solutions
 
-The client orientation and lack of complex server-side dependencies
-makes Mobilize.js simple and easy to integrate to **any** web system.
-You need only to add one <script> tag; it works even on static HTML files.
-You deploy it easily and tap the potential of quickly growing mobile internet.
-Mobilize.js won't stop you updating your server.
+* Easy to integrate: only one <script> tag needed
 
-Mobilize.js is written in Javascript and jQuery - both
-which are ubiquitous technologies for HTML5 developers. 
-Mobilize.js is the most developer friendly 
-mobilization solution out there. You learn it easily, 
-getting more done in less time.
+* Bulk mobilization for free - focus on more value adding features  
+
+* Uses technologies familiar to front end developers: HTML5, Javascript, jQuery, jQuery Mobile.
+  Mobilize.js works with any backend programming language: PHP, Java, Python.
+
+* Open source: no expensive subscription or Software-as-a-Service partners needed
 
 How it works
 --------------
@@ -64,6 +56,21 @@ browsers, a special transformation step takes place.
 * Content is reformated for mobile display
 
 * jQuery Mobile theme is applied on the page
+
+Background
+----------
+
+The revolutionary idea behind Mobilize.js is that
+it pushes difficult content presentation choices to a web browser
+instead trying to figure them out on a server.
+This is embracing of the original philosophy of HTML mark-up language:
+the browser knows best how the page should look like.
+With Mobilize.js we serve a normal web page 
+and let an embedded Javascript file  
+decide should the page be mobilized.
+
+Mobilize.js will do the same for internet mobilization 
+what Google Maps did for map services.
 
 Architecture
 -------------

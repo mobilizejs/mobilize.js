@@ -9,7 +9,7 @@ Introduction
 
 This chapter shows how to
 
-* reach to mobile browsers on the server-side
+* react to mobile browsers in server-side code
 
 * tell what kind of tricks you can do or what you should do optimizing for mobile
 
