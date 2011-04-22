@@ -21,10 +21,10 @@ DEFINE('DEBUG', false);
 // Output to PHP error_log() service what's going on.
 // Note that PHP logging must be enabled.
 // This is useful to pindown problems with mobilize.js and your log.
-DEFINE('LOGGING', true);
+DEFINE('LOGGING', false);
 
 // Version of mobilize.js to use
-$mobilizejs_version = 'trunk'; // $$PHP_VERSION_LINE
+$mobilizejs_version = '0.1'; // $$PHP_VERSION_LINE
 
 // Set up WP plug-in hooks
 // http://codex.wordpress.org/Plugin_API/Action_Reference
@@ -94,10 +94,7 @@ function is_test_page_load() {
  * @return unknown_type
  */
 function mobilizejs_get_cloud_url() {
-    //return "http://cdn.mobilizejs.com/releases/{$mobilizejs_version}";
-    
-	// localhost testing
-	return "http://localhost:8080";
+    return "http://cdn.mobilizejs.com/releases/{$mobilizejs_version}";    
 }
 
 /**
