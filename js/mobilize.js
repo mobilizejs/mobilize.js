@@ -1422,7 +1422,7 @@ var mobilize = {
 		  
 		  // Hide all <body> child elements expect our laoding banner
 		  // Also work together with jQuery Mobile so that our loading supressors don't conflict
-          var css = "body > * { visibility: hidden !important;} \n body > #mobilize-supress { visibility: visible !important; color: #dc3c01; text-align: center; font-family: Helvetica, Arial, sans-serif; font-weight: bold; text-shadow: 0 1px 0 black; margin: 5px auto; width: 200px; } \n .ui-mobile-rendering > body { visibility: visible !important }";
+          var css = "body > * { visibility: hidden !important;} \n body > #mobilize-supress { visibility: visible !important; color: #dc3c01; text-align: center; font-family: Helvetica, Arial, sans-serif; font-weight: bold; margin: 5px auto; width: 200px; } \n .ui-mobile-rendering > body { visibility: visible !important }";
           var elem = document.createElement("style");
           elem.setAttribute("type", "text/css");
           elem.setAttribute("class", "mobilize-supressor mobilize-preserve");
@@ -1435,11 +1435,23 @@ var mobilize = {
           html += "<br>"
           html += "<img src=" + mobilize.cdnOptions.baseURL + "/css/images/logo_with_text_128.png" + " />"; 
 
-          elem = document.createElement("div");
-		  elem.setAttribute("id", "mobilize-supress");	  
-		  elem.setAttribute("class", "mobilize-supressor"); // Elem be removed later    
-		  elem.innerHTML = html;		  
-		  document.body.insertBefore(elem, document.body.firstChild);	
+          // Loading banner might be already created on the server side
+          if (document.getElementById("mobilize-supress") != null) {
+				elem = document.createElement("div");
+				elem.setAttribute("id", "mobilize-supress");
+				elem.setAttribute("class", "mobilize-supressor"); // Elem be removed later    
+				elem.innerHTML = html;
+				document.body.insertBefore(elem, document.body.firstChild);
+		  }
+
+          // Show our logo without zooming
+          elem = document.createElement("meta");
+          elem.setAttribute("name", "viewport");    
+          elem.setAttribute("class", "mobilize-supressor"); // Elem be removed later    
+          elem.setAttribute("content", "width=device-width, minimum-scale=1, maximum-scale=1");
+          document.head.appendChild(elem);
+
+
         }
         
         /**
@@ -1886,18 +1898,16 @@ var mobilize = {
     finish : function() {
        
         this.swapBody();
-       
-	    this.restoreRendering();
-			   
+      	
+		this.restoreRendering();
+				   
         // Draw jQuery Mobile widgets
-        try{
+        try {
             $.mobile.initializePage();
-        }catch(e){
-            mobilize.log("mobilize::finish initializePage failed>" + e);
+        } catch(e) {
+            mobilize.logError("mobilize::finish initializePage failed:" + e);
+			throw e;
         }
-
-        // Show constructed page to the user
-        $("body").show();
         
         // Execute handlers which can be run
         // after jQuery Mobile has completed its internal transforms
@@ -1907,6 +1917,7 @@ var mobilize = {
         
 		// Call event handlers
 				
+	    // XXX: Convert these to events
         if(mobilize.onCompleted) 
         {
             mobilize.onCompleted();

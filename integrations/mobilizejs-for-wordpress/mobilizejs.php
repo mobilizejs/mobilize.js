@@ -2,13 +2,14 @@
 /*
 Plugin Name: Mobilize.js for Wordpress
 Plugin URI: http://mobilizejs.com
-Description: Mobilize your Wordpress site in an instant
-Version: 0.1
+Description: Mobile version out of your Wordpress site without pain
+Version: 1.0
 Author: Mikko Ohtamaa
 Author URI: http://mobilizejs.com
 */
 
-// What's our name in Wordpress plug-ins folder
+
+// What's our name in Wordpress plug-ins folder in WP installation
 DEFINE('MOBILIZEJS_NAME', 'mobilizejs-for-wordpress');
 
 // Which Wordpress theme we serve for jQuery Mobile transformation base
@@ -23,9 +24,10 @@ DEFINE('DEBUG', false);
 DEFINE('LOGGING', true);
 
 // Version of mobilize.js to use
-$mobilizejs_version = 'trunk';
+$mobilizejs_version = 'trunk'; // $$PHP_VERSION_LINE
 
 // Set up WP plug-in hooks
+// http://codex.wordpress.org/Plugin_API/Action_Reference
 add_filter('stylesheet', 'mobilizejs_stylesheet');
 add_filter('template', 'mobilizejs_template');
 add_filter('show_admin_bar', 'hide_admin_bar' ); // Mobile version do not need admin bar HTML
@@ -35,6 +37,7 @@ add_action("send_headers", "mobilizejs_http_headers");
 // Make sure mobilize.js <head> is as early as possible
 add_action('wp_head', 'mobilizejs_head', 2);
 add_action('wp_footer', 'mobilizejs_include_debug');
+add_action('wp_footer', 'mobilizejs_banner');
 
 
 // Internal debug purposes only
@@ -51,15 +54,14 @@ function xlog($msg) {
  * @return true if the client wants to render the page in mobile optimized way 
  */
 function is_mobile() {
-    //print_r($_COOKIE);
     
 	// Disable mobilize.js for admin interface
 	if(is_admin()) {
 		return false;
 	}
 	
-	xlog("Cookies");
-	xlog(print_r($_COOKIE, true));
+	//xlog("Cookies");
+	//xlog(print_r($_COOKIE, true));
 	
 	// Javascript cookie has been set and it is set to mobile mode
     if(array_key_exists('mobilize-mobile', $_COOKIE)) {
@@ -86,6 +88,17 @@ function is_test_page_load() {
 	return false;
 }
 
+/**
+ * Where do we load cloud resources
+ * 
+ * @return unknown_type
+ */
+function mobilizejs_get_cloud_url() {
+    //return "http://cdn.mobilizejs.com/releases/{$mobilizejs_version}";
+    
+	// localhost testing
+	return "http://localhost:8080";
+}
 
 /**
  * Include mobilize.js in <head> and clean up unwanted Javascript
@@ -96,7 +109,7 @@ function mobilizejs_init() {
 	
 	global $mobilizejs_version;
 	
-	xlog("Loading mobilize.js plug-in");
+	xlog("Loading mobilize.js plug-in version $mobilizejs_version");
 	
 	if(is_mobile()) {
         xlog("Unregistering unwanted WP scripts");
@@ -109,13 +122,15 @@ function mobilizejs_init() {
 		wp_deregister_script( 'swfupload-swfobject' );          		
 	}
 	
+	
     // Go for mobilize.js
     
     if(DEBUG) {
     	// Uses wp_head hook
     } else {
-        $src = "http://cdn.mobilizejs.com/releases/{$mobilizejs_version}/js/mobilize.wordpress.min.js";    
-    	wp_enqueue_script( 'mobilize', $src);    	
+        $src = mobilizejs_get_cloud_url()."/js/mobilize.wordpress.min.js";    
+        xlog("Including mobilize.js script from $src");
+    	wp_enqueue_script('mobilize', $src);    	
     }
 }   
 
@@ -147,11 +162,13 @@ function mobilizejs_head() {
 	
 	// The folowing is added only if mobile mode is on
 	if(is_mobile()) {		
-		// Supress body loading as early as possible
+		// Supress body loading as early as possible.
+		// This matches code in mobilize.js suspendRendering()
 		?>		
-		  <style type="text/css" class="mobilize-init">
-		      body { display: none; }
+		  <style type="text/css" class="mobilize-supressor">
+		      body > * { visibility: hidden !important;} \n body > #mobilize-supress { visibility: visible !important; color: #dc3c01; text-align: center; font-family: Helvetica, Arial, sans-serif; font-weight: bold; margin: 5px auto; width: 200px; } \n .ui-mobile-rendering > body { visibility: visible !important }
 		  </style>	    
+		  <meta class="mobilize-supressor" name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1"></meta>
 		<?	
 	}
 }
@@ -199,14 +216,9 @@ function mobilizejs_include_debug() {
 		     function setupMobilizeForWordpressDevelopment(){
 		
 		         mobilize.init({
-		             // Make the page load as mobile always
-		             forceMobilize: undefined // true: always mobile  
 		         }, {
-		             // Additional CDN options here
 		             cloud: false, // Disable automatic JS + CSS resolving
-		             // Don't do cloud error reporting
-		             // (it would useful for production deployment only)
-		             errorReportingURL: false,
+		             errorReportingURL: null,
 		             
 		             baseURL: "http://localhost:8080", // Test server
 		             // Load JS files locally
@@ -218,7 +230,6 @@ function mobilizejs_include_debug() {
 		             cssBundles: ["css/jquery.mobile.css", 
 		     		             "css/wordpress.css"],
 		             
-		             template: "../templates/wordpress.html"
 		         });
 		         
 		         // Since we are not in auto-run mode,
@@ -229,8 +240,7 @@ function mobilizejs_include_debug() {
 		     }
 		
 		     setupMobilizeForWordpressDevelopment();
-      
-        
+              
         </script>  
 		<?		
 	}
@@ -291,5 +301,28 @@ function mobilizejs_http_headers($wp_object) {
     header('Vary: User-Agent');
 }
 
+/**
+ * Show mobilizejs loading banner when Javascript is being loaded.
+ * 
+ * This matches code in mobilize.js supressRendering()
+ * 
+ */
+function mobilizejs_banner() {
+		
+	if(is_mobile()) {
+		?>
+		<div id="mobilize-supress">
+		      <p>Please wait while loading mobile optimized versino</p>
+		      <img src="<?= mobilizejs_get_cloud_url() ?>/css/images/ajax-loader.gif" />		      
+		      <img src="<?= mobilizejs_get_cloud_url() ?>/css/images/logo_with_text_128.gif" />
+		</div>				
+		<?
+	}
+	
+	// Include backlink which is not visible in web mode, but put to jQuery Mobile footer by Javascript
+	?>
+	<a id="mobilizejs-backlink" style="display: none" href="http://mobilizejs.com">Mobile version by Mobilize.js</a>
+	<?
+}
 
 ?>
