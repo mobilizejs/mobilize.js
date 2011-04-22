@@ -65,7 +65,7 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 if mobilize.value == "1":
                     print "Cookie says client is mobile"                                            
                                 
-        if "/log" in self.path:
+        if "/log?" in self.path:
             msg = urllib.unquote(self.path.split("msg=")[-1])
             while msg.endswith("/"):
                 msg = msg[:-1]
