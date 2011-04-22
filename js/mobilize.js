@@ -1422,7 +1422,7 @@ var mobilize = {
 		  
 		  // Hide all <body> child elements expect our laoding banner
 		  // Also work together with jQuery Mobile so that our loading supressors don't conflict
-          var css = "body > * { visibility: hidden !important;} \n body > #mobilize-supress { visibility: visible !important; color: black } \n .ui-mobile-rendering > body { visibility: visible !important }";
+          var css = "body > * { visibility: hidden !important;} \n body > #mobilize-supress { visibility: visible !important; color: #dc3c01; text-align: center; text-shadow: 0 1px 0 black; margin: 5px auto; width: 200px; } \n .ui-mobile-rendering > body { visibility: visible !important }";
           var elem = document.createElement("style");
           elem.setAttribute("type", "text/css");
           elem.setAttribute("class", "mobilize-supressor mobilize-preserve");
@@ -1430,9 +1430,14 @@ var mobilize = {
           document.head.appendChild(elem);
 		  
 		  // Add our loading banner
-		  var html = '<p>Please wait. Loading mobile optimized version</p>'	
+		  var html = '<p>Please wait while loading mobile optimized version</p>'	
+		  html += "<img src=" + mobilize.cdnOptions.baseURL + "/css/images/logo_with_text_128.png" + " />"; 
+          html += "<br>"
+          html += "<img src=" + mobilize.cdnOptions.baseURL + "/css/images/form-check-off.png" + " />"; 
+
           elem = document.createElement("div");
 		  elem.setAttribute("id", "mobilize-supress");	  
+		  elem.setAttribute("class", "mobilize-supressor"); // Elem be removed later    
 		  elem.innerHTML = html;		  
 		  document.body.insertBefore(elem, document.body.firstChild);	
         }
@@ -1514,7 +1519,7 @@ var mobilize = {
 		function restoreBody() {
 			mobilize.log("Restoring body rendering");
 			var supressors = document.getElementsByClassName("mobilize-supressor");
-		
+        
 		    mobilize.log("Found " + supressors.length + " supressors");
 			var i;
 			for(i=0; i<supressors.length; i++) {
