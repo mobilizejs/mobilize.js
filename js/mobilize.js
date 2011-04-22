@@ -1359,7 +1359,7 @@ var mobilize = {
 			if(style.hasAttribute("class")) {
 				// <style> block has been marked to be preseverd beforehand
 				// by theme author or mobilize.js itself
-				if(style.getAttribute("class").indexOf("mobilize-preseve-style")) {
+				if(style.getAttribute("class").indexOf("mobilize-preserve")) {
 					continue;
 				}
 			}
@@ -1419,12 +1419,22 @@ var mobilize = {
          */
         function supressBody() {
 		  mobilize.log("Hiding body, showing the page is being mobilized logo");
-          var css = "body > * {display:none !important;} \n body > #mobilize-supress { display: block; }";
+		  
+		  // Hide all <body> child elements expect our laoding banner
+		  // Also work together with jQuery Mobile so that our loading supressors don't conflict
+          var css = "body > * { visibility: hidden !important;} \n body > #mobilize-supress { visibility: visible !important; color: black } \n .ui-mobile-rendering > body { visibility: visible !important }";
           var elem = document.createElement("style");
           elem.setAttribute("type", "text/css");
-          elem.setAttribute("class", "mobilize-supressor mobilize-preserve-style");
+          elem.setAttribute("class", "mobilize-supressor mobilize-preserve");
 		  elem.innerHTML = css;
           document.head.appendChild(elem);
+		  
+		  // Add our loading banner
+		  var html = '<p>Please wait. Loading mobile optimized version</p>'	
+          elem = document.createElement("div");
+		  elem.setAttribute("id", "mobilize-supress");	  
+		  elem.innerHTML = html;		  
+		  document.body.insertBefore(elem, document.body.firstChild);	
         }
         
         /**
@@ -1448,9 +1458,9 @@ var mobilize = {
 			mobilize.log("Supressed " + count + " <img>s");
         }
         		
-		// document.addEventListener("DOMContentLoaded", supressImages, false);                 
+		document.addEventListener("DOMContentLoaded", supressImages, false);                 
 		
-		supressImages();
+		// supressImages();
 		
 		function onLoaded() {
 			mobilize.log("Second body rendering suspect added, called from DOMContentLoaded");
@@ -1477,6 +1487,8 @@ var mobilize = {
         }
 		
 		supressBody();        
+		
+
     },
     
     
