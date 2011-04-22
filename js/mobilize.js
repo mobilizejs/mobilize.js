@@ -222,6 +222,9 @@ var mobilize = {
 	
 	/** Have we tried to hide body temporary yet */
 	suspendRenderingAttempted : false,
+	
+	/** How the page is currently being displayed. Can be "web", "suspended", "mobile" */
+	renderingState : "web",
     
     /**
      * Initialize mobilize class.
@@ -887,7 +890,7 @@ var mobilize = {
         mobilize.cleanHead();
         
         // XXX: Makes page flicked. Need to come up something smarter
-        mobilize.restoreBody();
+        // mobilize.restoreRendering();
         
         mobilize.loadMobileResources();
 
@@ -1177,10 +1180,19 @@ var mobilize = {
         script.setAttribute("src", url);
         script.src = url;
         
-        script.onerror = function(e, a, b, c){
+        script.onerror = function(e, a, b, c) {
         	mobilize.log("Script contained errors:" + url);
-        	mobilize.logError(e);			
-			mobilize.sendExceptionToCloudService("Load script for " + url, "");
+        	mobilize.logError(e);		
+			
+			try {
+				mobilize.sendExceptionToCloudService("Load script for " + url, "");
+			} catch(e) {				
+			}
+			
+		    // Make sure we have something to display even though the 
+			// scripts contain errors
+			mobilize.restoreRendering();
+
         };
         
         // From jQuery
@@ -1343,6 +1355,14 @@ var mobilize = {
                 mobilize.log(style);
                 continue;
             }
+			
+			if(style.hasAttribute("class")) {
+				// <style> block has been marked to be preseverd beforehand
+				// by theme author or mobilize.js itself
+				if(style.getAttribute("class").indexOf("mobilize-preseve-style")) {
+					continue;
+				}
+			}
           
             // Make sure we don't start searching through very long
             // inline CSS
@@ -1379,11 +1399,58 @@ var mobilize = {
 
 
     /**
-     * Make sure the browser does not load anything extra before mobile transform has taken place
+     * Make sure the browser does not load anything extra before mobile transform has taken place.
+     * <p>
+     * We try
+     * <p> 
+     * 1) supress body rendering instantly, even if <body> is still loading, but <head> is available.
+     * <p>
+     * 2) supress image loading when <body> is ready
+     * <p> 
      */
     suspendRendering : function() {
         
         mobilize.log("Suspending page rendering");
+
+        mobilize.renderingState = "suspended";
+
+        /** 
+         * Add a stylesheet snippt which hides all body children except our special 
+         */
+        function supressBody() {
+		  mobilize.log("Hiding body, showing the page is being mobilized logo");
+          var css = "body > * {display:none !important;} \n body > #mobilize-supress { display: block; }";
+          var elem = document.createElement("style");
+          elem.setAttribute("type", "text/css");
+          elem.setAttribute("class", "mobilize-supressor mobilize-preserve-style");
+		  elem.innerHTML = css;
+          document.head.appendChild(elem);
+        }
+        
+        /**
+         * Remove src from all images and temporarily story it as a data attibure orignal-src.
+         * 
+         * Must be run when <body> is ready.
+         */
+        function supressImages() {
+			mobilize.log("Supressing image rendering");
+            var images = document.getElementsByTagName("img");
+			var i, count=0;
+			for(i=0; i<images.length; i++) {
+				var img = images[i];
+				if(img.hasAttribute("src")) {
+					var src = img["src"];
+					img.setAttribute("data-orignal-src", src);
+					img.removeAttribute("src");
+					count++;
+				}
+			}
+			mobilize.log("Supressed " + count + " <img>s");
+        }
+        		
+		// document.addEventListener("DOMContentLoaded", supressImages, false);                 
+		
+		supressImages();
 		
 		function onLoaded() {
 			mobilize.log("Second body rendering suspect added, called from DOMContentLoaded");
@@ -1399,7 +1466,6 @@ var mobilize = {
 				
 				mobilize.log("No <body> available, trying to suspend rendering later");
 				if (document.addEventListener) {
-					document.addEventListener("DOMContentLoaded", onLoaded, false);					
 				}
 				return;
 			}
@@ -1409,9 +1475,8 @@ var mobilize = {
             // DOM tree loading, couldn't get hang off it
             throw "Could not find body while loading?";
         }
-        
-		// XXX: Do the supressing using the same method as jQuery Mobile uses
-        document.body.style.display = "none";
+		
+		supressBody();        
     },
     
     
@@ -1419,12 +1484,49 @@ var mobilize = {
      * Make body visible again after unnecessary styles have been cleared up.
      * <p>
      * This in the case the loading fails we don't show a blank white page.
+     * <p>
+     * Also make images to continue loading.
      */
-    restoreBody : function() {
-    	try {
-    		document.body.style.display = "block";
-    	} catch(e) {
-    	}
+    restoreRendering : function() {
+		
+		if (mobilize.renderingState == "mobile") {
+		  // May happen e.g. when several loaded scripts fire errors
+		  mobilize.log("Attemped to restore rendering twice");
+		  return;
+		}
+		
+		mobilize.log("Restoring rendering");
+		mobilize.renderingState = "mobile";
+		
+		// Restore body
+		function restoreBody() {
+			mobilize.log("Restoring body rendering");
+			var supressors = document.getElementsByClassName("mobilize-supressor");
+		
+		    mobilize.log("Found " + supressors.length + " supressors");
+			var i;
+			for(i=0; i<supressors.length; i++) {
+				var s = supressors[i];
+				s.parentNode.removeChild(s);
+			}
+		}
+		
+		// Restore images
+		function restoreImages() {
+            var images = document.getElementsByTagName("img");
+		    var i,count = 0;
+			for(i=0; i<images.length; i++) {
+				var img = images[i];
+				if(img.hasAttribute("data-orignal-src")) {
+					img.setAttribute("src", img.getAttribute("data-orignal-src"));
+					count++;
+				}
+			}			
+			mobilize.log("Restored " + count +  " images of all " + images.length + " images");
+		}
+		
+		restoreBody();
+		restoreImages();
     },
     
     
@@ -1574,7 +1676,7 @@ var mobilize = {
 
             // In the case of our perfect transformation code fails, make sure that body should
             // be visible
-            mobilize.restoreBody(); 
+            mobilize.restoreRendering(); 
     
 	        mobilize.sendExceptionToCloudService("transform", e);
 
@@ -1768,7 +1870,9 @@ var mobilize = {
        
         this.swapBody();
        
-        // Draw jQuery Mobile chrome
+	    this.restoreRendering();
+			   
+        // Draw jQuery Mobile widgets
         try{
             $.mobile.initializePage();
         }catch(e){

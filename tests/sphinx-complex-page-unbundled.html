@@ -6,7 +6,7 @@
  
   <!-- Test loading, parsing and speed issues with a particular complex page.
   
-       Use localhost bundle for loading the scripts.
+       Use non-bundled JS files (easy for debugging).
    --> 
   
   <head>
@@ -29,8 +29,11 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/theme_extras.js"></script>
-    <script type="text/javascript" src="http://localhost:8080/js/mobilize.sphinx.debug.js"></script>
-    <link rel="top" title="mobilize.js v0.1 documentation" href="index.html" />
+    
+	<script type="text/javascript" src="http://localhost:8080/js/mobilize.js"></script>  
+	<script type="text/javascript" src="http://localhost:8080/js/mobilize.sphinx.js"></script>
+    
+	<link rel="top" title="mobilize.js v0.1 documentation" href="index.html" />
     <link rel="next" title="Integrations for mobilize.js" href="integrations/index.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
   </head>
