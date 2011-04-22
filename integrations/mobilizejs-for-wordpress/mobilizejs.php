@@ -94,7 +94,10 @@ function is_test_page_load() {
  * @return unknown_type
  */
 function mobilizejs_get_cloud_url() {
-    return "http://cdn.mobilizejs.com/releases/{$mobilizejs_version}";    
+
+	global $mobilizejs_version;
+	
+	return "http://cdn.mobilizejs.com/releases/{$mobilizejs_version}";    
 }
 
 /**
