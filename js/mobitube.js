@@ -45,6 +45,7 @@ function mobitube($) {
 		process : function(content) {
 		   	this.processYouTubeIFrames(content);
 			this.processYouTubeEmbeds(content);			
+			this.processYouTubeObjects(content);
 			this.cleanSignatures(content);
 		},
 		
@@ -76,12 +77,17 @@ function mobitube($) {
 		},
 
         /**
-         * Convert YouTube <iframe> embeds to mobile links.
+         * Convert YouTube embeds to mobile links.
          * 
-         * @param {Object} frame
+         * @param {Object} elem <object>, <embed> or <iframe>
+         * 
+         * @param url: Youtube source URL
          */
-        processYouTubeElement : function(elem) {
-			var url = elem.attr("src");
+        processYouTubeElement : function(elem, url) {
+			
+			if (!url) {
+				url = elem.attr("src");
+			}
 			if(!url || url.length == 0) return; 
 			
 			var parts = this.getPathParts(url);
@@ -106,6 +112,11 @@ function mobitube($) {
 		   });
 		},
 		
+		/**
+		 * Firefox Mobile
+		 * 
+		 * @param {Object} selection
+		 */
 		processYouTubeEmbeds : function(selection) {
            
            var embeds = selection.find("embed");
@@ -117,6 +128,29 @@ function mobitube($) {
                var src = embed.attr("src");
                if(src && src.indexOf("youtube.com") >= 0) {
                   self.processYouTubeElement(embed);
+               }
+           });
+        },
+
+        /**
+         * Webkit
+         * 
+         * @param {Object} selection
+         */
+        processYouTubeObjects : function(selection) {
+           
+           var embeds = selection.find("object");
+           
+           var self = this;
+           
+           embeds.each(function() {
+               var embed = $(this);
+               
+			   var movie = embed.find("param[name=movie]");
+			   var src = movie.attr("value"); 
+			   			  
+               if(src && src.indexOf("youtube.com") >= 0) {
+                  self.processYouTubeElement(embed, src);
                }
            });
         },

@@ -2039,7 +2039,7 @@ var mobilize = {
 			// Do not scale image beyond its orignal size
 			var maxWidth;
 			if(image.width && image.width < 512) {
-				maxWidth = imageWidth;
+				maxWidth = image.width;
 			} else {
 				maxWidth = 512; 
 			}
