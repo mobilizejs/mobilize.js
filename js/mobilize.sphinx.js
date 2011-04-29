@@ -144,6 +144,9 @@ var mobilizeSphinx= {
 		         
 	    // Defloat images, install clickers
         mobilize.processContentImages(origContent);
+		
+		// XXX: Put this to right place or add search support
+		$("#documentation-search").remove();
     },
     
     /**
