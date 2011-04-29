@@ -56,7 +56,15 @@ mobilize.extend(mobilize, {
         content.append(entry_content);   
 		
 		// Set image size manually in CSS
-		$("#social img, .install img").addClass("mobilize-no-resize");   
+		$("#social img, .install img").addClass("mobilize-no-resize");
+		
+		// Then pages navigation
+        var pages = this.consructPageNavigation("Pages");
+        //pages.after();
+		
+		$(".about").after(pages);
+		
+   
     },
     
 	
