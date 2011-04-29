@@ -2036,8 +2036,16 @@ var mobilize = {
 					
 		    $image.addClass("mobilize-resized");
 			
+			// Do not scale image beyond its orignal size
+			var maxWidth;
+			if(image.width && image.width < 512) {
+				maxWidth = imageWidth;
+			} else {
+				maxWidth = 512; 
+			}
+			
 			// TODO: Use stylesheet?
-			$image.css({"width" : "100%", "max-width" : "512px"});
+			$image.css({"width" : "100%", "max-width" : maxWidth + "px"});
 
             // jslint complains: ['float'] is better written in dot notation, but required for YUI Compressor to work
             image.style["float"] = "none"; // jslint:ignore						

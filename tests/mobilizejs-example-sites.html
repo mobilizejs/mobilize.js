@@ -10,15 +10,11 @@
 	        <script type="text/javascript" class="mobilize-init">
             // Called by mobilize.init()
             function mobilizeCustomInit() {
-               // Include msite specific Javascript initialization layer
-               mobilize.cdnOptions.javascriptBundles.push("http://mobilizejs.com/wp-content/plugins/mobilizejs-for-wordpress/mobile-custom.js");
-               mobilize.cdnOptions.cssBundles.push("http://mobilizejs.com/wp-content/plugins/mobilizejs-for-wordpress/mobile-custom.css");
             }
         </script>
     <link rel="alternate" type="application/rss+xml" title="Mobilize.js &raquo; Example sites Comments Feed" href="http://mobilizejs.com/examples/feed/" />
 <link rel='stylesheet' id='admin-bar-css'  href='http://mobilizejs.com/wp-includes/css/admin-bar.css?ver=20110122' type='text/css' media='all' />
 <script type='text/javascript' src='http://mobilizejs.com/wp-includes/js/l10n.js?ver=20101110'></script>
-<script type='text/javascript' src='http://cdn.mobilizejs.com/releases/0.1/js/mobilize.wordpress.min.js?ver=3.1'></script>
 <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://mobilizejs.com/xmlrpc.php?rsd" />
 <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://mobilizejs.com/wp-includes/wlwmanifest.xml" /> 
 <link rel='index' title='Mobilize.js' href='http://mobilizejs.com/' />
@@ -38,6 +34,69 @@
 	
 </head>
 <body class="page page-id-67 logged-in admin-bar">
+	
+            <script type="text/javascript">
+
+         // Make sure sidescroll function is there
+         function mobilizeCustomInit() {
+                // Add your own Javascript layer to load list
+                // in mobile mode. 
+                // push() is array append function in JS.
+                // NOTE: Relative paths may have not luck here.
+                mobilize.cdnOptions.javascriptBundles.push("js/jquery.easing.js");
+                mobilize.cdnOptions.javascriptBundles.push("js/jquery.mobile.scrollview.js");
+                mobilize.cdnOptions.javascriptBundles.push("js/mobitube.js");
+                mobilize.cdnOptions.javascriptBundles.push("js/mobilize.mobilizejs-blog.js");
+        
+        
+                mobilize.cdnOptions.cssBundles.push("css/jquery.mobile.scrollview.css");
+                mobilize.cdnOptions.cssBundles.push("css/mobilize-blog.css");        
+          }        
+        </script>
+  
+        <script 
+                type="text/javascript" 
+                src="/js/mobilize.js"
+                >
+        </script>
+
+        <script type="text/javascript" 
+                src="/js/mobilize.wordpress.js"
+                >
+        </script>
+
+        <script type="text/javascript">        
+
+             // Setup mobilize.js to load our additional mobilize.mfabrik-blog.js layer
+             function setupCustomBlog(){
+                
+                 mobilize.init({
+                 }, {
+
+                     // Load JS files locally, unbundled
+                     javascriptBundles : ["js/jquery.js", 
+                                         "js/mobilize.onjq.js", 
+                                         "js/jquery.mobile.js"
+                                                                                 ],
+
+                     // Load CSS files locally, unbundled
+                     cssBundles: ["css/jquery.mobile.css", 
+                                 "css/wordpress.css",                
+                 ],
+
+                                          
+                 });
+                                  
+                 // Since we are not in auto-run mode,
+                 // we start doing the stuff after we have set-up
+                 // our options for development correctly
+                 mobilize.bootstrap();
+                 
+             }        
+             setupCustomBlog();              
+        </script>  
+    	
+	
 <div id="wrapper">
 		
 			<!-- Header Start -->
