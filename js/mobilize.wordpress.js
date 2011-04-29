@@ -53,11 +53,14 @@ var mobilizeWordpress = {
         if (body.hasClass("single-post")) {
             // Post type page
             this.constructPost(content);
-        } else if(body.hasClass('page')) {
-            this.constructPage(content);			
         } else if(body.hasClass('home')){
             // Assume front page
             this.constructFrontPage(content);
+        } else if(body.hasClass('page')) {
+            this.constructPage(content);            			
+        } else if(body.hasClass('blog')){
+            // Blog roll
+            this.constructBlogRoll(content);
 		} else if(body.hasClass("archive")) {
 			this.constructArchive(content);
         } else {
@@ -244,6 +247,9 @@ var mobilizeWordpress = {
      * 
      */
     constructFrontPage: function (content) {
+		
+		mobilize.log("Creating front page");
+		
 		// First Recent headlines		
 		var headlines = this.constructBlogRollNavigation("Recent headlines");
         content.append(headlines);
@@ -252,6 +258,27 @@ var mobilizeWordpress = {
         var pages = this.consructPageNavigation("Pages");
 		content.append(pages);
     },
+
+    /**
+     * Wordpress blog roll page (does not need to be front page).
+     * <p>
+     * Create recent blog post navigation and pages navigation.
+     * <p>
+     * 
+     */
+    constructBlogRoll: function (content) {
+        // First Recent headlines       
+		
+		mobilize.log("Creating blog roll");
+		
+        var headlines = this.constructBlogRollNavigation("Recent headlines");
+        content.append(headlines);
+        
+        // Then pages navigation
+        var pages = this.consructPageNavigation("Pages");
+        content.append(pages);
+    },
+
 	
 	
 	/**

@@ -18,10 +18,23 @@ function mobitube($) {
 			
 		options : {
 		
-		  youTubeTemplate : '<div class="mobile-youtube"> <a class="image-link" href="http://m.youtube.com/watch?v=VIDEOID"><img src="http://i.ytimg.com/vi/VIDEOID/0.jpg" > </a> <p><a href="http://m.youtube.com/watch?v=VIDEOID" class="text-link">LABEL</a></p></div>', 
+		  youTubeTemplate : '<div class="mobile-youtube"> <a class="image-link" href="http://youtube.com/watch?v=VIDEOID"><img src="http://i.ytimg.com/vi/VIDEOID/0.jpg" > </a> <p><a href="http://m.youtube.com/watch?v=VIDEOID" class="text-link">LABEL</a></p></div>', 
 	
     	  youTubeLabel : "Watch on YouTube",
 		
+		},
+		
+		/**
+		 * Parse URL and return path path.
+		 * 
+		 * @param {Object} url
+		 */
+		getPathParts : function(url) {
+			var parts = url.split("?");
+			url = parts[0];
+			
+			parts = url.split("/");
+			return parts;
 		},
 					
 		/**
@@ -30,32 +43,54 @@ function mobitube($) {
 		 * @param {Object} content: jQuery selection of th 
 		 */
 		process : function(content) {
-		   	this.processYouTubeIFrames(content);			
+		   	this.processYouTubeIFrames(content);
+			this.processYouTubeEmbeds(content);			
 			this.cleanSignatures(content);
 		},
-
-        processYouTubeIFrame : function(frame) {
-			var url = frame.attr("src");
-			if(!url || url.length == 0) return; 
-			
-			var parts = url.split("/");
-			var videoId = parts[parts.length-1];
-			
-			console.log("Detected YouTube video id:"+ videoId);
-			
-			var html = this.options.youTubeTemplate.replace(/VIDEOID/g, videoId);
-			html = html.replace(/LABEL/g, this.options.youTubeLabel);
-			
-			console.log("Constructing YouTube emded:" + html);
-			
-			var node = $(html);
-			
-			console.log("Got:" + node.size());		
-			
-			frame.after(node);
-			frame.remove();
+		
+		/**
+		 * Create Youtube mobile emded.
+		 * 
+		 * @param {Object} videoId
+		 */
+		createYouTubeMobileHTML : function(videoId) {
+            var html = this.options.youTubeTemplate.replace(/VIDEOID/g, videoId);
+            html = html.replace(/LABEL/g, this.options.youTubeLabel);			
+			return html;
 		},
 		
+		/**
+		 * Replace DOM node with mobile YouTube link.
+		 * 
+		 * @param elem <embed> or <iframe>
+		 */
+		createYouTubeElement : function(elem, videoId) {
+            console.log("Detected YouTube video id:"+ videoId);
+                                        
+            html = this.createYouTubeMobileHTML(videoId);
+			console.log("Constructing YouTube emded:" + html);      
+            var node = $(html);
+                        
+            elem.after(node);
+            elem.remove();			
+		},
+
+        /**
+         * Convert YouTube <iframe> embeds to mobile links.
+         * 
+         * @param {Object} frame
+         */
+        processYouTubeElement : function(elem) {
+			var url = elem.attr("src");
+			if(!url || url.length == 0) return; 
+			
+			var parts = this.getPathParts(url);
+			var videoId = parts[parts.length-1];
+			
+			this.createYouTubeElement(elem, videoId);
+			
+		},
+			
 		processYouTubeIFrames : function(selection) {
 		   
 		   var iframes = selection.find("iframe");
@@ -66,10 +101,26 @@ function mobitube($) {
 		       var frame = $(this);
 			   var src = frame.attr("src");
 			   if(src && src.indexOf("youtube.com") >= 0) {
-			   	  self.processYouTubeIFrame(frame);
+			   	  self.processYouTubeElement(frame);
 			   }
 		   });
 		},
+		
+		processYouTubeEmbeds : function(selection) {
+           
+           var embeds = selection.find("embed");
+           
+           var self = this;
+           
+           embeds.each(function() {
+               var embed = $(this);
+               var src = embed.attr("src");
+               if(src && src.indexOf("youtube.com") >= 0) {
+                  self.processYouTubeElement(embed);
+               }
+           });
+        },
+        
 		
 		/**
 		 * Clean various plug-in advertisements from mobile pages.

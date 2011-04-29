@@ -5,6 +5,8 @@
  * 
  */
 
+
+
 /**
  * Add our own overlay layer for Wordpress mobile UI constructions by
  * overriding some functions in mobilize namespace.
@@ -28,50 +30,35 @@ mobilize.extend(mobilize, {
      */	
     constructFooter: function () {
         
-		var footer = $("#mobile-body div[data-role=footer]");
+        var footer = $("#mobile-body div[data-role=footer]");
 		
-		// Put site slogan to footer 		 
+	    // Put site slogan to footer 		 
         footer.append($("#site-description"));
-
-        footer.append('<p><a data-icon="twitter" data-role="button" href="http://twitter.com/mobilizejs">Follow in Twitter</a></p>');        
 
     },
 	
-	
-	/**
-	 * <p>
-	 * Create about splash box at the top of the front page
-	 * </p>
-	 */
-	constructAboutBox : function(content) {
-		content.append("<img class='mobilize-no-resize' src='http://mobilizejs.com/wp-content/themes/love-the-orange/images/logo_60.png' />");
-	},
 
     /**
      * Mobilize Wordpress front page.
      * <p>
      * Create recent blog post navigation and pages navigation.
      * <p>
-     * As a custom feature, add about box and our logo.
-     * <p>
      * 
      */
     constructFrontPage: function (content) {
-
-        // Create About splash
-		this.constructAboutBox(content);
+        
+		content.append("<b>Mobilize.js:</b>");
+		content.append($("#header .title"));
 		
-        // Recent headlines       
-        var headlines = this.constructBlogRollNavigation("Recent headlines");
-        // Add some space between about and headlines
-		headlines.css("margin-top", "15px");
-		content.append(headlines);        
+        mobilize.log("Creating front page");
 		
-        // Then pages navigation
-        var pages = this.consructPageNavigation("Pages");
-        content.append(pages);
+        var entry_content = $("#splash");
+        content.append(entry_content);   
 		
-    }
+		// Set image size manually in CSS
+		$("#social img, .install img").addClass("mobilize-no-resize");   
+    },
+    
 	
 });                 
 
